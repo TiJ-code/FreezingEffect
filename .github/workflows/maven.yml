@@ -35,27 +35,3 @@ jobs:
         with:
           name: FreezingEffect
           path: target/freezingeffect*.jar
-
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-      
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Download Build Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: FreezingEffect
-          path: target/
-
-      # Create GitHub Release from the pushed tag
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ github.ref_name }}
-          name: "Release ${{ github.ref_name }}"
-          files: target/freezingeffect*.jar
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}  # Must be a PAT with repo scope
