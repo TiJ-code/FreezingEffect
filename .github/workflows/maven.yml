@@ -9,9 +9,13 @@
 name: Build Paper Plugin
 
 on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
   push:
-    tags:
-      - "v*"
+    branches:
+      - ci-build
 
 permissions:
   contents: write
@@ -25,7 +29,7 @@ jobs:
       - name: Checkout main branch
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.merged == true && github.base_ref == 'main' && 'main' || github.ref_name }}
 
       # Set up Java
       - name: Set up JDK 23
@@ -39,7 +43,17 @@ jobs:
       - name: Build with Maven
         run: mvn -B package --file pom.xml
 
-      # Create GitHub Release from the pushed tag
+  release:
+    if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
+    needs: build
+    runs-on: ubuntu-latest
+      
+    steps:    
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+    # Create GitHub Release from the pushed tag
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
