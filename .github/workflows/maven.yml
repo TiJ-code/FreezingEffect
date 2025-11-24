@@ -52,11 +52,14 @@ jobs:
 
       # Create GitHub Release from the pushed tag
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: action/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref_name }}  # This is the tag that triggered the workflow
           name: "Release ${{ github.ref_name }}"
           files: target/*.jar
           generate_release_notes: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+          draft: false
+          prerelease: false
+        
