@@ -1,21 +1,9 @@
-# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
-
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
 name: Build Paper Plugin
 
 on:
-  pull_request:
-    types: [closed]
-    branches:
-      - main
   push:
-    branches:
-      - ci-build
+    tags:
+      - 'v*.*.*'
 
 permissions:
   contents: write
@@ -25,11 +13,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout main branch, ignoring the pushed tag commit
-      - name: Checkout main branch
+      # Checkout the tag commit
+      - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.merged == true && github.base_ref == 'main' && 'main' || github.ref_name }}
 
       # Set up Java
       - name: Set up JDK 23
@@ -43,29 +29,26 @@ jobs:
       - name: Build with Maven
         run: mvn -B package --file pom.xml
 
+      # Upload build artifacts (optional, if you want them attached to the workflow run)
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: FreezingEffect.jar
           path: target/freezingeffect*.jar
-          
+
   release:
-    if: >
-      (github.event_name == 'pull_request' && github.event.pull_request.merged == true) ||
-      (github.event_name == 'push' && github.ref_name == 'ci-build')
     needs: build
     runs-on: ubuntu-latest
       
-    steps:    
-      - name: Checkout main branch
+    steps:
+      - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          ref: main
-    # Create GitHub Release from the pushed tag
+
+      # Create GitHub Release from the pushed tag
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name }}   # The tag you pushed manually
+          tag_name: ${{ github.ref_name }}  # This is the tag that triggered the workflow
           name: "Release ${{ github.ref_name }}"
           files: target/*.jar
           generate_release_notes: true
