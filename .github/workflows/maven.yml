@@ -14,6 +14,9 @@ on:
   pull_request:
     branches: [ "main" ]
 
+permissions:
+  contents: write
+
 jobs:
   build:
 
@@ -39,6 +42,7 @@ jobs:
       with:
         tag_name: ${{ env.TAG }}
         name: "Release ${{ env.TAG }}"
+        body: "Automated build produced from main branch."
         files: target/*.jar
         generate_release_notes: true
       env:
