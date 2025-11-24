@@ -30,6 +30,10 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+    - name: Create dynamic tag name
+      id: vars
+      run: |
+        echo "TAG=main-$(date + '%Y%m%d-%H%M%S')-${GITHUB_SHA::7}" >> $GITHUB_ENV
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
       with:
