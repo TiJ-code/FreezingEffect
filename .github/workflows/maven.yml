@@ -39,7 +39,6 @@ jobs:
       with:
         tag_name: ${{ env.TAG }}
         name: "Release ${{ env.TAG }}"
-        body: "Automated release from latest push to main."
         files: target/*.jar
         generate_release_notes: true
       env:
