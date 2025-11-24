@@ -50,16 +50,13 @@ jobs:
           name: FreezingEffect
           path: target/
 
-      - name: Unzip Build Artifact
-        run: unzip target/FreezingEffect.zip -d target/
-
       # Create GitHub Release from the pushed tag
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}  # This is the tag that triggered the workflow
           name: "Release ${{ github.ref_name }}"
-          files: target/freezingeffect*.jar
+          files: target/*.jar
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
