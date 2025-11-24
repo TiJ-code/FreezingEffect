@@ -47,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: FreezingEffect.jar
-          path: target/*.jar
+          path: target/freezingeffect*.jar
           
   release:
     if: >
