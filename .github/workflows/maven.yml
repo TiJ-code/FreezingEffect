@@ -52,14 +52,22 @@ jobs:
 
       # Create GitHub Release from the pushed tag
       - name: Create GitHub Release
+        id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref_name }}  # This is the tag that triggered the workflow
-          name: "Release ${{ github.ref_name }}"
-          files: target/*.jar
-          generate_release_notes: true
+          release_name: "Release ${{ github.ref_name }}"
           draft: false
           prerelease: false
-        
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./freezingeffect.jar
+          asset_name: freezingeffect.jar
+          asset_content_type: application/java-archive
