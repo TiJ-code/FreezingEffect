@@ -6,6 +6,8 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
@@ -17,8 +19,10 @@ public class TemperatureManager {
 
     private final Map<Player, Double> playerTemps = new HashMap<>();
 
-    private final double defaultTemperature = 100.0,
-                         temperatureDecay = 1.0;
+    private final double defaultTemperature = 40,
+                         temperatureDecay = 1.0,
+                         freezingThreshold = 30.0,
+                         criticalFreezingThreshold = 10.0;
     private final int heatRadius = 5;
 
     private final Set<Material> heatSources = Set.of(
@@ -44,9 +48,24 @@ public class TemperatureManager {
                     temp = Math.max(temp, 0);
                     setTemperature(player, temp);
                     player.sendMessage(String.format("Your temperature is %.2f°", temp));
+                    applyFreezingEffects(player, temp);
                 }
             }
         }.runTaskTimer(plugin, 0L, 20L * 5);
+    }
+
+    private void applyFreezingEffects(Player player, double temperature) {
+        if (temperature < freezingThreshold) {
+            int level = (int) ((freezingThreshold - temperature) / 5);
+            level = Math.min(level, 4);
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 100, level));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.MINING_FATIGUE, 100, level));
+
+            if (temperature <= criticalFreezingThreshold) {
+                player.damage(1.0);
+                player.sendMessage("§cYou are freezing!");
+            }
+        }
     }
 
     private boolean isNearHeatSource(Player player) {
