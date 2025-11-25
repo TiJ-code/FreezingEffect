@@ -1,0 +1,13 @@
+frost:
+  defaultTemperature: 100
+  freezingThreshold: 20
+  criticalFreezingThreshold: 0
+  temperatureDecay: 1
+  heatRadius: 5
+
+  heatSources:
+    - TORCH
+    - CAMPFIRE
+    - FIRE
+    - LAVA
+    - LANTERN

@@ -1,5 +1,6 @@
 package dk.tij.freezingEffect;
 
+import dk.tij.freezingEffect.constants.TemperatureConstants;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,49 +20,51 @@ public class TemperatureManager {
 
     private final Map<Player, Double> playerTemps = new HashMap<>();
 
-    private final double defaultTemperature = 40,
-                         temperatureDecay = 1.0,
-                         freezingThreshold = 30.0,
-                         criticalFreezingThreshold = 10.0;
-    private final int heatRadius = 5;
-
-    private final Set<Material> heatSources = Set.of(
-            Material.TORCH,
-            Material.CAMPFIRE,
-            Material.FIRE,
-            Material.LAVA,
-            Material.LANTERN
-    );
+    private BukkitRunnable decayTask;
 
     public TemperatureManager(JavaPlugin plugin) {
         this.plugin = plugin;
     }
 
     public void startDecayTask() {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    if (isNearHeatSource(player)) continue;
+        if (decayTask == null) {
+            decayTask = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        if (isNearHeatSource(player)) continue;
 
-                    double temp = getTemperature(player) - temperatureDecay;
-                    temp = Math.max(temp, 0);
-                    setTemperature(player, temp);
-                    player.sendMessage(String.format("Your temperature is %.2f°", temp));
-                    applyFreezingEffects(player, temp);
+                        double temp = getTemperature(player) - TemperatureConstants.TEMPERATURE_DECAY;
+                        temp = Math.max(temp, 0);
+                        setTemperature(player, temp);
+                        player.sendMessage(String.format("Your temperature is %.2f°", temp));
+                        applyFreezingEffects(player, temp);
+                    }
                 }
-            }
-        }.runTaskTimer(plugin, 0L, 20L * 5);
+            };
+        }
+        decayTask.runTaskTimer(plugin, 0L, 20L * 5);
+    }
+
+    public void stopDecayTask() {
+        if (decayTask == null)
+            return;
+        decayTask.cancel();
+    }
+
+    public void reloadDecayTask() {
+        stopDecayTask();
+        startDecayTask();
     }
 
     private void applyFreezingEffects(Player player, double temperature) {
-        if (temperature < freezingThreshold) {
-            int level = (int) ((freezingThreshold - temperature) / 5);
+        if (temperature < TemperatureConstants.FREEZING_THRESHOLD) {
+            int level = (int) ((TemperatureConstants.FREEZING_THRESHOLD - temperature) / 5);
             level = Math.min(level, 4);
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 100, level));
             player.addPotionEffect(new PotionEffect(PotionEffectType.MINING_FATIGUE, 100, level));
 
-            if (temperature <= criticalFreezingThreshold) {
+            if (temperature <= TemperatureConstants.CRITICAL_FREEZING_THRESHOLD) {
                 player.damage(1.0);
                 player.sendMessage("§cYou are freezing!");
             }
@@ -69,13 +72,15 @@ public class TemperatureManager {
     }
 
     private boolean isNearHeatSource(Player player) {
+        int heatRadius = TemperatureConstants.HEAT_RADIUS;
+
         Location location = player.getLocation();
 
         for (int x = -heatRadius; x <= heatRadius; x++) {
             for (int y = -heatRadius; y <= heatRadius; y++) {
                 for (int z = -heatRadius; z <= heatRadius; z++) {
                     Block block = location.clone().add(x, y, z).getBlock();
-                    if (heatSources.contains(block.getType())) return true;
+                    if (TemperatureConstants.HEAT_SOURCES.contains(block.getType())) return true;
                 }
             }
         }
@@ -88,10 +93,6 @@ public class TemperatureManager {
     }
 
     public double getTemperature(Player player) {
-        return playerTemps.getOrDefault(player, defaultTemperature);
-    }
-
-    public double getDefaultTemperature() {
-        return defaultTemperature;
+        return playerTemps.getOrDefault(player, TemperatureConstants.DEFAULT_TEMPERATURE);
     }
 }

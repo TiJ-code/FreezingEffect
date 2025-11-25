@@ -4,16 +4,28 @@ import dk.tij.freezingEffect.events.PlayerJoinListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class FreezingEffect extends JavaPlugin {
+    private ResourceHandler resourceHandler;
+    private TemperatureManager temperatureManager;
 
     @Override
     public void onEnable() {
         // Plugin startup logic
         getComponentLogger().info("Plugin successfully loaded!");
+        saveDefaultConfig();
 
-        TemperatureManager tempManager = new TemperatureManager(this);
-        getServer().getPluginManager().registerEvents(new PlayerJoinListener(tempManager), this);
+        resourceHandler = new ResourceHandler(this);
 
-        tempManager.startDecayTask();
+        temperatureManager = new TemperatureManager(this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(temperatureManager), this);
+
+        temperatureManager.startDecayTask();
+    }
+
+    @Override
+    public void reloadConfig() {
+        super.reloadConfig();
+        resourceHandler.loadConfig();
+        temperatureManager.reloadDecayTask();
     }
 
     @Override
