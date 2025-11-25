@@ -12,6 +12,8 @@ public final class FreezingEffect extends JavaPlugin {
 
         TemperatureManager tempManager = new TemperatureManager(this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(tempManager), this);
+
+        tempManager.startDecayTask();
     }
 
     @Override
