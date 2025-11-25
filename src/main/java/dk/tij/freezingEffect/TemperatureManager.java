@@ -1,6 +1,7 @@
 package dk.tij.freezingEffect;
 
 import dk.tij.freezingEffect.constants.TemperatureConstants;
+import dk.tij.freezingEffect.handler.PlayerDataHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,13 +18,26 @@ import java.util.Set;
 
 public class TemperatureManager {
     private final JavaPlugin plugin;
+    private final PlayerDataHandler playerDataHandler;
 
     private final Map<Player, Double> playerTemps = new HashMap<>();
 
     private BukkitRunnable decayTask;
 
-    public TemperatureManager(JavaPlugin plugin) {
+    public TemperatureManager(JavaPlugin plugin, PlayerDataHandler playerDataHandler) {
         this.plugin = plugin;
+        this.playerDataHandler = playerDataHandler;
+    }
+
+    public void savePlayer(Player player) {
+        double temperature = getTemperature(player);
+        playerDataHandler.savePlayerTemperature(player, temperature);
+        playerTemps.remove(player);
+    }
+
+    public void loadPlayer(Player player) {
+        double temperature = playerDataHandler.loadPlayerTemperature(player, TemperatureConstants.DEFAULT_TEMPERATURE);
+        playerTemps.put(player, temperature);
     }
 
     public void startDecayTask() {

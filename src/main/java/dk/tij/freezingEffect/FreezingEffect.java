@@ -1,6 +1,8 @@
 package dk.tij.freezingEffect;
 
 import dk.tij.freezingEffect.events.PlayerJoinListener;
+import dk.tij.freezingEffect.events.PlayerQuitListener;
+import dk.tij.freezingEffect.handler.PlayerDataHandler;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -16,9 +18,11 @@ public final class FreezingEffect extends JavaPlugin {
         saveDefaultConfig();
 
         resourceHandler = new ResourceHandler(this);
+        PlayerDataHandler playerDataHandler = new PlayerDataHandler(this);
 
-        temperatureManager = new TemperatureManager(this);
+        temperatureManager = new TemperatureManager(this, playerDataHandler);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(temperatureManager), this);
+        getServer().getPluginManager().registerEvents(new PlayerQuitListener(temperatureManager), this);
 
         temperatureManager.startDecayTask();
     }

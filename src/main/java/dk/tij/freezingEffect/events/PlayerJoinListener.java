@@ -16,6 +16,7 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        temperatureManager.loadPlayer(player);
 
         double temperature = temperatureManager.getTemperature(player);
         player.sendMessage(String.format("Your temperature is %.2f°", temperature));
