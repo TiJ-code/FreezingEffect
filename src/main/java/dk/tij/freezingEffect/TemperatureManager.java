@@ -74,6 +74,7 @@ public class TemperatureManager {
     private void applyFreezingEffects(Player player, double temperature) {
         if (temperature < TemperatureConstants.FREEZING_THRESHOLD) {
             int level = (int) ((TemperatureConstants.FREEZING_THRESHOLD - temperature) / 5);
+            player.setFreezeTicks(level);
             level = Math.min(level, 4);
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 100, level));
             player.addPotionEffect(new PotionEffect(PotionEffectType.MINING_FATIGUE, 100, level));

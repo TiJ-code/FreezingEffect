@@ -21,7 +21,6 @@ public class PlayerDataHandler {
             } catch (IOException ignored) {}
         }
 
-
         config = YamlConfiguration.loadConfiguration(file);
     }
 
