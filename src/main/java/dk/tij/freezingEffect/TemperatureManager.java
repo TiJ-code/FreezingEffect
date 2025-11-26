@@ -79,6 +79,9 @@ public class TemperatureManager {
             setTemperature(player, temperature);
         }
 
+        if (temperature <= TemperatureConstants.CRITICAL_FREEZING_THRESHOLD)
+            player.damage(1d);
+
         double overlayPercent = computeOverlayPercentage(temperature);
         int freezeTicks = (int) (overlayPercent * player.getMaxFreezeTicks());
 
