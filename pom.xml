@@ -51,7 +51,7 @@
                 <executions>
                     <execution>
                         <id>copy-jar-to-server</id>
-                        <phase>package</phase> <!-- runs after shade packaging -->
+                        <phase>integration-test</phase> <!-- runs after shade packaging -->
                         <goals>
                             <goal>run</goal>
                         </goals>
