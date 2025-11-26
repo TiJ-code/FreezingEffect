@@ -64,6 +64,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./FreezingEffect.zip
-          asset_name: FreezingEffect_${{ github.ref_name }}.zip
-          asset_content_type: application/zip
+          asset_path: FreezingEffect/freezingeffect*.jar
+          asset_name: FreezingEffect_${{ github.ref_name }}.jar
+          asset_content_type: application/jar
