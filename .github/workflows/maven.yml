@@ -46,6 +46,10 @@ jobs:
         with:
             name: FreezingEffect
 
+      - name: Find Artifact
+        id: findjar
+        run: echo "jarfile=$(ls *.jar)" >> $GITHUB_OUTPUT
+
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
@@ -64,6 +68,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: FreezingEffect/freezingeffect*.jar
+          asset_path: ${{ steps.findjar.outputs.jarfile }}
           asset_name: FreezingEffect_${{ github.ref_name }}.jar
           asset_content_type: application/jar
