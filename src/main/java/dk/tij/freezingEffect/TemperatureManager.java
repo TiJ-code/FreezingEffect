@@ -102,13 +102,19 @@ public class TemperatureManager {
 
     private boolean isNearHeatSource(Player player) {
         int heatRadius = TemperatureConstants.HEAT_RADIUS;
-
         Location location = player.getLocation();
 
-        for (int x = -heatRadius; x <= heatRadius; x++) {
-            for (int y = -heatRadius; y <= heatRadius; y++) {
-                for (int z = -heatRadius; z <= heatRadius; z++) {
-                    Block block = location.clone().add(x, y, z).getBlock();
+        int maxX = location.getBlockX() + heatRadius,
+            maxY = location.getBlockY() + heatRadius,
+            maxZ = location.getBlockZ() + heatRadius;
+        int minX = location.getBlockX() - heatRadius,
+            minY = location.getBlockY() - heatRadius,
+            minZ = location.getBlockZ() - heatRadius;
+
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                for (int z = minZ; z <= maxZ; z++) {
+                    Block block = location.getWorld().getBlockAt(x, y, z);
                     if (TemperatureConstants.HEAT_SOURCES.contains(block.getType())) return true;
                 }
             }
