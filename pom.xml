@@ -6,7 +6,7 @@
 
     <groupId>dk.tij</groupId>
     <artifactId>freezingeffect</artifactId>
-    <version>0.1</version>
+    <version>BUILD</version>
     <packaging>jar</packaging>
 
     <name>freezingeffect</name>

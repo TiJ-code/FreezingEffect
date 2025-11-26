@@ -35,3 +35,34 @@ jobs:
         with:
           name: FreezingEffect
           path: target/freezingeffect*.jar
+
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download Build Artifcats
+        uses: actions/download-artifact@v3
+        with:
+            name: FreezingEffect
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: ${{ github.ref_name }}
+          draft: false
+          prerelease: ${{ contains(github.ref_name, 'dev') }}
+
+      - name: Upload Assets To Release
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./FreezingEffect.zip
+          asset_name: FreezingEffect_${{ github.ref_name }}.zip
+          asset_content_type: application/zip
