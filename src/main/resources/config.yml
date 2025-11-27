@@ -1,8 +1,6 @@
 frost:
-  defaultTemperature: 100
-  freezingThreshold: 20
-  criticalFreezingThreshold: 0
-  temperatureDecay: 1
+  criticalFreezingThreshold: 0.3
+  temperatureDecay: 1.0
   heatRadius: 5
 
   heatSources:

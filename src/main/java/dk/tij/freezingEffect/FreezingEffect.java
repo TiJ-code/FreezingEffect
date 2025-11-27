@@ -1,5 +1,6 @@
 package dk.tij.freezingEffect;
 
+import dk.tij.freezingEffect.events.PlayerDeathListener;
 import dk.tij.freezingEffect.events.PlayerJoinListener;
 import dk.tij.freezingEffect.events.PlayerQuitListener;
 import dk.tij.freezingEffect.handler.FreezeHandler;
@@ -29,6 +30,7 @@ public final class FreezingEffect extends JavaPlugin {
         temperatureManager = new TemperatureManager(this, playerDataHandler, freezeHandler);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(temperatureManager), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(temperatureManager), this);
+        getServer().getPluginManager().registerEvents(new PlayerDeathListener(temperatureManager), this);
 
         temperatureManager.startDecayTask();
     }
