@@ -1,4 +1,4 @@
-package dk.tij.freezingEffect;
+package dk.tij.freezingEffect.handler;
 
 import dk.tij.freezingEffect.constants.TemperatureConstants;
 import org.bukkit.Material;
@@ -17,8 +17,7 @@ public class ResourceHandler {
     }
 
     public void loadConfig() {
-        TemperatureConstants.FREEZING_DAMAGE_THRESHOLD = config.getDouble("frost.criticalFreezingThreshold", 0);
-        TemperatureConstants.TEMPERATURE_DECAY = config.getDouble("frost.temperatureDecay", 0);
+        TemperatureConstants.CRITICAL_FREEZING_TICKS = config.getInt("frost.criticalFreezingTicks", Integer.MAX_VALUE);
         TemperatureConstants.HEAT_RADIUS = config.getInt("frost.heatRadius", 0);
 
         Set<Material> configHeatSources = config.getStringList("frost.heatSources")

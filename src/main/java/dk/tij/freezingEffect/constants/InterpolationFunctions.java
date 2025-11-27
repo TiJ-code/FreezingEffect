@@ -9,10 +9,6 @@ public final class InterpolationFunctions {
         return t * t * t * (t * (t * 6 - 15) + 10);
     }
 
-    public static double clamp(double value, double min, double max) {
-        return Math.max(min, Math.min(max, value));
-    }
-
     public static int clampInt(int value, int min, int max) {
         return Math.max(min, Math.min(max, value));
     }

@@ -7,28 +7,25 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.damage.DamageSource;
-import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class TemperatureManager {
     private final JavaPlugin plugin;
     private final FreezeHandler freezeHandler;
-    private final DamageSource freezingDamageSource;
 
-    private final Map<Player, Double> playerFreezeAcc = new HashMap<>();
+    private final Map<UUID, Integer> actualPlayerFreezeTicks = new HashMap<>();
 
     private BukkitRunnable decayTask;
 
     public TemperatureManager(JavaPlugin plugin, FreezeHandler freezeHandler) {
         this.plugin = plugin;
         this.freezeHandler = freezeHandler;
-        this.freezingDamageSource = DamageSource.builder(DamageType.FREEZE).build();
     }
 
     public void startDecayTask() {
@@ -42,7 +39,7 @@ public class TemperatureManager {
                 }
             };
         }
-        decayTask.runTaskTimer(plugin, 0L, 20L);
+        decayTask.runTaskTimer(plugin, 0L, 1L);
     }
 
     public void stopDecayTask() {
@@ -57,68 +54,20 @@ public class TemperatureManager {
     }
 
     private void tickPlayerTemperature(Player player) {
-        double current = playerFreezeAcc.getOrDefault(player, 0.0);
-        double target = computeTarget(player); // 0 or MAX_FREEZE_TICKS
+        int target = computeTarget(player);
 
-        int freezeTicks = 0;
-        if (current != target) {
-            int direction = current < target ? 1 : -1;
+        UUID playerUUID = player.getUniqueId();
+        actualPlayerFreezeTicks.put(playerUUID, actualPlayerFreezeTicks.get(playerUUID) + target);
+        int nextFreezePoints = actualPlayerFreezeTicks.get(playerUUID);
+        nextFreezePoints = InterpolationFunctions.clampInt(nextFreezePoints, 0, Integer.MAX_VALUE);
 
-            double t = current / TemperatureConstants.VANILLA_MAX_FREEZE_TICKS;
-            double curve = InterpolationFunctions.smootherstep(t);
+        int freezeTicks = updatePlayerFreezingPoints(player, nextFreezePoints);
 
-            double delta = TemperatureConstants.TEMPERATURE_DECAY * (1.0 - curve);
-
-            current += delta * direction;
-
-            current = Math.max(0, Math.min(current, TemperatureConstants.VANILLA_MAX_FREEZE_TICKS));
-
-            playerFreezeAcc.put(player, current);
-            
-            freezeTicks = (int) Math.round(current);
-            player.setFreezeTicks(freezeTicks);
-            freezeHandler.updatePlayer(player, freezeTicks);
-
-            applyDamage(player, freezeTicks);
-        }
-
-        player.sendMessage(String.format("FT: %3d | T: %5.2f",  freezeTicks, target));
-    }
-
-    private void applyDamage(Player player, int freeze) {
-        if (freeze >= TemperatureConstants.VANILLA_MAX_FREEZE_TICKS) {
-            player.damage(1, freezingDamageSource);
-        }
+        player.sendMessage(String.format("FreezeTicks %3d | Target: %1d | FreezePoints: %4d",  freezeTicks, target, nextFreezePoints));
     }
 
     private int computeTarget(Player player) {
-        return isNearHeatSource(player) ? 0 : TemperatureConstants.VANILLA_MAX_FREEZE_TICKS;
-    }
-
-    private int computeDelta(Player player, int current, int target) {
-        if (current == target) return 0;
-
-        // direction is always +1 unless cooling near heat
-        int direction = Integer.compare(target, current);
-
-        double t = current / (double) TemperatureConstants.VANILLA_MAX_FREEZE_TICKS;
-
-        // smootherstep gives slow → fast → slow
-        double curve = InterpolationFunctions.smootherstep(t);
-
-        // the magic: slow at edges, fastest in middle
-        double speed = TemperatureConstants.TEMPERATURE_DECAY;
-
-        // we use (1 - curve) when heating up
-        double raw = speed * (1.0 - curve);
-
-        // floor allows repeated numbers
-        int step = (int) Math.floor(raw);
-
-        // always move at least 1 when going upward
-        if (step == 0 && direction > 0) step = 1;
-
-        return step * direction;
+        return isNearHeatSource(player) ? -1 : 1;
     }
 
 
@@ -150,11 +99,30 @@ public class TemperatureManager {
         return false;
     }
 
-    public void setTemperature(Player player, int temperature) {
-        player.setFreezeTicks(temperature);
+    private int updatePlayerFreezingPoints(Player player, int actualFreezeTicks) {
+        double interpolatedFreezingPoints = InterpolationFunctions.smootherstep(
+                (double) actualFreezeTicks / TemperatureConstants.CRITICAL_FREEZING_TICKS
+        );
+        double scaledInterpolatedFreezingPoints = interpolatedFreezingPoints * TemperatureConstants.VANILLA_MAX_FREEZE_TICKS;
+        int freezeTicks = Math.max( (int) (scaledInterpolatedFreezingPoints + 0.5d), 0 );
+
+        player.setFreezeTicks(freezeTicks);
+        freezeHandler.updatePlayer(player, freezeTicks);
+
+        return freezeTicks;
     }
 
-    public int getTemperature(Player player) {
-        return player.getFreezeTicks();
+    public void registerPlayer(Player player, int actualFreezeTicks) {
+        actualPlayerFreezeTicks.put(player.getUniqueId(), actualFreezeTicks);
+        updatePlayerFreezingPoints(player, actualFreezeTicks);
+    }
+
+    public void resetPlayer(Player player) {
+        registerPlayer(player, 0);
+        updatePlayerFreezingPoints(player, 0);
+    }
+
+    public int getPlayerFreezePoints(Player player) {
+        return actualPlayerFreezeTicks.get(player.getUniqueId());
     }
 }

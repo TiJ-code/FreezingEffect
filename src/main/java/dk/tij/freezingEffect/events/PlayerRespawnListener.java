@@ -5,21 +5,21 @@ import dk.tij.freezingEffect.handler.FreezeHandler;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
-public class PlayerDeathListener implements Listener {
+public class PlayerRespawnListener implements Listener {
     private final TemperatureManager temperatureManager;
     private final FreezeHandler freezeHandler;
 
-    public PlayerDeathListener(TemperatureManager temperatureManager, FreezeHandler freezeHandler) {
+    public PlayerRespawnListener(TemperatureManager temperatureManager, FreezeHandler freezeHandler) {
         this.temperatureManager = temperatureManager;
         this.freezeHandler = freezeHandler;
     }
 
     @EventHandler
-    public void onPlayerDeath(PlayerDeathEvent event) {
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
-        temperatureManager.setTemperature(player, 0);
+        temperatureManager.resetPlayer(player);
         freezeHandler.updatePlayer(player, 0);
     }
 }

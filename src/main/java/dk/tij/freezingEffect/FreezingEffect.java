@@ -1,14 +1,18 @@
 package dk.tij.freezingEffect;
 
-import dk.tij.freezingEffect.events.PlayerDeathListener;
+import dk.tij.freezingEffect.events.PlayerQuitListener;
+import dk.tij.freezingEffect.events.PlayerRespawnListener;
 import dk.tij.freezingEffect.events.PlayerJoinListener;
 import dk.tij.freezingEffect.handler.FreezeHandler;
+import dk.tij.freezingEffect.handler.PlayerDataHandler;
+import dk.tij.freezingEffect.handler.ResourceHandler;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 
 public final class FreezingEffect extends JavaPlugin {
     private ResourceHandler resourceHandler;
+    private PlayerDataHandler playerDataHandler;
     private TemperatureManager temperatureManager;
     private FreezeHandler freezeHandler;
 
@@ -19,13 +23,15 @@ public final class FreezingEffect extends JavaPlugin {
         saveDefaultConfig();
 
         resourceHandler = new ResourceHandler(this);
+        playerDataHandler = new PlayerDataHandler(this);
 
         freezeHandler = new FreezeHandler(this);
         freezeHandler.start();
 
         temperatureManager = new TemperatureManager(this, freezeHandler);
-        getServer().getPluginManager().registerEvents(new PlayerJoinListener(temperatureManager), this);
-        getServer().getPluginManager().registerEvents(new PlayerDeathListener(temperatureManager, freezeHandler), this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(playerDataHandler, temperatureManager), this);
+        getServer().getPluginManager().registerEvents(new PlayerQuitListener(playerDataHandler, temperatureManager), this);
+        getServer().getPluginManager().registerEvents(new PlayerRespawnListener(temperatureManager, freezeHandler), this);
 
         temperatureManager.startDecayTask();
     }
@@ -45,6 +51,8 @@ public final class FreezingEffect extends JavaPlugin {
 
         freezeHandler.stop();
         temperatureManager.stopDecayTask();
+
+        playerDataHandler.saveConfig();
 
         // TODO: REMOVE FROM PRODUCTION
         File configFile = new File(getDataFolder(), "config.yml");
