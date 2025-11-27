@@ -1,6 +1,6 @@
 frost:
   criticalFreezingThreshold: 0.3
-  temperatureDecay: 1.0
+  temperatureDecay: 0.22
   heatRadius: 5
 
   heatSources:

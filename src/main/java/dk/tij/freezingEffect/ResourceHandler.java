@@ -17,9 +17,7 @@ public class ResourceHandler {
     }
 
     public void loadConfig() {
-        TemperatureConstants.DEFAULT_TEMPERATURE = config.getDouble("frost.defaultTemperature", 0);
-        TemperatureConstants.FREEZING_THRESHOLD = config.getDouble("frost.freezingThreshold", 0);
-        TemperatureConstants.CRITICAL_FREEZING_THRESHOLD = config.getDouble("frost.criticalFreezingThreshold", 0);
+        TemperatureConstants.FREEZING_DAMAGE_THRESHOLD = config.getDouble("frost.criticalFreezingThreshold", 0);
         TemperatureConstants.TEMPERATURE_DECAY = config.getDouble("frost.temperatureDecay", 0);
         TemperatureConstants.HEAT_RADIUS = config.getInt("frost.heatRadius", 0);
 

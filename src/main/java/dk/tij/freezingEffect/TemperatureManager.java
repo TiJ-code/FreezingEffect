@@ -3,10 +3,12 @@ package dk.tij.freezingEffect;
 import dk.tij.freezingEffect.constants.InterpolationFunctions;
 import dk.tij.freezingEffect.constants.TemperatureConstants;
 import dk.tij.freezingEffect.handler.FreezeHandler;
-import dk.tij.freezingEffect.handler.PlayerDataHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.damage.DamageSource;
+import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -15,28 +17,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TemperatureManager {
-    private final Map<Player, Double> playerTemps = new HashMap<>();
     private final JavaPlugin plugin;
-    private final PlayerDataHandler playerDataHandler;
     private final FreezeHandler freezeHandler;
+    private final DamageSource freezingDamageSource;
+
+    private final Map<Player, Double> playerFreezeAcc = new HashMap<>();
 
     private BukkitRunnable decayTask;
 
-    public TemperatureManager(JavaPlugin plugin, PlayerDataHandler playerDataHandler, FreezeHandler freezeHandler) {
+    public TemperatureManager(JavaPlugin plugin, FreezeHandler freezeHandler) {
         this.plugin = plugin;
-        this.playerDataHandler = playerDataHandler;
         this.freezeHandler = freezeHandler;
-    }
-
-    public void savePlayer(Player player) {
-        double temperature = getTemperature(player);
-        playerDataHandler.savePlayerTemperature(player, temperature);
-        playerTemps.remove(player);
-    }
-
-    public void loadPlayer(Player player) {
-        double temperature = playerDataHandler.loadPlayerTemperature(player, TemperatureConstants.DEFAULT_TEMPERATURE);
-        playerTemps.put(player, temperature);
+        this.freezingDamageSource = DamageSource.builder(DamageType.FREEZE).build();
     }
 
     public void startDecayTask() {
@@ -50,7 +42,7 @@ public class TemperatureManager {
                 }
             };
         }
-        decayTask.runTaskTimer(plugin, 0L, 20L * 5);
+        decayTask.runTaskTimer(plugin, 0L, 20L);
     }
 
     public void stopDecayTask() {
@@ -65,60 +57,92 @@ public class TemperatureManager {
     }
 
     private void tickPlayerTemperature(Player player) {
-        final double temperatureRange = TemperatureConstants.DEFAULT_TEMPERATURE - TemperatureConstants.FREEZING_THRESHOLD;
+        double current = playerFreezeAcc.getOrDefault(player, 0.0);
+        double target = computeTarget(player); // 0 or MAX_FREEZE_TICKS
 
-        double temperature = getTemperature(player);
+        int freezeTicks = 0;
+        if (current != target) {
+            int direction = current < target ? 1 : -1;
 
-        double t = (temperature - TemperatureConstants.FREEZING_THRESHOLD) / temperatureRange;
-        t = InterpolationFunctions.clamp(t, 0d, 1d);
+            double t = current / TemperatureConstants.VANILLA_MAX_FREEZE_TICKS;
+            double curve = InterpolationFunctions.smootherstep(t);
 
-        if (!isNearHeatSource(player)) {
-            double decayFactor = InterpolationFunctions.smoothstep(1 - t);
-            temperature -= decayFactor * TemperatureConstants.TEMPERATURE_DECAY;
-            temperature = Math.max(0, temperature);
-            setTemperature(player, temperature);
+            double delta = TemperatureConstants.TEMPERATURE_DECAY * (1.0 - curve);
+
+            current += delta * direction;
+
+            current = Math.max(0, Math.min(current, TemperatureConstants.VANILLA_MAX_FREEZE_TICKS));
+
+            playerFreezeAcc.put(player, current);
+            
+            freezeTicks = (int) Math.round(current);
+            player.setFreezeTicks(freezeTicks);
+            freezeHandler.updatePlayer(player, freezeTicks);
+
+            applyDamage(player, freezeTicks);
         }
 
-        if (temperature <= TemperatureConstants.CRITICAL_FREEZING_THRESHOLD)
-            player.damage(1d);
-
-        double overlayPercent = computeOverlayPercentage(temperature);
-        int freezeTicks = (int) (overlayPercent * player.getMaxFreezeTicks());
-
-        freezeHandler.updatePlayer(player, freezeTicks);
-        player.setFreezeTicks(freezeTicks);
-
-        player.sendMessage(String.format("Your temperature is %.2f° | Overlay: %5.2f%% | FreezeTicks: %3d", temperature, overlayPercent * 100, player.getFreezeTicks()));
+        player.sendMessage(String.format("FT: %3d | T: %5.2f",  freezeTicks, target));
     }
 
-    private double computeOverlayPercentage(double temperature) {
-        if (temperature <= TemperatureConstants.CRITICAL_FREEZING_THRESHOLD) {
-            return 1.0;
-        } else {
-            double overlayT = (temperature - TemperatureConstants.CRITICAL_FREEZING_THRESHOLD) /
-                    (TemperatureConstants.FREEZING_THRESHOLD - TemperatureConstants.CRITICAL_FREEZING_THRESHOLD);
-            overlayT = InterpolationFunctions.clamp(overlayT, 0d, 1d);
-
-            return 1.0 - InterpolationFunctions.smootherstep(overlayT);
+    private void applyDamage(Player player, int freeze) {
+        if (freeze >= TemperatureConstants.VANILLA_MAX_FREEZE_TICKS) {
+            player.damage(1, freezingDamageSource);
         }
     }
+
+    private int computeTarget(Player player) {
+        return isNearHeatSource(player) ? 0 : TemperatureConstants.VANILLA_MAX_FREEZE_TICKS;
+    }
+
+    private int computeDelta(Player player, int current, int target) {
+        if (current == target) return 0;
+
+        // direction is always +1 unless cooling near heat
+        int direction = Integer.compare(target, current);
+
+        double t = current / (double) TemperatureConstants.VANILLA_MAX_FREEZE_TICKS;
+
+        // smootherstep gives slow → fast → slow
+        double curve = InterpolationFunctions.smootherstep(t);
+
+        // the magic: slow at edges, fastest in middle
+        double speed = TemperatureConstants.TEMPERATURE_DECAY;
+
+        // we use (1 - curve) when heating up
+        double raw = speed * (1.0 - curve);
+
+        // floor allows repeated numbers
+        int step = (int) Math.floor(raw);
+
+        // always move at least 1 when going upward
+        if (step == 0 && direction > 0) step = 1;
+
+        return step * direction;
+    }
+
 
     private boolean isNearHeatSource(Player player) {
         int heatRadius = TemperatureConstants.HEAT_RADIUS;
         Location location = player.getLocation();
 
-        int maxX = location.getBlockX() + heatRadius,
-            maxY = location.getBlockY() + heatRadius,
-            maxZ = location.getBlockZ() + heatRadius;
-        int minX = location.getBlockX() - heatRadius,
-            minY = location.getBlockY() - heatRadius,
-            minZ = location.getBlockZ() - heatRadius;
+        final int blockX = location.getBlockX(),
+                  blockY = location.getBlockY(),
+                  blockZ = location.getBlockZ();
+
+        final int maxX = blockX + heatRadius,
+                  maxY = blockY + heatRadius,
+                  maxZ = blockZ + heatRadius;
+        final int minX = blockX - heatRadius,
+                  minY = blockY - heatRadius,
+                  minZ = blockZ - heatRadius;
 
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
                 for (int z = minZ; z <= maxZ; z++) {
                     Block block = location.getWorld().getBlockAt(x, y, z);
-                    if (TemperatureConstants.HEAT_SOURCES.contains(block.getType())) return true;
+                    Material type = block.getType();
+                    if (TemperatureConstants.HEAT_SOURCES.contains(type)) return true;
                 }
             }
         }
@@ -126,11 +150,11 @@ public class TemperatureManager {
         return false;
     }
 
-    public void setTemperature(Player player, double temperature) {
-        playerTemps.put(player, temperature);
+    public void setTemperature(Player player, int temperature) {
+        player.setFreezeTicks(temperature);
     }
 
-    public double getTemperature(Player player) {
-        return playerTemps.getOrDefault(player, TemperatureConstants.DEFAULT_TEMPERATURE);
+    public int getTemperature(Player player) {
+        return player.getFreezeTicks();
     }
 }

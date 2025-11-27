@@ -10,11 +10,10 @@ public final class InterpolationFunctions {
     }
 
     public static double clamp(double value, double min, double max) {
-        if (value < min)
-            return min;
-        else if (value > max)
-            return max;
+        return Math.max(min, Math.min(max, value));
+    }
 
-        return value;
+    public static int clampInt(int value, int min, int max) {
+        return Math.max(min, Math.min(max, value));
     }
 }
