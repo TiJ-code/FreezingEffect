@@ -98,9 +98,8 @@ public class TemperatureHandler {
     }
 
     private int updatePlayerFreezingPoints(Player player, int actualFreezeTicks) {
-        double interpolatedFreezingPoints = InterpolationFunctions.smootherstep(
-                (double) actualFreezeTicks / TemperatureConstants.CRITICAL_FREEZING_TICKS
-        );
+        double interpolatedFreezingPoints = TemperatureConstants.INTERPOLATION_FUNCTION
+                        .apply( (double) actualFreezeTicks / TemperatureConstants.CRITICAL_FREEZING_TICKS );
         double scaledInterpolatedFreezingPoints = interpolatedFreezingPoints * TemperatureConstants.VANILLA_MAX_FREEZE_TICKS;
         int freezeTicks = Math.max( (int) (scaledInterpolatedFreezingPoints + 0.5d), TemperatureConstants.VANILLA_MIN_FREEZE_TICKS );
 

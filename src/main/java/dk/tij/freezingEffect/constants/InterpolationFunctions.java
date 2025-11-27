@@ -1,6 +1,10 @@
 package dk.tij.freezingEffect.constants;
 
 public final class InterpolationFunctions {
+    public static double linear(double t) {
+        return t;
+    }
+
     public static double smoothstep(double t) {
         return t * t * (3d - 2d * t);
     }

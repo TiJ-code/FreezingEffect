@@ -56,7 +56,7 @@ public final class FreezingEffect extends JavaPlugin {
         playerDataHandler.saveConfig();
 
         // TODO: REMOVE FROM PRODUCTION
-        File configFile = new File(getDataFolder(), "config.yml");
-        if (configFile.exists()) configFile.delete();
+        /*File configFile = new File(getDataFolder(), "config.yml");
+        if (configFile.exists()) configFile.delete();*/
     }
 }

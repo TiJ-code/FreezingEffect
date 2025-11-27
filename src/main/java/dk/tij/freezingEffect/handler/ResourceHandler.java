@@ -25,5 +25,9 @@ public class ResourceHandler {
                 .map(Material::matchMaterial)
                 .collect(Collectors.toSet());
         TemperatureConstants.HEAT_SOURCES.addAll(configHeatSources);
+
+        String interpolationFunctionName = config.getString("frost.interpolationFunction",
+                TemperatureConstants.INTERPOLATION_FUNCTIONS_MAPPING.keySet().toArray(String[]::new)[0]);
+        TemperatureConstants.INTERPOLATION_FUNCTION = TemperatureConstants.INTERPOLATION_FUNCTIONS_MAPPING.get(interpolationFunctionName);
     }
 }
