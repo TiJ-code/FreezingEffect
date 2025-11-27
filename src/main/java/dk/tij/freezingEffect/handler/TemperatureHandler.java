@@ -1,8 +1,7 @@
-package dk.tij.freezingEffect;
+package dk.tij.freezingEffect.handler;
 
 import dk.tij.freezingEffect.constants.InterpolationFunctions;
 import dk.tij.freezingEffect.constants.TemperatureConstants;
-import dk.tij.freezingEffect.handler.FreezeHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class TemperatureManager {
+public class TemperatureHandler {
     private final JavaPlugin plugin;
     private final FreezeHandler freezeHandler;
 
@@ -23,7 +22,7 @@ public class TemperatureManager {
 
     private BukkitRunnable decayTask;
 
-    public TemperatureManager(JavaPlugin plugin, FreezeHandler freezeHandler) {
+    public TemperatureHandler(JavaPlugin plugin, FreezeHandler freezeHandler) {
         this.plugin = plugin;
         this.freezeHandler = freezeHandler;
     }
@@ -70,7 +69,6 @@ public class TemperatureManager {
         return isNearHeatSource(player) ? -1 : 1;
     }
 
-
     private boolean isNearHeatSource(Player player) {
         int heatRadius = TemperatureConstants.HEAT_RADIUS;
         Location location = player.getLocation();
@@ -104,7 +102,7 @@ public class TemperatureManager {
                 (double) actualFreezeTicks / TemperatureConstants.CRITICAL_FREEZING_TICKS
         );
         double scaledInterpolatedFreezingPoints = interpolatedFreezingPoints * TemperatureConstants.VANILLA_MAX_FREEZE_TICKS;
-        int freezeTicks = Math.max( (int) (scaledInterpolatedFreezingPoints + 0.5d), 0 );
+        int freezeTicks = Math.max( (int) (scaledInterpolatedFreezingPoints + 0.5d), TemperatureConstants.VANILLA_MIN_FREEZE_TICKS );
 
         player.setFreezeTicks(freezeTicks);
         freezeHandler.updatePlayer(player, freezeTicks);
