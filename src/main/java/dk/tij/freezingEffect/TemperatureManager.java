@@ -57,13 +57,13 @@ public class TemperatureManager {
         int target = computeTarget(player);
 
         UUID playerUUID = player.getUniqueId();
-        actualPlayerFreezeTicks.put(playerUUID, actualPlayerFreezeTicks.get(playerUUID) + target);
-        int nextFreezePoints = actualPlayerFreezeTicks.get(playerUUID);
-        nextFreezePoints = InterpolationFunctions.clampInt(nextFreezePoints, 0, Integer.MAX_VALUE);
+        int nextActualFreezeTick = actualPlayerFreezeTicks.get(playerUUID) + target;
+        nextActualFreezeTick = InterpolationFunctions.clampInt(nextActualFreezeTick, 0, Integer.MAX_VALUE);
+        actualPlayerFreezeTicks.put(playerUUID, nextActualFreezeTick);
 
-        int freezeTicks = updatePlayerFreezingPoints(player, nextFreezePoints);
+        int freezeTicks = updatePlayerFreezingPoints(player, nextActualFreezeTick);
 
-        player.sendMessage(String.format("FreezeTicks %3d | Target: %1d | FreezePoints: %4d",  freezeTicks, target, nextFreezePoints));
+        player.sendMessage(String.format("FreezeTicks %3d | Target: %1d | FreezePoints: %4d",  freezeTicks, target, nextActualFreezeTick));
     }
 
     private int computeTarget(Player player) {
