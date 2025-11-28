@@ -13,6 +13,6 @@ public record PlayerQuitListener(PlayerDataHandler playerDataHandler,
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        playerDataHandler.savePlayerData(player, temperatureHandler.getPlayerFreezePoints(player));
+        playerDataHandler.savePlayerData(player, (int) temperatureHandler.getActualPlayerFreezeTicks(player));
     }
 }

@@ -18,8 +18,8 @@ public class PlayerDataHandler {
         loadConfig();
     }
 
-    public void savePlayerData(Player player, int freezePoints) {
-        config.set(getPlayerFreezePointsConfigEntry(player.getUniqueId().toString()), freezePoints);
+    public void savePlayerData(Player player, int actualFreezeTicks) {
+        config.set(getPlayerFreezePointsConfigEntry(player.getUniqueId().toString()), actualFreezeTicks);
         saveConfig();
     }
 
