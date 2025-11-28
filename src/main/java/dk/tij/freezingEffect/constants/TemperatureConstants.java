@@ -2,6 +2,7 @@ package dk.tij.freezingEffect.constants;
 
 import org.bukkit.Material;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -23,13 +24,10 @@ public final class TemperatureConstants {
         HEAT_RADIUS = 5;
 
     public static double
-            LEATHER_ARMOUR_MAX_REDUCTION = 0.80,
-            LEATHER_BOOTS_REDUCTION = 0.15,
-            LEATHER_LEGGINGS_REDUCTION = 0.30,
-            LEATHER_CHESTPLATE_REDUCTION = 0.40,
-            LEATHER_HELMET_REDUCTION = 15;
-
-    public static Function<Double, Double> INTERPOLATION_FUNCTION = InterpolationFunctions::smootherstep;
+            MAX_POSSIBLE_ISOLATION = 0.80;
 
     public static final Set<Material> HEAT_SOURCES = new HashSet<>();
+    public static final Map<Material, Double> ARMOUR_PIECE_ISOLATION = new HashMap<>();
+
+    public static Function<Double, Double> INTERPOLATION_FUNCTION = InterpolationFunctions::smootherstep;
 }

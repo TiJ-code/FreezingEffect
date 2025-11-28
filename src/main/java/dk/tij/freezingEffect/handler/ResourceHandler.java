@@ -3,6 +3,7 @@ package dk.tij.freezingEffect.handler;
 import dk.tij.freezingEffect.constants.InterpolationFunctions;
 import dk.tij.freezingEffect.constants.TemperatureConstants;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -20,26 +21,29 @@ public class ResourceHandler {
     }
 
     public void loadConfig() {
-        TemperatureConstants.LEATHER_ARMOUR_MAX_REDUCTION = InterpolationFunctions.clampI(
-                config.getInt("frost.leatherArmourMaxReduction", 0),
-                0, 100
-        ) * TO_PERCENT_CONVERSION_FACTOR;
-        TemperatureConstants.LEATHER_BOOTS_REDUCTION = InterpolationFunctions.clampI(
-                config.getInt("frost.leatherBootsReduction", 0),
-                0, 100
-        ) * TO_PERCENT_CONVERSION_FACTOR;
-        TemperatureConstants.LEATHER_LEGGINGS_REDUCTION = InterpolationFunctions.clampI(
-                config.getInt("frost.leatherLeggingsReduction", 0),
-                0, 100
-        ) * TO_PERCENT_CONVERSION_FACTOR;
-        TemperatureConstants.LEATHER_CHESTPLATE_REDUCTION = InterpolationFunctions.clampI(
-                config.getInt("frost.leatherChestplateReduction", 0),
-                0, 100
-        ) * TO_PERCENT_CONVERSION_FACTOR;
-        TemperatureConstants.LEATHER_HELMET_REDUCTION = InterpolationFunctions.clampI(
-                config.getInt("frost.leatherHelmetReduction", 0),
-                0, 100
-        ) * TO_PERCENT_CONVERSION_FACTOR;
+        ConfigurationSection isolationSection = config.getConfigurationSection("frost.isolation");
+        if (isolationSection != null) {
+            int maxPossibleIsolationValue = InterpolationFunctions.clampI(
+                    isolationSection.getInt("maxPossibleIsolation", 0),
+                    0, 100
+            );
+            TemperatureConstants.MAX_POSSIBLE_ISOLATION = maxPossibleIsolationValue * TO_PERCENT_CONVERSION_FACTOR;
+
+            ConfigurationSection armourSection = isolationSection.getConfigurationSection("armourPieces");
+            if (armourSection != null) {
+                for (String key : armourSection.getKeys(false)) {
+                    Material material = Material.getMaterial(key);
+                    if (material != null) {
+                        int value = InterpolationFunctions.clampI(
+                                armourSection.getInt(key),
+                                0, 100
+                        );
+                        TemperatureConstants.ARMOUR_PIECE_ISOLATION.put(material,
+                                                                        value * TO_PERCENT_CONVERSION_FACTOR);
+                    }
+                }
+            }
+        }
 
         TemperatureConstants.CRITICAL_FREEZING_TICKS = config.getInt("frost.criticalFreezingTicks", Integer.MAX_VALUE);
         TemperatureConstants.HEAT_RADIUS = config.getInt("frost.heatRadius", 0);

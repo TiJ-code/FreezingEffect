@@ -16,16 +16,10 @@ public final class TemperatureUtils {
 
             Material type = item.getType();
 
-            reduction += switch (type) {
-                case Material.LEATHER_BOOTS -> TemperatureConstants.LEATHER_BOOTS_REDUCTION;
-                case Material.LEATHER_LEGGINGS -> TemperatureConstants.LEATHER_LEGGINGS_REDUCTION;
-                case Material.LEATHER_CHESTPLATE -> TemperatureConstants.LEATHER_CHESTPLATE_REDUCTION;
-                case Material.LEATHER_HELMET -> TemperatureConstants.LEATHER_HELMET_REDUCTION;
-                default -> 0;
-            };
+            reduction += TemperatureConstants.ARMOUR_PIECE_ISOLATION.getOrDefault(type, 0d);
         }
 
-        return reduction * TemperatureConstants.LEATHER_ARMOUR_MAX_REDUCTION;
+        return reduction * TemperatureConstants.MAX_POSSIBLE_ISOLATION;
     }
 
     public static boolean isNearHeatSource(Player player) {
