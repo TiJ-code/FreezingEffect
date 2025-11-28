@@ -22,6 +22,13 @@ public final class TemperatureConstants {
         CRITICAL_FREEZING_TICKS = 1800,
         HEAT_RADIUS = 5;
 
+    public static double
+            LEATHER_ARMOUR_MAX_REDUCTION = 0.80,
+            LEATHER_BOOTS_REDUCTION = 0.15,
+            LEATHER_LEGGINGS_REDUCTION = 0.30,
+            LEATHER_CHESTPLATE_REDUCTION = 0.40,
+            LEATHER_HELMET_REDUCTION = 15;
+
     public static Function<Double, Double> INTERPOLATION_FUNCTION = InterpolationFunctions::smootherstep;
 
     public static final Set<Material> HEAT_SOURCES = new HashSet<>();

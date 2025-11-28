@@ -3,6 +3,12 @@ frost:
   heatRadius: 5
   interpolationFunction: 'smoothstep'
 
+  leatherArmourMaxReduction: 80
+  leatherBootsReduction: 15
+  leatherLeggingsReduction: 30
+  leatherChestplateReduction: 40
+  leatherHelmetReduction: 15
+
   heatSources:
     - TORCH
     - CAMPFIRE
