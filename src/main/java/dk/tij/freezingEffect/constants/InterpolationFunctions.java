@@ -13,7 +13,11 @@ public final class InterpolationFunctions {
         return t * t * t * (t * (t * 6 - 15) + 10);
     }
 
-    public static int clampInt(int value, int min, int max) {
+    public static int clampI(int value, int min, int max) {
+        return Math.max(min, Math.min(max, value));
+    }
+
+    public static double clampD(double value, double min, double max) {
         return Math.max(min, Math.min(max, value));
     }
 }

@@ -2,6 +2,7 @@ package dk.tij.freezingEffect.handler;
 
 import dk.tij.freezingEffect.constants.InterpolationFunctions;
 import dk.tij.freezingEffect.constants.TemperatureConstants;
+import dk.tij.freezingEffect.utils.TemperatureUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,7 +19,7 @@ public class TemperatureHandler {
     private final JavaPlugin plugin;
     private final FreezeHandler freezeHandler;
 
-    private final Map<UUID, Integer> actualPlayerFreezeTicks = new HashMap<>();
+    private final Map<UUID, Double> actualPlayerFreezeTicks = new HashMap<>();
 
     private BukkitRunnable decayTask;
 
@@ -55,51 +56,33 @@ public class TemperatureHandler {
     private void tickPlayerTemperature(Player player) {
         int target = computeTarget(player);
 
+        double armourReduction = TemperatureUtils.getLeatherReduction(player);
+
+        double fractionalChange = target > 0
+                ? target * (1.0 - armourReduction)
+                : target;
+
         UUID playerUUID = player.getUniqueId();
-        int nextActualFreezeTick = actualPlayerFreezeTicks.get(playerUUID) + target;
-        nextActualFreezeTick = InterpolationFunctions.clampInt(nextActualFreezeTick, 0, Integer.MAX_VALUE);
+
+        double previousActualFreezeTicks = actualPlayerFreezeTicks.get(playerUUID);
+        double nextActualFreezeTick = previousActualFreezeTicks + fractionalChange;
+        nextActualFreezeTick = InterpolationFunctions.clampD(nextActualFreezeTick, 0, Integer.MAX_VALUE);
         actualPlayerFreezeTicks.put(playerUUID, nextActualFreezeTick);
 
-        int freezeTicks = updatePlayerFreezingPoints(player, nextActualFreezeTick);
+        int freezeTicks = updatePlayerFreezingPoints(player, (int) nextActualFreezeTick);
 
-        player.sendMessage(String.format("FreezeTicks %3d | Target: %1d | FreezePoints: %4d",  freezeTicks, target, nextActualFreezeTick));
+        player.sendMessage(String.format("FreezeTicks %3d | FractionalTarget: %3.1f | FreezePoints: %4.2f",
+                freezeTicks, fractionalChange, nextActualFreezeTick));
     }
 
     private int computeTarget(Player player) {
-        return isNearHeatSource(player) ? -1 : 1;
-    }
-
-    private boolean isNearHeatSource(Player player) {
-        int heatRadius = TemperatureConstants.HEAT_RADIUS;
-        Location location = player.getLocation();
-
-        final int blockX = location.getBlockX(),
-                  blockY = location.getBlockY(),
-                  blockZ = location.getBlockZ();
-
-        final int maxX = blockX + heatRadius,
-                  maxY = blockY + heatRadius,
-                  maxZ = blockZ + heatRadius;
-        final int minX = blockX - heatRadius,
-                  minY = blockY - heatRadius,
-                  minZ = blockZ - heatRadius;
-
-        for (int x = minX; x <= maxX; x++) {
-            for (int y = minY; y <= maxY; y++) {
-                for (int z = minZ; z <= maxZ; z++) {
-                    Block block = location.getWorld().getBlockAt(x, y, z);
-                    Material type = block.getType();
-                    if (TemperatureConstants.HEAT_SOURCES.contains(type)) return true;
-                }
-            }
-        }
-
-        return false;
+        return TemperatureUtils.isNearHeatSource(player) ? -1 : 1;
     }
 
     private int updatePlayerFreezingPoints(Player player, int actualFreezeTicks) {
-        double interpolatedFreezingPoints = TemperatureConstants.INTERPOLATION_FUNCTION
-                        .apply( (double) actualFreezeTicks / TemperatureConstants.CRITICAL_FREEZING_TICKS );
+        double interpolatedFreezingPoints = TemperatureConstants.INTERPOLATION_FUNCTION.apply(
+                (double) actualFreezeTicks / TemperatureConstants.CRITICAL_FREEZING_TICKS
+        );
         double scaledInterpolatedFreezingPoints = interpolatedFreezingPoints * TemperatureConstants.VANILLA_MAX_FREEZE_TICKS;
         int freezeTicks = Math.max( (int) (scaledInterpolatedFreezingPoints + 0.5d), TemperatureConstants.VANILLA_MIN_FREEZE_TICKS );
 
@@ -109,9 +92,9 @@ public class TemperatureHandler {
         return freezeTicks;
     }
 
-    public void registerPlayer(Player player, int actualFreezeTicks) {
+    public void registerPlayer(Player player, double actualFreezeTicks) {
         actualPlayerFreezeTicks.put(player.getUniqueId(), actualFreezeTicks);
-        updatePlayerFreezingPoints(player, actualFreezeTicks);
+        updatePlayerFreezingPoints(player, (int) actualFreezeTicks);
     }
 
     public void resetPlayer(Player player) {
@@ -119,7 +102,7 @@ public class TemperatureHandler {
         updatePlayerFreezingPoints(player, 0);
     }
 
-    public int getPlayerFreezePoints(Player player) {
+    public double getActualPlayerFreezeTicks(Player player) {
         return actualPlayerFreezeTicks.get(player.getUniqueId());
     }
 }

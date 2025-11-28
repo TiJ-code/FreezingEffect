@@ -3,6 +3,15 @@ frost:
   heatRadius: 5
   interpolationFunction: 'smoothstep'
 
+  isolation:
+    maxPossibleIsolation: 80
+
+    armourPieces:
+      LEATHER_BOOTS: 15
+      LEATHER_LEGGINGS: 30
+      LEATHER_CHESTPLATE: 40
+      LEATHER_HELMET: 15
+
   heatSources:
     - TORCH
     - CAMPFIRE
