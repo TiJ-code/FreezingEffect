@@ -6,7 +6,9 @@ public final class InterpolationFunctions {
     }
 
     public static double smoothstep(double t) {
-        return t * t * (3d - 2d * t);
+        int integerT = (int)t;
+        t -= integerT;
+        return t * t * (3d - 2d * t) + integerT;
     }
 
     public static double smootherstep(double t) {
