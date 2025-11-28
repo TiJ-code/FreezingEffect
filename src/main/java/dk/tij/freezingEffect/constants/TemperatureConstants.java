@@ -10,6 +10,7 @@ import java.util.function.Function;
 
 public final class TemperatureConstants {
     public static final int
+            VANILLA_DAMAGE_FREEZE_TICKS = 40,
             VANILLA_MIN_FREEZE_TICKS = 0,
             VANILLA_MAX_FREEZE_TICKS = 140;
 
