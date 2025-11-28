@@ -3,16 +3,26 @@ package dk.tij.freezingEffect.constants;
 import org.bukkit.Material;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 public final class TemperatureConstants {
-    public static double
-        DEFAULT_TEMPERATURE = 40,
-        TEMPERATURE_DECAY = 1.0,
-        FREEZING_THRESHOLD = 20.0,
-        CRITICAL_FREEZING_THRESHOLD = 10.0;
+    public static final int
+            VANILLA_MIN_FREEZE_TICKS = 0,
+            VANILLA_MAX_FREEZE_TICKS = 140;
+
+    public static final Map<String, Function<Double, Double>> INTERPOLATION_FUNCTIONS_MAPPING = Map.of(
+            "linear", InterpolationFunctions::linear,
+            "smoothstep", InterpolationFunctions::smoothstep,
+            "smootherstep", InterpolationFunctions::smootherstep
+    );
+
     public static int
+        CRITICAL_FREEZING_TICKS = 1800,
         HEAT_RADIUS = 5;
+
+    public static Function<Double, Double> INTERPOLATION_FUNCTION = InterpolationFunctions::smootherstep;
 
     public static final Set<Material> HEAT_SOURCES = new HashSet<>();
 }

@@ -1,6 +1,10 @@
 package dk.tij.freezingEffect.constants;
 
 public final class InterpolationFunctions {
+    public static double linear(double t) {
+        return t;
+    }
+
     public static double smoothstep(double t) {
         return t * t * (3d - 2d * t);
     }
@@ -9,12 +13,7 @@ public final class InterpolationFunctions {
         return t * t * t * (t * (t * 6 - 15) + 10);
     }
 
-    public static double clamp(double value, double min, double max) {
-        if (value < min)
-            return min;
-        else if (value > max)
-            return max;
-
-        return value;
+    public static int clampInt(int value, int min, int max) {
+        return Math.max(min, Math.min(max, value));
     }
 }

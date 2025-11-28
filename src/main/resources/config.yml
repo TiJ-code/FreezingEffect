@@ -1,9 +1,7 @@
 frost:
-  defaultTemperature: 100
-  freezingThreshold: 20
-  criticalFreezingThreshold: 0
-  temperatureDecay: 1
+  criticalFreezingTicks: 1800
   heatRadius: 5
+  interpolationFunction: 'smoothstep'
 
   heatSources:
     - TORCH

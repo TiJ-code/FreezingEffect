@@ -1,4 +1,4 @@
-package dk.tij.freezingEffect;
+package dk.tij.freezingEffect.handler;
 
 import dk.tij.freezingEffect.constants.TemperatureConstants;
 import org.bukkit.Material;
@@ -17,10 +17,7 @@ public class ResourceHandler {
     }
 
     public void loadConfig() {
-        TemperatureConstants.DEFAULT_TEMPERATURE = config.getDouble("frost.defaultTemperature", 0);
-        TemperatureConstants.FREEZING_THRESHOLD = config.getDouble("frost.freezingThreshold", 0);
-        TemperatureConstants.CRITICAL_FREEZING_THRESHOLD = config.getDouble("frost.criticalFreezingThreshold", 0);
-        TemperatureConstants.TEMPERATURE_DECAY = config.getDouble("frost.temperatureDecay", 0);
+        TemperatureConstants.CRITICAL_FREEZING_TICKS = config.getInt("frost.criticalFreezingTicks", Integer.MAX_VALUE);
         TemperatureConstants.HEAT_RADIUS = config.getInt("frost.heatRadius", 0);
 
         Set<Material> configHeatSources = config.getStringList("frost.heatSources")
@@ -28,5 +25,9 @@ public class ResourceHandler {
                 .map(Material::matchMaterial)
                 .collect(Collectors.toSet());
         TemperatureConstants.HEAT_SOURCES.addAll(configHeatSources);
+
+        String interpolationFunctionName = config.getString("frost.interpolationFunction",
+                TemperatureConstants.INTERPOLATION_FUNCTIONS_MAPPING.keySet().toArray(String[]::new)[0]);
+        TemperatureConstants.INTERPOLATION_FUNCTION = TemperatureConstants.INTERPOLATION_FUNCTIONS_MAPPING.get(interpolationFunctionName);
     }
 }

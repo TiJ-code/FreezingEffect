@@ -9,35 +9,43 @@ import java.io.File;
 import java.io.IOException;
 
 public class PlayerDataHandler {
-    private final File file;
-    private final FileConfiguration config;
+    private final File configFile;
+    private FileConfiguration config;
 
     public PlayerDataHandler(JavaPlugin plugin) {
-        file = new File(plugin.getDataFolder(), "playerdata.yml");
-
-        if (!file.exists()) {
-            try {
-                file.createNewFile();
-            } catch (IOException ignored) {}
-        }
-
-        config = YamlConfiguration.loadConfiguration(file);
+        this.configFile = new File(plugin.getDataFolder(), "playerdata.yml");
+        createFileIfNotExistent();
+        loadConfig();
     }
 
-    public double loadPlayerTemperature(Player player, double defaultTemperature) {
-        return config.getDouble("players." + player.getUniqueId() + ".temperature", defaultTemperature);
+    public void savePlayerData(Player player, int freezePoints) {
+        config.set(getPlayerFreezePointsConfigEntry(player.getUniqueId().toString()), freezePoints);
+        saveConfig();
     }
 
-    public void savePlayerTemperature(Player player, double temperature) {
-        config.set("players." + player.getUniqueId() + ".temperature", temperature);
-        save();
+    public int loadPlayerData(Player player) {
+        return config.getInt(getPlayerFreezePointsConfigEntry(player.getUniqueId().toString()), 0);
     }
 
-    private void save() {
+    public void loadConfig() {
+        config = YamlConfiguration.loadConfiguration(configFile);
+    }
+
+    public void saveConfig() {
         try {
-            config.save(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            config.save(configFile);
+        } catch (IOException ignored) {}
+    }
+
+    private void createFileIfNotExistent() {
+        try {
+            if (!configFile.exists()) {
+                configFile.createNewFile();
+            }
+        } catch (IOException ignored) {}
+    }
+
+    private static String getPlayerFreezePointsConfigEntry(String uuid) {
+        return "players." + uuid + ".actual_freeze_ticks";
     }
 }
