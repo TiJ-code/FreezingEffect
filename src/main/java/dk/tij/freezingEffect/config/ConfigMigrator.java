@@ -14,7 +14,7 @@ public class ConfigMigrator {
         this.config = plugin.getConfig();
     }
 
-    public void migrate(Map<String, String> migrations) {
+    public void migrate(Map<String, String> migrations, int targetVersion) {
         boolean changed = false;
 
         for (Map.Entry<String, String> entry : migrations.entrySet()) {
@@ -28,6 +28,14 @@ public class ConfigMigrator {
                 changed = true;
             }
         }
+
+        int currentVersion = config.getInt(ConfigEntries.CONFIG_VERSION_ENTRY, 0);
+        if (currentVersion < targetVersion) {
+            config.set(ConfigEntries.CONFIG_VERSION_ENTRY, targetVersion);
+            plugin.getLogger().info("Updated " + ConfigEntries.CONFIG_VERSION_ENTRY + " to " + targetVersion);
+            changed = true;
+        }
+
         if (changed) plugin.saveConfig();
     }
 }

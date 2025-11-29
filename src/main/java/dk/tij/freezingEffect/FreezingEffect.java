@@ -3,6 +3,9 @@ package dk.tij.freezingEffect;
 import dk.tij.freezingEffect.commands.CommandLabels;
 import dk.tij.freezingEffect.commands.WinterCommand;
 import dk.tij.freezingEffect.commands.utils.WinterTabCompleter;
+import dk.tij.freezingEffect.config.ConfigEntries;
+import dk.tij.freezingEffect.config.ConfigMigrator;
+import dk.tij.freezingEffect.config.MigrationReader;
 import dk.tij.freezingEffect.events.PlayerQuitListener;
 import dk.tij.freezingEffect.events.PlayerRespawnListener;
 import dk.tij.freezingEffect.events.PlayerJoinListener;
@@ -11,6 +14,8 @@ import dk.tij.freezingEffect.handler.PlayerDataHandler;
 import dk.tij.freezingEffect.handler.ResourceHandler;
 import dk.tij.freezingEffect.handler.TemperatureHandler;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Map;
 
 public final class FreezingEffect extends JavaPlugin {
     private ResourceHandler resourceHandler;
@@ -23,6 +28,9 @@ public final class FreezingEffect extends JavaPlugin {
         // Plugin startup logic
         saveDefaultConfig();
         getComponentLogger().info("Plugin successfully loaded!");
+
+        Map<String, String> migrations = MigrationReader.readMigrations();
+        new ConfigMigrator(this).migrate(migrations, ConfigEntries.CONFIG_VERSION);
 
         resourceHandler = new ResourceHandler(this);
         playerDataHandler = new PlayerDataHandler(this);

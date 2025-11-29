@@ -3,6 +3,7 @@ package dk.tij.freezingEffect.config;
 public final class ConfigEntries {
     private static final String P = ".";
 
+    public static final String CONFIG_VERSION_ENTRY = "config-version";
     public static final int CONFIG_VERSION = 1;
 
     public static final String CATEGORY_FROST = "frost";
@@ -12,7 +13,7 @@ public final class ConfigEntries {
                                INTERPOLATION_FUNCTION = CATEGORY_FROST + P + "interpolationFunction",
                                DEBUG = CATEGORY_FROST + P + "debug",
                                PLAYER_BURNING_BOOST = CATEGORY_FROST + P + "playerBurningBoost",
-                               PLAYER_POWDER_SNOW_BOOST =  CATEGORY_FROST + P + "playerPowerSnowBoost",
+                               PLAYER_POWDER_SNOW_BOOST =  CATEGORY_FROST + P + "playerPowderSnowBoost",
 
                                SUB_CATEGORY_ISOLATION = CATEGORY_FROST + P + "isolation",
                                SUB_CATEGORY_HEAT_SOURCES = CATEGORY_FROST + P + "heatSources",

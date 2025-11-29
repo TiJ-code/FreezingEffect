@@ -2,9 +2,7 @@ package dk.tij.freezingEffect.handler;
 
 import dk.tij.freezingEffect.FreezingEffect;
 import dk.tij.freezingEffect.config.ConfigEntries;
-import dk.tij.freezingEffect.config.ConfigMigrator;
 import dk.tij.freezingEffect.config.ConfigReader;
-import dk.tij.freezingEffect.config.MigrationReader;
 import dk.tij.freezingEffect.utils.HeatSource;
 import dk.tij.freezingEffect.constants.TemperatureConstants;
 import dk.tij.freezingEffect.utils.ItemUtils;
@@ -21,8 +19,6 @@ public class ResourceHandler {
     public ResourceHandler(FreezingEffect plugin) {
         this.plugin = plugin;
         this.reader = new ConfigReader(plugin);
-
-        new ConfigMigrator(plugin).migrate(MigrationReader.readMigrations());
 
         loadConfig();
     }
