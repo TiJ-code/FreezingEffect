@@ -29,7 +29,7 @@ public final class TemperatureUtils {
     public static double getNumberOfHeatSourcesNearby(Player player) {
         double result = 0;
 
-        int heatRadius = (int) Math.round(TemperatureConstants.HEAT_RADIUS);
+        int heatRadius = (int) Math.round(TemperatureConstants.PLAYER_RADIUS);
         Location eyeLocation = player.getEyeLocation();
         Location location = player.getLocation();
         World world = eyeLocation.getWorld();
@@ -102,6 +102,6 @@ public final class TemperatureUtils {
     }
 
     private static boolean isBlockInRadius(Location playerLocation, Location blockLocation) {
-        return playerLocation.distanceSquared(blockLocation) <= TemperatureConstants.HEAT_RADIUS_SQUARED;
+        return playerLocation.distanceSquared(blockLocation) <= TemperatureConstants.PLAYER_RADIUS_SQUARED;
     }
 }

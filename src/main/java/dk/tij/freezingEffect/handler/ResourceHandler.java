@@ -1,69 +1,71 @@
 package dk.tij.freezingEffect.handler;
 
 import dk.tij.freezingEffect.FreezingEffect;
+import dk.tij.freezingEffect.config.ConfigEntries;
+import dk.tij.freezingEffect.config.ConfigMigrator;
+import dk.tij.freezingEffect.config.ConfigReader;
+import dk.tij.freezingEffect.config.MigrationReader;
 import dk.tij.freezingEffect.utils.HeatSource;
 import dk.tij.freezingEffect.constants.TemperatureConstants;
 import dk.tij.freezingEffect.utils.ItemUtils;
 import dk.tij.freezingEffect.utils.Maths;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 
 import static dk.tij.freezingEffect.utils.Maths.TO_PERCENT_CONVERSION_FACTOR;
 
 public class ResourceHandler {
     private final FreezingEffect plugin;
-    private FileConfiguration config;
+    private final ConfigReader reader;
 
     public ResourceHandler(FreezingEffect plugin) {
         this.plugin = plugin;
+        this.reader = new ConfigReader(plugin);
+
+        new ConfigMigrator(plugin).migrate(MigrationReader.readMigrations());
+
         loadConfig();
     }
 
-    public void saveConfig() {
+    public void reloadConfig() {
+        reader.reloadConfig();
+    }
+
+    public void setDebug(boolean debug) {
+        plugin.getConfig().set(ConfigEntries.DEBUG, debug);
         plugin.saveConfig();
     }
 
-    public void loadConfig() {
-        this.config = plugin.getConfig();
+    public boolean isDebug() {
+        return reader.getBoolean(ConfigEntries.DEBUG, false);
+    }
+
+    private void loadConfig() {
         loadFrostPlayerStats();
         loadIsolationValues();
         loadHeatSourceValues();
         loadInterpolationFunction();
     }
 
-    public void reloadConfig() {
-        loadConfig();
-    }
-
-    public void setDebug(boolean debug) {
-        config.set("frost.debug", debug);
-        saveConfig();
-    }
-
-    public boolean isDebug() {
-        return config.getBoolean("frost.debug");
-    }
-
     private void loadFrostPlayerStats() {
         TemperatureConstants.CRITICAL_FREEZING_TICKS = Maths.clampPositiveI(
-                config.getInt("frost.criticalFreezingTicks", Integer.MAX_VALUE)
+                reader.getInt(ConfigEntries.CRITICAL_FREEZING_TICKS, Integer.MAX_VALUE)
         );
-        TemperatureConstants.HEAT_RADIUS = Maths.clampPositiveIntD(
-                config.getDouble("frost.heatRadius", 0)
+        TemperatureConstants.PLAYER_RADIUS = Maths.clampPositiveIntD(
+                reader.getDouble(ConfigEntries.PLAYER_RADIUS, 0)
         );
-        TemperatureConstants.HEAT_RADIUS_SQUARED = TemperatureConstants.HEAT_RADIUS * TemperatureConstants.HEAT_RADIUS;
+        TemperatureConstants.PLAYER_RADIUS_SQUARED = TemperatureConstants.PLAYER_RADIUS * TemperatureConstants.PLAYER_RADIUS;
     }
 
     private void loadIsolationValues() {
-        ConfigurationSection isolationSection = config.getConfigurationSection("frost.isolation");
+        ConfigurationSection isolationSection = plugin.getConfig().getConfigurationSection(ConfigEntries.SUB_CATEGORY_ISOLATION);
 
         if (isolationSection == null) return;
 
-        int maxPossibleIsolationValue = Maths.clampI0To100(isolationSection.getInt("maxPossibleIsolation", 0));
+        int maxPossibleIsolationValue = Maths.clampI0To100(isolationSection.getInt(ConfigEntries.ISOLATION_MAX_POSSIBLE_ISOLATION, 0));
         TemperatureConstants.MAX_POSSIBLE_ISOLATION = maxPossibleIsolationValue * TO_PERCENT_CONVERSION_FACTOR;
 
-        ConfigurationSection armourSection = isolationSection.getConfigurationSection("armourPieces");
+        ConfigurationSection armourSection = isolationSection.getConfigurationSection(ConfigEntries.ISOLATION_ARMOUR_PIECES);
 
         if (armourSection == null) return;
 
@@ -79,7 +81,7 @@ public class ResourceHandler {
     }
 
     private void loadHeatSourceValues() {
-        ConfigurationSection heatSourceSection = config.getConfigurationSection("frost.heatSources");
+        ConfigurationSection heatSourceSection = plugin.getConfig().getConfigurationSection(ConfigEntries.SUB_CATEGORY_HEAT_SOURCES);
 
         if (heatSourceSection == null) return;
 
@@ -88,22 +90,22 @@ public class ResourceHandler {
 
             if (material == null) continue;
 
-            double value = Maths.clampPositiveIntD(heatSourceSection.getDouble(key + ".value"));
-            double radius = Maths.clampPositiveIntD(heatSourceSection.getInt(key + ".radius"));
+            double value = Maths.clampPositiveIntD(heatSourceSection.getDouble(key + ConfigEntries.HEAT_SOURCE_VALUE));
+            double radius = Maths.clampPositiveIntD(heatSourceSection.getInt(key + ConfigEntries.HEAT_SOURCE_RADIUS));
             TemperatureConstants.HEAT_SOURCE_WARMING.put(material, new HeatSource(value, radius*radius));
         }
 
         TemperatureConstants.PLAYER_BURNING_BOOST = Maths.clampI0To100(
-                config.getInt("frost.playerBurningBoost", 0)
+                reader.getInt(ConfigEntries.PLAYER_BURNING_BOOST, 0)
         ) * TO_PERCENT_CONVERSION_FACTOR + 1d;
 
         TemperatureConstants.PLAYER_POWDER_SNOW_BOOST = Maths.clampPositiveI(
-                config.getInt("frost.playerPowderSnowBoost", 0)
+                reader.getInt(ConfigEntries.PLAYER_POWDER_SNOW_BOOST, 0)
         ) * TO_PERCENT_CONVERSION_FACTOR + 1d;
     }
 
     private void loadInterpolationFunction() {
-        String interpolationFunctionName = config.getString("frost.interpolationFunction",
+        String interpolationFunctionName = reader.getString(ConfigEntries.INTERPOLATION_FUNCTION,
                 TemperatureConstants.INTERPOLATION_FUNCTIONS_MAPPING.keySet().toArray(String[]::new)[0]);
         TemperatureConstants.INTERPOLATION_FUNCTION = TemperatureConstants.INTERPOLATION_FUNCTIONS_MAPPING.get(interpolationFunctionName);
     }

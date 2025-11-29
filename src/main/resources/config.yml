@@ -1,6 +1,11 @@
+# ==== WinterWeather Configuration ====
+# You can safely keep old configs; missing fields get added automatically
+# If this version is lower than the plugin's version, migrations will run.
+config-version: 1
+
 frost:
   criticalFreezingTicks: 1800
-  heatRadius: 5.0
+  playerRadius: 5.0
   interpolationFunction: 'smootherstep'
   debug: true
 
