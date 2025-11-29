@@ -1,6 +1,8 @@
 package dk.tij.freezingEffect.utils;
 
 public final class Maths {
+    public static final double TO_PERCENT_CONVERSION_FACTOR = 1d / 100d;
+
     public static int clampI(int value, int min, int max) {
         return Math.max(min, Math.min(max, value));
     }

@@ -1,5 +1,6 @@
 package dk.tij.freezingEffect.handler;
 
+import dk.tij.freezingEffect.FreezingEffect;
 import dk.tij.freezingEffect.utils.HeatSource;
 import dk.tij.freezingEffect.constants.TemperatureConstants;
 import dk.tij.freezingEffect.utils.ItemUtils;
@@ -9,14 +10,20 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class ResourceHandler {
-    private static final double TO_PERCENT_CONVERSION_FACTOR = 1d / 100d;
+import static dk.tij.freezingEffect.utils.Maths.TO_PERCENT_CONVERSION_FACTOR;
 
+public class ResourceHandler {
+    private final FreezingEffect plugin;
     private final FileConfiguration config;
 
-    public ResourceHandler(JavaPlugin plugin) {
+    public ResourceHandler(FreezingEffect plugin) {
+        this.plugin = plugin;
         this.config = plugin.getConfig();
         loadConfig();
+    }
+
+    public void saveConfig() {
+        plugin.saveConfig();
     }
 
     public void loadConfig() {
@@ -24,6 +31,19 @@ public class ResourceHandler {
         loadIsolationValues();
         loadHeatSourceValues();
         loadInterpolationFunction();
+    }
+
+    public void reloadConfig() {
+        loadConfig();
+    }
+
+    public void setDebug(boolean debug) {
+        config.set("frost.debug", debug);
+        saveConfig();
+    }
+
+    public boolean isDebug() {
+        return config.getBoolean("frost.debug");
     }
 
     private void loadFrostPlayerStats() {

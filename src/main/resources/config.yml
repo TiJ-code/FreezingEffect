@@ -2,6 +2,7 @@ frost:
   criticalFreezingTicks: 1800
   heatRadius: 5.0
   interpolationFunction: 'smootherstep'
+  debug: true
 
   isolation:
     maxPossibleIsolation: 80
