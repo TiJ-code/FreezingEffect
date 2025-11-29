@@ -77,6 +77,10 @@ public class ResourceHandler {
         TemperatureConstants.PLAYER_BURNING_BOOST = Maths.clampI0To100(
                 config.getInt("frost.playerBurningBoost", 0)
         ) * TO_PERCENT_CONVERSION_FACTOR + 1d;
+
+        TemperatureConstants.PLAYER_POWDER_SNOW_BOOST = Maths.clampPositiveI(
+                config.getInt("frost.playerPowderSnowBoost", 0)
+        ) * TO_PERCENT_CONVERSION_FACTOR + 1d;
     }
 
     private void loadInterpolationFunction() {
