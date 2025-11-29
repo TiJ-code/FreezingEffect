@@ -27,7 +27,8 @@ public final class TemperatureConstants {
             HEAT_RADIUS = 5,
             HEAT_RADIUS_SQUARED = HEAT_RADIUS * HEAT_RADIUS,
             MAX_POSSIBLE_ISOLATION = 0.80,
-            PLAYER_BURNING_BOOST = 1.10;
+            PLAYER_BURNING_BOOST = 1.10,
+            PLAYER_POWDER_SNOW_BOOST = 2.00;
 
     public static final Map<Material, Double> ARMOUR_PIECE_ISOLATION = new HashMap<>();
     public static final Map<Material, HeatSource> HEAT_SOURCE_WARMING = new HashMap<>();

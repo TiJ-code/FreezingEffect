@@ -85,6 +85,13 @@ public class TemperatureHandler {
                 fractionalChange = fireValue;
         }
 
+        if (TemperatureUtils.isPlayerInPowderSnow(player)) {
+            if (fractionalChange < 0)
+                fractionalChange = TemperatureConstants.PLAYER_POWDER_SNOW_BOOST;
+            else
+                fractionalChange *= TemperatureConstants.PLAYER_POWDER_SNOW_BOOST;
+        }
+
         UUID playerUUID = player.getUniqueId();
 
         double previousActualFreezeTicks = actualPlayerFreezeTicks.get(playerUUID);

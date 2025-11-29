@@ -69,6 +69,11 @@ public final class TemperatureUtils {
         return player.getFireTicks() > 0;
     }
 
+    public static boolean isPlayerInPowderSnow(Player player) {
+        return player.getEyeLocation().getBlock().getType() == Material.POWDER_SNOW
+                || player.getLocation().getBlock().getType() == Material.POWDER_SNOW;
+    }
+
     private static boolean isHeatSourceUnobstructed(Location playerLocation, Location heatSourceLocation) {
         Vector direction = heatSourceLocation.toVector().subtract(playerLocation.toVector());
         double distance = direction.length();
