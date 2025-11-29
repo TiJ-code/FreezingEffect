@@ -21,5 +21,7 @@ public final class ConfigEntries {
                                HEAT_SOURCE_RADIUS = P + "radius",
 
                                ISOLATION_MAX_POSSIBLE_ISOLATION = "maxPossibleIsolation",
-                               ISOLATION_ARMOUR_PIECES = "armourPieces";
+                               ISOLATION_ARMOUR_PIECES = "armourPieces",
+
+                               ISOLATION_ARMOUR_PIECE_VALUE = "value";
 }

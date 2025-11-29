@@ -1,7 +1,7 @@
 # ==== WinterWeather Configuration ====
 # You can safely keep old configs; missing fields get added automatically
 # If this version is lower than the plugin's version, migrations will run.
-config-version: 1
+config-version: 2
 
 debug: true
 
@@ -16,10 +16,14 @@ frost:
     maxPossibleIsolation: 80
 
     armourPieces:
-      LEATHER_BOOTS: 15
-      LEATHER_LEGGINGS: 30
-      LEATHER_CHESTPLATE: 40
-      LEATHER_HELMET: 15
+      LEATHER_BOOTS:
+        value: 15
+      LEATHER_LEGGINGS:
+        value: 30
+      LEATHER_CHESTPLATE:
+        value: 40
+      LEATHER_HELMET:
+        value: 15
 
   heatSources:
     TORCH:
