@@ -35,7 +35,7 @@ public final class FreezingEffect extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerRespawnListener(temperatureHandler, freezeHandler), this);
 
         getCommand(CommandLabels.COMMAND_LABEL).setExecutor(new WinterCommand(this));
-        getCommand(CommandLabels.COMMAND_LABEL).setTabCompleter(new WinterTabCompleter());
+        getCommand(CommandLabels.COMMAND_LABEL).setTabCompleter(new WinterTabCompleter(this));
 
         freezeHandler.start();
         temperatureHandler.startDecayTask();

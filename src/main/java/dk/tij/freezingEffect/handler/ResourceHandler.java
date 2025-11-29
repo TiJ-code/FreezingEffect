@@ -8,17 +8,15 @@ import dk.tij.freezingEffect.utils.Maths;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import static dk.tij.freezingEffect.utils.Maths.TO_PERCENT_CONVERSION_FACTOR;
 
 public class ResourceHandler {
     private final FreezingEffect plugin;
-    private final FileConfiguration config;
+    private FileConfiguration config;
 
     public ResourceHandler(FreezingEffect plugin) {
         this.plugin = plugin;
-        this.config = plugin.getConfig();
         loadConfig();
     }
 
@@ -27,6 +25,7 @@ public class ResourceHandler {
     }
 
     public void loadConfig() {
+        this.config = plugin.getConfig();
         loadFrostPlayerStats();
         loadIsolationValues();
         loadHeatSourceValues();
