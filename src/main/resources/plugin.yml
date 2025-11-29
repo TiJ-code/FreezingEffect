@@ -1,5 +1,5 @@
 name: FreezingEffect
-version: '0.5.1_dev'
+version: '0.6.0_dev'
 main: dk.tij.freezingEffect.FreezingEffect
 api-version: '1.21'
 permissions:

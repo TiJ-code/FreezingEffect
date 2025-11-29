@@ -1,20 +1,29 @@
+# ==== WinterWeather Configuration ====
+# You can safely keep old configs; missing fields get added automatically
+# If this version is lower than the plugin's version, migrations will run.
+config-version: 2
+
+debug: true
+
 frost:
   criticalFreezingTicks: 1800
-  heatRadius: 5.0
+  playerRadius: 5.0
   interpolationFunction: 'smootherstep'
-  debug: true
+  playerBurningBoost: 10
+  playerPowderSnowBoost: 0
 
   isolation:
     maxPossibleIsolation: 80
 
     armourPieces:
-      LEATHER_BOOTS: 15
-      LEATHER_LEGGINGS: 30
-      LEATHER_CHESTPLATE: 40
-      LEATHER_HELMET: 15
-
-  playerBurningBoost: 10
-  playerPowderSnowBoost: 0
+      LEATHER_BOOTS:
+        value: 15
+      LEATHER_LEGGINGS:
+        value: 30
+      LEATHER_CHESTPLATE:
+        value: 40
+      LEATHER_HELMET:
+        value: 15
 
   heatSources:
     TORCH:
