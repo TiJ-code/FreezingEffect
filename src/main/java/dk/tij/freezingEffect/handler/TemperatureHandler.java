@@ -97,7 +97,7 @@ public class TemperatureHandler {
     }
 
     private int computeTarget(Player player) {
-        return TemperatureUtils.isNearHeatSource(player) ? -1 : 1;
+        return -TemperatureUtils.getNumberOfHeatSourcesNearby(player);
     }
 
     private int updatePlayerFreezingPoints(Player player, int actualFreezeTicks) {

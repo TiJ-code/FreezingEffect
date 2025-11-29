@@ -22,31 +22,33 @@ public final class TemperatureUtils {
         return reduction * TemperatureConstants.MAX_POSSIBLE_ISOLATION;
     }
 
-    public static boolean isNearHeatSource(Player player) {
+    public static int getNumberOfHeatSourcesNearby(Player player) {
+        int result = 0;
+
         int heatRadius = TemperatureConstants.HEAT_RADIUS;
         Location location = player.getLocation();
 
         final int blockX = location.getBlockX(),
-                blockY = location.getBlockY(),
-                blockZ = location.getBlockZ();
+                  blockY = location.getBlockY(),
+                  blockZ = location.getBlockZ();
 
         final int maxX = blockX + heatRadius,
-                maxY = blockY + heatRadius,
-                maxZ = blockZ + heatRadius;
+                  maxY = blockY + heatRadius,
+                  maxZ = blockZ + heatRadius;
         final int minX = blockX - heatRadius,
-                minY = blockY - heatRadius,
-                minZ = blockZ - heatRadius;
+                  minY = blockY - heatRadius,
+                  minZ = blockZ - heatRadius;
 
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
                 for (int z = minZ; z <= maxZ; z++) {
                     Block block = location.getWorld().getBlockAt(x, y, z);
                     Material type = block.getType();
-                    if (TemperatureConstants.HEAT_SOURCES.contains(type)) return true;
+                    if (TemperatureConstants.HEAT_SOURCES.contains(type)) result++;
                 }
             }
         }
 
-        return false;
+        return (result > 0) ? result : -1;
     }
 }
