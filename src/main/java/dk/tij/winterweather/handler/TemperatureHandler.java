@@ -18,6 +18,7 @@ import java.util.UUID;
 public class TemperatureHandler {
     private final WinterWeather plugin;
     private final FreezeHandler freezeHandler;
+    private final PlayerDataHandler playerDataHandler;
 
     private final Map<UUID, Double> actualPlayerFreezeTicks = new HashMap<>();
     private final DamageSource freezingDamageSource;
@@ -25,9 +26,10 @@ public class TemperatureHandler {
     private BukkitRunnable decayTask;
     private BukkitRunnable leatherArmourDamageTask;
 
-    public TemperatureHandler(WinterWeather plugin, FreezeHandler freezeHandler) {
+    public TemperatureHandler(WinterWeather plugin, FreezeHandler freezeHandler, PlayerDataHandler playerDataHandler) {
         this.plugin = plugin;
         this.freezeHandler = freezeHandler;
+        this.playerDataHandler = playerDataHandler;
         this.freezingDamageSource = DamageSource.builder(DamageType.FREEZE).build();
     }
 
@@ -106,7 +108,7 @@ public class TemperatureHandler {
 
         int freezeTicks = updatePlayerFreezingPoints(player, (int) nextActualFreezeTick);
 
-        if (plugin.isDebug())
+        if (playerDataHandler.loadPlayerShowDebug(player))
             AdminDebug.printFreezeTicks(player, freezeTicks, fractionalChange, nextActualFreezeTick);
     }
 

@@ -27,15 +27,6 @@ public class ResourceHandler {
         reader.reloadConfig();
     }
 
-    public void setDebug(boolean debug) {
-        plugin.getConfig().set(ConfigEntries.DEBUG, debug);
-        plugin.saveConfig();
-    }
-
-    public boolean isDebug() {
-        return reader.getBoolean(ConfigEntries.DEBUG, false);
-    }
-
     public void setEnabled(boolean enabled) {
         plugin.getConfig().set(ConfigEntries.ENABLED, enabled);
         plugin.saveConfig();

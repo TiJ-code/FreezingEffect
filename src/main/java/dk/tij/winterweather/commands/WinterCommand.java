@@ -2,6 +2,7 @@ package dk.tij.winterweather.commands;
 
 import dk.tij.winterweather.WinterWeather;
 import dk.tij.winterweather.commands.utils.ChatMessages;
+import dk.tij.winterweather.handler.PlayerDataHandler;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -13,9 +14,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class WinterCommand implements CommandExecutor {
     private final WinterWeather plugin;
+    private final PlayerDataHandler playerDataHandler;
 
-    public WinterCommand(WinterWeather plugin) {
+    public WinterCommand(WinterWeather plugin, PlayerDataHandler playerDataHandler) {
         this.plugin = plugin;
+        this.playerDataHandler = playerDataHandler;
     }
 
     @Override
@@ -28,6 +31,12 @@ public class WinterCommand implements CommandExecutor {
         if (arguments.length == 1) {
             if (arguments[0].equalsIgnoreCase(CommandLabels.ARGUMENT_RELOAD)) {
                 reloadConfig(commandSender);
+            }
+
+            if (arguments[0].equalsIgnoreCase(CommandLabels.ARGUMENT_DEBUG)) {
+                boolean newState = !playerDataHandler.loadPlayerShowDebug(Bukkit.getPlayer(commandSender.getName()));
+                playerDataHandler.savePlayerShowDebug(Bukkit.getPlayer(commandSender.getName()), newState);
+                commandSender.sendMessage(ChatMessages.CHAT_PREFIX + ChatColor.GREEN + "Debug: " + (newState ? "ON" : "OFF"));
             }
 
             if (arguments[0].equalsIgnoreCase(CommandLabels.ARGUMENT_START)) {
@@ -55,7 +64,7 @@ public class WinterCommand implements CommandExecutor {
                     return true;
                 }
 
-                plugin.setDebug(turnOn);
+                playerDataHandler.savePlayerShowDebug(Bukkit.getPlayer(commandSender.getName()), turnOn);
 
                 commandSender.sendMessage(ChatMessages.CHAT_PREFIX + ChatColor.GREEN + "Debug: " + (turnOn ? "ON" : "OFF"));
 
