@@ -60,6 +60,10 @@ public final class TemperatureUtils {
         return (result > 0) ? result : -1;
     }
 
+    public static boolean isPlayerBurning(Player player) {
+        return player.getFireTicks() > 0;
+    }
+
     private static boolean canSeeHeatSource(Location from, Block target) {
         Location center = target.getLocation().add(0.5, 0.5, 0.5);
 

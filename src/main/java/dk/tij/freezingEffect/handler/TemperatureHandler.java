@@ -5,6 +5,7 @@ import dk.tij.freezingEffect.constants.TemperatureConstants;
 import dk.tij.freezingEffect.utils.ItemUtils;
 import dk.tij.freezingEffect.utils.TemperatureUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Player;
@@ -75,6 +76,14 @@ public class TemperatureHandler {
         double fractionalChange = target > 0
                 ? target * (1.0 - armourReduction)
                 : target;
+
+        if (TemperatureUtils.isPlayerBurning(player)) {
+            double fireValue = -TemperatureConstants.HEAT_SOURCE_WARMING.getOrDefault(Material.FIRE, 1d);
+            if (fractionalChange < 0)
+                fractionalChange += fireValue;
+            else
+                fractionalChange = fireValue;
+        }
 
         UUID playerUUID = player.getUniqueId();
 
