@@ -1,4 +1,4 @@
-package dk.tij.freezingEffect.config;
+package dk.tij.winterweather.config;
 
 public final class ConfigEntries {
     private static final String P = ".";

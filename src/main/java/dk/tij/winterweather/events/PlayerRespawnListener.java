@@ -1,7 +1,7 @@
-package dk.tij.freezingEffect.events;
+package dk.tij.winterweather.events;
 
-import dk.tij.freezingEffect.handler.TemperatureHandler;
-import dk.tij.freezingEffect.handler.FreezeHandler;
+import dk.tij.winterweather.handler.TemperatureHandler;
+import dk.tij.winterweather.handler.FreezeHandler;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

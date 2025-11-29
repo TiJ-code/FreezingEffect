@@ -1,22 +1,22 @@
-package dk.tij.freezingEffect.handler;
+package dk.tij.winterweather.handler;
 
-import dk.tij.freezingEffect.FreezingEffect;
-import dk.tij.freezingEffect.config.ConfigEntries;
-import dk.tij.freezingEffect.config.ConfigReader;
-import dk.tij.freezingEffect.utils.HeatSource;
-import dk.tij.freezingEffect.constants.TemperatureConstants;
-import dk.tij.freezingEffect.utils.ItemUtils;
-import dk.tij.freezingEffect.utils.Maths;
+import dk.tij.winterweather.WinterWeather;
+import dk.tij.winterweather.config.ConfigEntries;
+import dk.tij.winterweather.config.ConfigReader;
+import dk.tij.winterweather.utils.HeatSource;
+import dk.tij.winterweather.constants.TemperatureConstants;
+import dk.tij.winterweather.utils.ItemUtils;
+import dk.tij.winterweather.utils.Maths;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
-import static dk.tij.freezingEffect.utils.Maths.TO_PERCENT_CONVERSION_FACTOR;
+import static dk.tij.winterweather.utils.Maths.TO_PERCENT_CONVERSION_FACTOR;
 
 public class ResourceHandler {
-    private final FreezingEffect plugin;
+    private final WinterWeather plugin;
     private final ConfigReader reader;
 
-    public ResourceHandler(FreezingEffect plugin) {
+    public ResourceHandler(WinterWeather plugin) {
         this.plugin = plugin;
         this.reader = new ConfigReader(plugin);
 

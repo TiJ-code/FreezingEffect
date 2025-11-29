@@ -1,6 +1,6 @@
-package dk.tij.freezingEffect.utils;
+package dk.tij.winterweather.utils;
 
-import dk.tij.freezingEffect.constants.TemperatureConstants;
+import dk.tij.winterweather.constants.TemperatureConstants;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Material;

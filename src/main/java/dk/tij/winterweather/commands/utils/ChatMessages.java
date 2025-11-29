@@ -1,4 +1,4 @@
-package dk.tij.freezingEffect.commands.utils;
+package dk.tij.winterweather.commands.utils;
 
 import org.bukkit.ChatColor;
 

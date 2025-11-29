@@ -1,6 +1,6 @@
-package dk.tij.freezingEffect.commands.utils;
+package dk.tij.winterweather.commands.utils;
 
-import dk.tij.freezingEffect.commands.CommandPermissions;
+import dk.tij.winterweather.commands.CommandPermissions;
 import org.bukkit.entity.Player;
 
 public final class AdminDebug {

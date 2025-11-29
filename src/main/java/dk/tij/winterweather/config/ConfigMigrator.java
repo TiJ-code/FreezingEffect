@@ -1,6 +1,6 @@
-package dk.tij.freezingEffect.config;
+package dk.tij.winterweather.config;
 
-import dk.tij.freezingEffect.FreezingEffect;
+import dk.tij.winterweather.WinterWeather;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.HashMap;
@@ -9,11 +9,11 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 public class ConfigMigrator {
-    private final FreezingEffect plugin;
+    private final WinterWeather plugin;
     private final FileConfiguration config;
     private final Map<Integer, Consumer<FileConfiguration>> migrations = new HashMap<>();
 
-    public ConfigMigrator(FreezingEffect plugin) {
+    public ConfigMigrator(WinterWeather plugin) {
         this.plugin = plugin;
         this.config = plugin.getConfig();
         setupMigrations();

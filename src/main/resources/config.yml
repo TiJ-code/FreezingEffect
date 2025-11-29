@@ -3,7 +3,7 @@
 # If this version is lower than the plugin's version, migrations will run.
 config-version: 2
 
-debug: true
+debug: false
 
 frost:
   criticalFreezingTicks: 1800

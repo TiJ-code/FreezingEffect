@@ -1,15 +1,14 @@
-package dk.tij.freezingEffect.handler;
+package dk.tij.winterweather.handler;
 
-import dk.tij.freezingEffect.FreezingEffect;
-import dk.tij.freezingEffect.commands.utils.AdminDebug;
-import dk.tij.freezingEffect.utils.*;
-import dk.tij.freezingEffect.constants.TemperatureConstants;
+import dk.tij.winterweather.WinterWeather;
+import dk.tij.winterweather.commands.utils.AdminDebug;
+import dk.tij.winterweather.utils.*;
+import dk.tij.winterweather.constants.TemperatureConstants;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
@@ -17,7 +16,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class TemperatureHandler {
-    private final FreezingEffect plugin;
+    private final WinterWeather plugin;
     private final FreezeHandler freezeHandler;
 
     private final Map<UUID, Double> actualPlayerFreezeTicks = new HashMap<>();
@@ -26,7 +25,7 @@ public class TemperatureHandler {
     private BukkitRunnable decayTask;
     private BukkitRunnable leatherArmourDamageTask;
 
-    public TemperatureHandler(FreezingEffect plugin, FreezeHandler freezeHandler) {
+    public TemperatureHandler(WinterWeather plugin, FreezeHandler freezeHandler) {
         this.plugin = plugin;
         this.freezeHandler = freezeHandler;
         this.freezingDamageSource = DamageSource.builder(DamageType.FREEZE).build();

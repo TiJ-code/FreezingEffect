@@ -1,4 +1,4 @@
-package dk.tij.freezingEffect.utils;
+package dk.tij.winterweather.utils;
 
 public final class InterpolationFunctions {
     public static double linear(double t) {

@@ -1,7 +1,7 @@
-package dk.tij.freezingEffect.commands.utils;
+package dk.tij.winterweather.commands.utils;
 
-import dk.tij.freezingEffect.FreezingEffect;
-import dk.tij.freezingEffect.commands.CommandLabels;
+import dk.tij.winterweather.WinterWeather;
+import dk.tij.winterweather.commands.CommandLabels;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.Set;
 
 public final class WinterTabCompleter implements TabCompleter {
-    private final FreezingEffect plugin;
+    private final WinterWeather plugin;
 
-    public WinterTabCompleter(FreezingEffect plugin) {
+    public WinterTabCompleter(WinterWeather plugin) {
         this.plugin = plugin;
     }
 

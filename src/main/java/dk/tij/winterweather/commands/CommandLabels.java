@@ -1,4 +1,4 @@
-package dk.tij.freezingEffect.commands;
+package dk.tij.winterweather.commands;
 
 public final class CommandLabels {
     public static final String COMMAND_LABEL = "winter";

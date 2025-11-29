@@ -1,4 +1,4 @@
-package dk.tij.freezingEffect.utils;
+package dk.tij.winterweather.utils;
 
 public final class Maths {
     public static final double TO_PERCENT_CONVERSION_FACTOR = 1d / 100d;
