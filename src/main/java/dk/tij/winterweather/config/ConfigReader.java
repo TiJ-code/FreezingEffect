@@ -1,13 +1,13 @@
-package dk.tij.freezingEffect.config;
+package dk.tij.winterweather.config;
 
-import dk.tij.freezingEffect.FreezingEffect;
+import dk.tij.winterweather.WinterWeather;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class ConfigReader {
-    private final FreezingEffect plugin;
+    private final WinterWeather plugin;
     private FileConfiguration config;
 
-    public ConfigReader(FreezingEffect plugin) {
+    public ConfigReader(WinterWeather plugin) {
         this.plugin = plugin;
         this.config = plugin.getConfig();
     }

@@ -1,4 +1,4 @@
-package dk.tij.freezingEffect.utils;
+package dk.tij.winterweather.utils;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

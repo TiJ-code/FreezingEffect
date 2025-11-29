@@ -1,7 +1,7 @@
-package dk.tij.freezingEffect.commands;
+package dk.tij.winterweather.commands;
 
-import dk.tij.freezingEffect.FreezingEffect;
-import dk.tij.freezingEffect.commands.utils.ChatMessages;
+import dk.tij.winterweather.WinterWeather;
+import dk.tij.winterweather.commands.utils.ChatMessages;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -9,9 +9,9 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 public class WinterCommand implements CommandExecutor {
-    private final FreezingEffect plugin;
+    private final WinterWeather plugin;
 
-    public WinterCommand(FreezingEffect plugin) {
+    public WinterCommand(WinterWeather plugin) {
         this.plugin = plugin;
     }
 

@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>dk.tij</groupId>
-    <artifactId>freezingeffect</artifactId>
+    <artifactId>winterweather</artifactId>
     <version>BUILD</version>
     <packaging>jar</packaging>
 
-    <name>freezingeffect</name>
+    <name>WinterWeather</name>
 
     <properties>
         <java.version>21</java.version>

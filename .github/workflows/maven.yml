@@ -33,8 +33,8 @@ jobs:
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: FreezingEffect
-          path: target/freezingeffect*.jar
+          name: WinterWeather
+          path: target/winterweather*.jar
 
   release:
     runs-on: ubuntu-latest
@@ -44,7 +44,7 @@ jobs:
       - name: Download Build Artifcats
         uses: actions/download-artifact@v4
         with:
-            name: FreezingEffect
+            name: WinterWeather
 
       - name: Find Artifact
         id: findjar
@@ -54,6 +54,16 @@ jobs:
         id: refprefix
         run: echo "prefix=${GITHUB_REF_NAME%%_*}" >> $GITHUB_OUTPUT
 
+      - name: Extract Release Title
+        id: releasetitle
+        run: |
+          if [[ "${GITHUB_REF_NAME}" != *_dev ]]; then
+            title=${GITHUB_REF_NAME//_/ }
+          else
+            title="${GITHUB_REF_NAME}"
+          fi
+          echo "title=$title" >> $GITHUB_OUTPUT
+
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
@@ -61,7 +71,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref_name }}
-          release_name: ${{ github.ref_name }}
+          release_name: ${{ steps.releasetitle.outputs.title }}
           body: automated release
           draft: false
           prerelease: ${{ contains(github.ref_name, 'dev') }}
@@ -74,5 +84,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ${{ steps.findjar.outputs.jarfile }}
-          asset_name: FreezingEffect_${{ steps.refprefix.outputs.prefix }}.jar
+          asset_name: WinterWeather_${{ steps.refprefix.outputs.prefix }}.jar
           asset_content_type: application/jar

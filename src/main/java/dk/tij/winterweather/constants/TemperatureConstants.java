@@ -1,7 +1,7 @@
-package dk.tij.freezingEffect.constants;
+package dk.tij.winterweather.constants;
 
-import dk.tij.freezingEffect.utils.HeatSource;
-import dk.tij.freezingEffect.utils.InterpolationFunctions;
+import dk.tij.winterweather.utils.HeatSource;
+import dk.tij.winterweather.utils.InterpolationFunctions;
 import org.bukkit.Material;
 
 import java.util.HashMap;

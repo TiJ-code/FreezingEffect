@@ -1,19 +1,19 @@
-package dk.tij.freezingEffect;
+package dk.tij.winterweather;
 
-import dk.tij.freezingEffect.commands.CommandLabels;
-import dk.tij.freezingEffect.commands.WinterCommand;
-import dk.tij.freezingEffect.commands.utils.WinterTabCompleter;
-import dk.tij.freezingEffect.config.ConfigMigrator;
-import dk.tij.freezingEffect.events.PlayerQuitListener;
-import dk.tij.freezingEffect.events.PlayerRespawnListener;
-import dk.tij.freezingEffect.events.PlayerJoinListener;
-import dk.tij.freezingEffect.handler.FreezeHandler;
-import dk.tij.freezingEffect.handler.PlayerDataHandler;
-import dk.tij.freezingEffect.handler.ResourceHandler;
-import dk.tij.freezingEffect.handler.TemperatureHandler;
+import dk.tij.winterweather.commands.CommandLabels;
+import dk.tij.winterweather.commands.WinterCommand;
+import dk.tij.winterweather.commands.utils.WinterTabCompleter;
+import dk.tij.winterweather.config.ConfigMigrator;
+import dk.tij.winterweather.events.PlayerQuitListener;
+import dk.tij.winterweather.events.PlayerRespawnListener;
+import dk.tij.winterweather.events.PlayerJoinListener;
+import dk.tij.winterweather.handler.FreezeHandler;
+import dk.tij.winterweather.handler.PlayerDataHandler;
+import dk.tij.winterweather.handler.ResourceHandler;
+import dk.tij.winterweather.handler.TemperatureHandler;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public final class FreezingEffect extends JavaPlugin {
+public final class WinterWeather extends JavaPlugin {
     private ResourceHandler resourceHandler;
     private PlayerDataHandler playerDataHandler;
     private TemperatureHandler temperatureHandler;
