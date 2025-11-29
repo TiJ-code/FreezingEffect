@@ -13,8 +13,8 @@ frost:
       LEATHER_HELMET: 15
 
   heatSources:
-    - TORCH
-    - CAMPFIRE
-    - FIRE
-    - LAVA
-    - LANTERN
+    TORCH: 1
+    CAMPFIRE: 2
+    FIRE: 3
+    LAVA: 3
+    LANTERN: 1

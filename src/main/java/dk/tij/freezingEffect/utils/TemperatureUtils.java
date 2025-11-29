@@ -49,9 +49,10 @@ public final class TemperatureUtils {
                     Block block = world.getBlockAt(x, y, z);
                     Material type = block.getType();
 
-                    if (!TemperatureConstants.HEAT_SOURCES.contains(type)) continue;
+                    if (!TemperatureConstants.HEAT_SOURCE_WARMING.containsKey(type)
+                        || !canSeeHeatSource(eyeLocation, block)) continue;
 
-                    if (canSeeHeatSource(eyeLocation, block)) result++;
+                    result += TemperatureConstants.HEAT_SOURCE_WARMING.getOrDefault(type, 1);
                 }
             }
         }

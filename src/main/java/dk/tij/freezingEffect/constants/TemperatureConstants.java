@@ -27,8 +27,8 @@ public final class TemperatureConstants {
     public static double
             MAX_POSSIBLE_ISOLATION = 0.80;
 
-    public static final Set<Material> HEAT_SOURCES = new HashSet<>();
     public static final Map<Material, Double> ARMOUR_PIECE_ISOLATION = new HashMap<>();
+    public static final Map<Material, Integer> HEAT_SOURCE_WARMING = new HashMap<>();
 
     public static Function<Double, Double> INTERPOLATION_FUNCTION = InterpolationFunctions::smootherstep;
 }

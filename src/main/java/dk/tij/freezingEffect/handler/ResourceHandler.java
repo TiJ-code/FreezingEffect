@@ -8,6 +8,9 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,12 +29,7 @@ public class ResourceHandler {
         TemperatureConstants.HEAT_RADIUS = config.getInt("frost.heatRadius", 0);
 
         loadIsolationValues();
-
-        Set<Material> configHeatSources = config.getStringList("frost.heatSources")
-                .stream()
-                .map(Material::matchMaterial)
-                .collect(Collectors.toSet());
-        TemperatureConstants.HEAT_SOURCES.addAll(configHeatSources);
+        loadHeatSourceValues();
 
         String interpolationFunctionName = config.getString("frost.interpolationFunction",
                 TemperatureConstants.INTERPOLATION_FUNCTIONS_MAPPING.keySet().toArray(String[]::new)[0]);
@@ -64,6 +62,21 @@ public class ResourceHandler {
             );
             TemperatureConstants.ARMOUR_PIECE_ISOLATION.put(material,
                     value * TO_PERCENT_CONVERSION_FACTOR);
+        }
+    }
+
+    private void loadHeatSourceValues() {
+        ConfigurationSection heatSourceSection = config.getConfigurationSection("frost.heatSources");
+
+        if (heatSourceSection == null) return;
+
+        for (String key : heatSourceSection.getKeys(false)) {
+            Material material = Material.matchMaterial(key);
+
+            if (material == null) continue;
+
+            int value = InterpolationFunctions.clampI(heatSourceSection.getInt(key), 0, Integer.MAX_VALUE);
+            TemperatureConstants.HEAT_SOURCE_WARMING.put(material, value);
         }
     }
 }
