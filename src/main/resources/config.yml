@@ -15,8 +15,18 @@ frost:
   playerBurningBoost: 10
 
   heatSources:
-    TORCH: 1
-    CAMPFIRE: 2
-    FIRE: 3
-    LAVA: 3
-    LANTERN: 1
+    TORCH:
+      value: 1.0
+      radius: 3
+    CAMPFIRE:
+      value: 2.0
+      radius: 3
+    FIRE:
+      value: 3.0
+      radius: 5
+    LAVA:
+      value: 3.0
+      radius: 7
+    LANTERN:
+      value: 1.0
+      radius: 3

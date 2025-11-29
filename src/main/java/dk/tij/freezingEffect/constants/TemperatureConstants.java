@@ -1,11 +1,10 @@
 package dk.tij.freezingEffect.constants;
 
+import dk.tij.freezingEffect.toolbox.Pair;
 import org.bukkit.Material;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 
 public final class TemperatureConstants {
@@ -29,7 +28,7 @@ public final class TemperatureConstants {
             PLAYER_BURNING_BOOST = 1.10;
 
     public static final Map<Material, Double> ARMOUR_PIECE_ISOLATION = new HashMap<>();
-    public static final Map<Material, Double> HEAT_SOURCE_WARMING = new HashMap<>();
+    public static final Map<Material, Pair<Double, Integer>> HEAT_SOURCE_WARMING = new HashMap<>();
 
     public static Function<Double, Double> INTERPOLATION_FUNCTION = InterpolationFunctions::smootherstep;
 }

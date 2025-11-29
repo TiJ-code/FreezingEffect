@@ -1,6 +1,7 @@
 package dk.tij.freezingEffect.utils;
 
 import dk.tij.freezingEffect.constants.TemperatureConstants;
+import dk.tij.freezingEffect.toolbox.Pair;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -52,7 +53,8 @@ public final class TemperatureUtils {
                     if (!TemperatureConstants.HEAT_SOURCE_WARMING.containsKey(type)
                         || !canSeeHeatSource(eyeLocation, block)) continue;
 
-                    result += TemperatureConstants.HEAT_SOURCE_WARMING.getOrDefault(type, 1d);
+                    result += TemperatureConstants.HEAT_SOURCE_WARMING
+                            .getOrDefault(type, Pair.of(1d, TemperatureConstants.HEAT_RADIUS)).getK();
                 }
             }
         }
