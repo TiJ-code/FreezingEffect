@@ -1,5 +1,7 @@
 package dk.tij.freezingEffect.handler;
 
+import dk.tij.freezingEffect.FreezingEffect;
+import dk.tij.freezingEffect.commands.utils.AdminDebug;
 import dk.tij.freezingEffect.utils.*;
 import dk.tij.freezingEffect.constants.TemperatureConstants;
 import org.bukkit.Bukkit;
@@ -15,7 +17,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class TemperatureHandler {
-    private final JavaPlugin plugin;
+    private final FreezingEffect plugin;
     private final FreezeHandler freezeHandler;
 
     private final Map<UUID, Double> actualPlayerFreezeTicks = new HashMap<>();
@@ -24,40 +26,33 @@ public class TemperatureHandler {
     private BukkitRunnable decayTask;
     private BukkitRunnable leatherArmourDamageTask;
 
-    public TemperatureHandler(JavaPlugin plugin, FreezeHandler freezeHandler) {
+    public TemperatureHandler(FreezingEffect plugin, FreezeHandler freezeHandler) {
         this.plugin = plugin;
         this.freezeHandler = freezeHandler;
         this.freezingDamageSource = DamageSource.builder(DamageType.FREEZE).build();
     }
 
     public void startDecayTask() {
-        if (decayTask == null) {
-            decayTask = new BukkitRunnable() {
-                @Override
-                public void run() {
-                    Bukkit.getOnlinePlayers().forEach(player -> tickPlayerTemperature(player));
-                    for (Player player : Bukkit.getOnlinePlayers()) {
-                        tickPlayerTemperature(player);
-                    }
-                }
-            };
-        }
-        if (leatherArmourDamageTask == null) {
-            leatherArmourDamageTask = new BukkitRunnable() {
-                @Override
-                public void run() {
-                    Bukkit.getOnlinePlayers().forEach(player -> applyDamageIfLeatherArmour(player));
-                }
-            };
-        }
+        decayTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                Bukkit.getOnlinePlayers().forEach(player -> tickPlayerTemperature(player));
+            }
+        };
         decayTask.runTaskTimer(plugin, 0L, 1L);
+        leatherArmourDamageTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                Bukkit.getOnlinePlayers().forEach(player -> applyDamageIfLeatherArmour(player));
+            }
+        };
         leatherArmourDamageTask.runTaskTimer(plugin, 1L, TemperatureConstants.VANILLA_DAMAGE_FREEZE_TICKS);
     }
 
     public void stopDecayTask() {
         if (decayTask == null) return;
-        if (leatherArmourDamageTask == null) return;
         decayTask.cancel();
+        if (leatherArmourDamageTask == null) return;
         leatherArmourDamageTask.cancel();
     }
 
@@ -105,8 +100,8 @@ public class TemperatureHandler {
 
         int freezeTicks = updatePlayerFreezingPoints(player, (int) nextActualFreezeTick);
 
-        player.sendMessage(String.format("FreezeTicks %3d | FractionalTarget: %3.1f | FreezePoints: %4.2f",
-                freezeTicks, fractionalChange, nextActualFreezeTick));
+        if (plugin.isDebug())
+            AdminDebug.printFreezeTicks(player, freezeTicks, fractionalChange, nextActualFreezeTick);
     }
 
     private void applyDamageIfLeatherArmour(Player player) {

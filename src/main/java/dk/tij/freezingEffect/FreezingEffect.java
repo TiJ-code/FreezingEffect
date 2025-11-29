@@ -1,5 +1,8 @@
 package dk.tij.freezingEffect;
 
+import dk.tij.freezingEffect.commands.CommandLabels;
+import dk.tij.freezingEffect.commands.WinterCommand;
+import dk.tij.freezingEffect.commands.utils.WinterTabCompleter;
 import dk.tij.freezingEffect.events.PlayerQuitListener;
 import dk.tij.freezingEffect.events.PlayerRespawnListener;
 import dk.tij.freezingEffect.events.PlayerJoinListener;
@@ -8,8 +11,6 @@ import dk.tij.freezingEffect.handler.PlayerDataHandler;
 import dk.tij.freezingEffect.handler.ResourceHandler;
 import dk.tij.freezingEffect.handler.TemperatureHandler;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.io.File;
 
 public final class FreezingEffect extends JavaPlugin {
     private ResourceHandler resourceHandler;
@@ -20,28 +21,32 @@ public final class FreezingEffect extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
-        getComponentLogger().info("Plugin successfully loaded!");
         saveDefaultConfig();
+        getComponentLogger().info("Plugin successfully loaded!");
 
         resourceHandler = new ResourceHandler(this);
         playerDataHandler = new PlayerDataHandler(this);
 
         freezeHandler = new FreezeHandler(this);
-        freezeHandler.start();
 
         temperatureHandler = new TemperatureHandler(this, freezeHandler);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(playerDataHandler, temperatureHandler), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(playerDataHandler, temperatureHandler), this);
         getServer().getPluginManager().registerEvents(new PlayerRespawnListener(temperatureHandler, freezeHandler), this);
 
+        getCommand(CommandLabels.COMMAND_LABEL).setExecutor(new WinterCommand(this));
+        getCommand(CommandLabels.COMMAND_LABEL).setTabCompleter(new WinterTabCompleter(this));
+
+        freezeHandler.start();
         temperatureHandler.startDecayTask();
     }
 
     @Override
     public void reloadConfig() {
         super.reloadConfig();
-        if (resourceHandler == null || temperatureHandler == null) return;
-        resourceHandler.loadConfig();
+        if (resourceHandler == null) return;
+        resourceHandler.reloadConfig();
+        if (temperatureHandler == null) return;
         temperatureHandler.reloadDecayTask();
     }
 
@@ -54,9 +59,15 @@ public final class FreezingEffect extends JavaPlugin {
         temperatureHandler.stopDecayTask();
 
         playerDataHandler.saveConfig();
+    }
 
-        // TODO: REMOVE FROM PRODUCTION
-        /*File configFile = new File(getDataFolder(), "config.yml");
-        if (configFile.exists()) configFile.delete();*/
+    public void setDebug(boolean debug) {
+        if (resourceHandler == null) return;
+        resourceHandler.setDebug(debug);
+    }
+
+    public boolean isDebug() {
+        if (resourceHandler == null) return false;
+        return resourceHandler.isDebug();
     }
 }

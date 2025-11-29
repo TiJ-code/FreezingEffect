@@ -1,4 +1,14 @@
 name: FreezingEffect
-version: '0.5.0_dev'
+version: '0.5.1_dev'
 main: dk.tij.freezingEffect.FreezingEffect
 api-version: '1.21'
+permissions:
+  freezingeffect.command:
+    description: Allows running /winter commands
+    default: op
+commands:
+  winter:
+    description: Main command for FreezingEffect
+    usage: /winter <reload|debug>
+    aliases: [w, fe]
+    permission: freezingeffect.command
