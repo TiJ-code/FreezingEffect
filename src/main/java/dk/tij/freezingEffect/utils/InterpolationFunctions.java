@@ -1,4 +1,4 @@
-package dk.tij.freezingEffect.constants;
+package dk.tij.freezingEffect.utils;
 
 public final class InterpolationFunctions {
     public static double linear(double t) {
@@ -13,13 +13,5 @@ public final class InterpolationFunctions {
 
     public static double smootherstep(double t) {
         return t * t * t * (t * (t * 6 - 15) + 10);
-    }
-
-    public static int clampI(int value, int min, int max) {
-        return Math.max(min, Math.min(max, value));
-    }
-
-    public static double clampD(double value, double min, double max) {
-        return Math.max(min, Math.min(max, value));
     }
 }

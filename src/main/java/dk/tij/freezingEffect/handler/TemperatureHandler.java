@@ -1,10 +1,9 @@
 package dk.tij.freezingEffect.handler;
 
-import dk.tij.freezingEffect.constants.InterpolationFunctions;
+import dk.tij.freezingEffect.utils.*;
 import dk.tij.freezingEffect.constants.TemperatureConstants;
-import dk.tij.freezingEffect.utils.ItemUtils;
-import dk.tij.freezingEffect.utils.TemperatureUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Player;
@@ -68,7 +67,7 @@ public class TemperatureHandler {
     }
 
     private void tickPlayerTemperature(Player player) {
-        int target = computeTarget(player);
+        double target = computeTarget(player);
 
         double armourReduction = TemperatureUtils.getLeatherReduction(player);
 
@@ -76,11 +75,21 @@ public class TemperatureHandler {
                 ? target * (1.0 - armourReduction)
                 : target;
 
+        if (TemperatureUtils.isPlayerBurning(player)) {
+            double fireValue = -TemperatureConstants.HEAT_SOURCE_WARMING
+                    .getOrDefault(Material.FIRE, HeatSource.DEFAULT_CONFIGURATION).heat();
+            fireValue *= TemperatureConstants.PLAYER_BURNING_BOOST;
+            if (fractionalChange < 0)
+                fractionalChange += fireValue;
+            else
+                fractionalChange = fireValue;
+        }
+
         UUID playerUUID = player.getUniqueId();
 
         double previousActualFreezeTicks = actualPlayerFreezeTicks.get(playerUUID);
         double nextActualFreezeTick = previousActualFreezeTicks + fractionalChange;
-        nextActualFreezeTick = InterpolationFunctions.clampD(nextActualFreezeTick, 0, Integer.MAX_VALUE);
+        nextActualFreezeTick = Maths.clampPositiveIntD(nextActualFreezeTick);
         actualPlayerFreezeTicks.put(playerUUID, nextActualFreezeTick);
 
         int freezeTicks = updatePlayerFreezingPoints(player, (int) nextActualFreezeTick);
@@ -96,8 +105,8 @@ public class TemperatureHandler {
         player.damage(1d, freezingDamageSource);
     }
 
-    private int computeTarget(Player player) {
-        return TemperatureUtils.isNearHeatSource(player) ? -1 : 1;
+    private double computeTarget(Player player) {
+        return -TemperatureUtils.getNumberOfHeatSourcesNearby(player);
     }
 
     private int updatePlayerFreezingPoints(Player player, int actualFreezeTicks) {
