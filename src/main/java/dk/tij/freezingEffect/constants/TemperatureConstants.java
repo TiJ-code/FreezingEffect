@@ -21,10 +21,11 @@ public final class TemperatureConstants {
     );
 
     public static int
-        CRITICAL_FREEZING_TICKS = 1800,
-        HEAT_RADIUS = 5;
+        CRITICAL_FREEZING_TICKS = 1800;
 
     public static double
+            HEAT_RADIUS = 5,
+            HEAT_RADIUS_SQUARED = HEAT_RADIUS * HEAT_RADIUS,
             MAX_POSSIBLE_ISOLATION = 0.80,
             PLAYER_BURNING_BOOST = 1.10;
 

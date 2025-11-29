@@ -1,6 +1,6 @@
 frost:
   criticalFreezingTicks: 1800
-  heatRadius: 5
+  heatRadius: 5.0
   interpolationFunction: 'smootherstep'
 
   isolation:
@@ -17,16 +17,16 @@ frost:
   heatSources:
     TORCH:
       value: 1.0
-      radius: 3
+      radius: 3.0
     CAMPFIRE:
       value: 2.0
-      radius: 3
+      radius: 3.0
     FIRE:
       value: 3.0
-      radius: 5
+      radius: 5.0
     LAVA:
       value: 3.0
-      radius: 7
+      radius: 7.0
     LANTERN:
       value: 1.0
-      radius: 3
+      radius: 3.0

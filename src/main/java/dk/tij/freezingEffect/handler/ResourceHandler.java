@@ -20,19 +20,20 @@ public class ResourceHandler {
     }
 
     public void loadConfig() {
+        loadFrostPlayerStats();
+        loadIsolationValues();
+        loadHeatSourceValues();
+        loadInterpolationFunction();
+    }
+
+    private void loadFrostPlayerStats() {
         TemperatureConstants.CRITICAL_FREEZING_TICKS = Maths.clampPositiveI(
                 config.getInt("frost.criticalFreezingTicks", Integer.MAX_VALUE)
         );
-        TemperatureConstants.HEAT_RADIUS = Maths.clampPositiveI(
-                config.getInt("frost.heatRadius", 0)
+        TemperatureConstants.HEAT_RADIUS = Maths.clampPositiveIntD(
+                config.getDouble("frost.heatRadius", 0)
         );
-
-        loadIsolationValues();
-        loadHeatSourceValues();
-
-        String interpolationFunctionName = config.getString("frost.interpolationFunction",
-                TemperatureConstants.INTERPOLATION_FUNCTIONS_MAPPING.keySet().toArray(String[]::new)[0]);
-        TemperatureConstants.INTERPOLATION_FUNCTION = TemperatureConstants.INTERPOLATION_FUNCTIONS_MAPPING.get(interpolationFunctionName);
+        TemperatureConstants.HEAT_RADIUS_SQUARED = TemperatureConstants.HEAT_RADIUS * TemperatureConstants.HEAT_RADIUS;
     }
 
     private void loadIsolationValues() {
@@ -69,12 +70,18 @@ public class ResourceHandler {
             if (material == null) continue;
 
             double value = Maths.clampPositiveIntD(heatSourceSection.getDouble(key + ".value"));
-            int radius = Maths.clampPositiveI(heatSourceSection.getInt(key + ".radius"));
-            TemperatureConstants.HEAT_SOURCE_WARMING.put(material, new HeatSource(value, radius));
+            double radius = Maths.clampPositiveIntD(heatSourceSection.getInt(key + ".radius"));
+            TemperatureConstants.HEAT_SOURCE_WARMING.put(material, new HeatSource(value, radius*radius));
         }
 
         TemperatureConstants.PLAYER_BURNING_BOOST = Maths.clampI0To100(
                 config.getInt("frost.playerBurningBoost", 0)
         ) * TO_PERCENT_CONVERSION_FACTOR + 1d;
+    }
+
+    private void loadInterpolationFunction() {
+        String interpolationFunctionName = config.getString("frost.interpolationFunction",
+                TemperatureConstants.INTERPOLATION_FUNCTIONS_MAPPING.keySet().toArray(String[]::new)[0]);
+        TemperatureConstants.INTERPOLATION_FUNCTION = TemperatureConstants.INTERPOLATION_FUNCTIONS_MAPPING.get(interpolationFunctionName);
     }
 }

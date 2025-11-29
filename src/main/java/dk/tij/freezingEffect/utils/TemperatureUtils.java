@@ -9,6 +9,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.RayTraceResult;
+import org.bukkit.util.Vector;
 
 public final class TemperatureUtils {
     public static double getLeatherReduction(Player player) {
@@ -28,7 +29,7 @@ public final class TemperatureUtils {
     public static double getNumberOfHeatSourcesNearby(Player player) {
         double result = 0;
 
-        int heatRadius = TemperatureConstants.HEAT_RADIUS;
+        int heatRadius = (int) Math.round(TemperatureConstants.HEAT_RADIUS);
         Location eyeLocation = player.getEyeLocation();
         Location location = player.getLocation();
         World world = eyeLocation.getWorld();
@@ -52,11 +53,11 @@ public final class TemperatureUtils {
                     Material type = block.getType();
 
                     if (!TemperatureConstants.HEAT_SOURCE_WARMING.containsKey(type)) continue;
-                    if (!isHeatSourceUnobstructed(eyeLocation, blockCenter)) continue;
+                    if (!isBlockInRadius(location, blockCenter)) continue;
                     if (!isPlayerInHeatSourceRange(type, location, blockCenter)) continue;
+                    if (!isHeatSourceUnobstructed(eyeLocation, blockCenter)) continue;
 
-                    result += TemperatureConstants.HEAT_SOURCE_WARMING
-                            .getOrDefault(type, HeatSource.DEFAULT_CONFIGURATION).heat();
+                    result += TemperatureConstants.HEAT_SOURCE_WARMING.get(type).heat();
                 }
             }
         }
@@ -69,23 +70,31 @@ public final class TemperatureUtils {
     }
 
     private static boolean isHeatSourceUnobstructed(Location playerLocation, Location heatSourceLocation) {
+        Vector direction = heatSourceLocation.toVector().subtract(playerLocation.toVector());
+        double distance = direction.length();
+
         RayTraceResult result = playerLocation.getWorld().rayTraceBlocks(
                 playerLocation,
-                heatSourceLocation.toVector().subtract(playerLocation.toVector()),
-                playerLocation.distance(heatSourceLocation),
+                direction.normalize(),
+                distance,
                 FluidCollisionMode.NEVER,
                 true
         );
 
         if (result == null) return true;
 
-        return result.getHitBlock() != null && TemperatureConstants.HEAT_SOURCE_WARMING.containsKey(result.getHitBlock().getType());
+        Block hit = result.getHitBlock();
+        return hit != null && TemperatureConstants.HEAT_SOURCE_WARMING.containsKey(hit.getType());
     }
 
     private static boolean isPlayerInHeatSourceRange(Material heatSourceType, Location playerLocation, Location heatSourceLocation) {
-        int heatSourceRange = TemperatureConstants.HEAT_SOURCE_WARMING
-                .getOrDefault(heatSourceType, HeatSource.DEFAULT_CONFIGURATION).range();
+        double heatSourceRadiusSquared = TemperatureConstants.HEAT_SOURCE_WARMING
+                .getOrDefault(heatSourceType, HeatSource.DEFAULT_CONFIGURATION).radiusSquared();
 
-        return playerLocation.distance(heatSourceLocation) <= (double) heatSourceRange;
+        return playerLocation.distanceSquared(heatSourceLocation) < heatSourceRadiusSquared;
+    }
+
+    private static boolean isBlockInRadius(Location playerLocation, Location blockLocation) {
+        return playerLocation.distanceSquared(blockLocation) <= TemperatureConstants.HEAT_RADIUS_SQUARED;
     }
 }
