@@ -1,11 +1,14 @@
 package dk.tij.freezingEffect.utils;
 
 import dk.tij.freezingEffect.constants.TemperatureConstants;
+import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.RayTraceResult;
 
 public final class TemperatureUtils {
     public static double getLeatherReduction(Player player) {
@@ -26,11 +29,12 @@ public final class TemperatureUtils {
         int result = 0;
 
         int heatRadius = TemperatureConstants.HEAT_RADIUS;
-        Location location = player.getLocation();
+        Location eyeLocation = player.getEyeLocation();
+        World world = eyeLocation.getWorld();
 
-        final int blockX = location.getBlockX(),
-                  blockY = location.getBlockY(),
-                  blockZ = location.getBlockZ();
+        final int blockX = eyeLocation.getBlockX(),
+                  blockY = eyeLocation.getBlockY(),
+                  blockZ = eyeLocation.getBlockZ();
 
         final int maxX = blockX + heatRadius,
                   maxY = blockY + heatRadius,
@@ -42,13 +46,32 @@ public final class TemperatureUtils {
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
                 for (int z = minZ; z <= maxZ; z++) {
-                    Block block = location.getWorld().getBlockAt(x, y, z);
+                    Block block = world.getBlockAt(x, y, z);
                     Material type = block.getType();
-                    if (TemperatureConstants.HEAT_SOURCES.contains(type)) result++;
+
+                    if (!TemperatureConstants.HEAT_SOURCES.contains(type)) continue;
+
+                    if (canSeeHeatSource(eyeLocation, block)) result++;
                 }
             }
         }
 
         return (result > 0) ? result : -1;
+    }
+
+    private static boolean canSeeHeatSource(Location from, Block target) {
+        Location center = target.getLocation().add(0.5, 0.5, 0.5);
+
+        RayTraceResult result = from.getWorld().rayTraceBlocks(
+                from,
+                center.toVector().subtract(from.toVector()),
+                from.distance(center),
+                FluidCollisionMode.NEVER,
+                true
+        );
+
+        if (result == null) return true;
+
+        return result.getHitBlock() != null && result.getHitBlock().equals(target);
     }
 }
