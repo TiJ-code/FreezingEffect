@@ -86,10 +86,12 @@ public class TemperatureHandler {
         }
 
         if (TemperatureUtils.isPlayerInPowderSnow(player) && TemperatureConstants.PLAYER_POWDER_SNOW_BOOST >= 0) {
+            double powderSnowValue = TemperatureConstants.BASE_POWDER_SNOW_FACTOR;
+            powderSnowValue *= TemperatureConstants.PLAYER_POWDER_SNOW_BOOST;
             if (fractionalChange < 0)
-                fractionalChange = TemperatureConstants.PLAYER_POWDER_SNOW_BOOST;
+                fractionalChange = powderSnowValue;
             else
-                fractionalChange *= TemperatureConstants.PLAYER_POWDER_SNOW_BOOST;
+                fractionalChange += powderSnowValue;
         }
 
         UUID playerUUID = player.getUniqueId();
