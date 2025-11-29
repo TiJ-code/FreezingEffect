@@ -85,7 +85,7 @@ public class TemperatureHandler {
                 fractionalChange = fireValue;
         }
 
-        if (TemperatureUtils.isPlayerInPowderSnow(player)) {
+        if (TemperatureUtils.isPlayerInPowderSnow(player) && TemperatureConstants.PLAYER_POWDER_SNOW_BOOST >= 0) {
             if (fractionalChange < 0)
                 fractionalChange = TemperatureConstants.PLAYER_POWDER_SNOW_BOOST;
             else

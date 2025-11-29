@@ -13,7 +13,7 @@ frost:
       LEATHER_HELMET: 15
 
   playerBurningBoost: 10
-  playerPowderSnowBoost: 30
+  playerPowderSnowBoost: 100
 
   heatSources:
     TORCH:
