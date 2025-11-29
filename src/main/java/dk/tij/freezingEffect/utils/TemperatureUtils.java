@@ -69,9 +69,11 @@ public final class TemperatureUtils {
         return player.getFireTicks() > 0;
     }
 
-    public static boolean isPlayerInPowderSnow(Player player) {
-        return player.getEyeLocation().getBlock().getType() == Material.POWDER_SNOW
-                || player.getLocation().getBlock().getType() == Material.POWDER_SNOW;
+    public static int getAmountOfPowderSnowBlocksInPlayer(Player player) {
+        int result = 0;
+        result += (Material.POWDER_SNOW.equals(player.getEyeLocation().getBlock().getType())) ? 1 : 0;
+        result += (Material.POWDER_SNOW.equals(player.getLocation().getBlock().getType())) ? 1 : 0;
+        return result;
     }
 
     private static boolean isHeatSourceUnobstructed(Location playerLocation, Location heatSourceLocation) {
