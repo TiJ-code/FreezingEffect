@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class WinterCommand implements CommandExecutor {
@@ -34,9 +35,7 @@ public class WinterCommand implements CommandExecutor {
             }
 
             if (arguments[0].equalsIgnoreCase(CommandLabels.ARGUMENT_DEBUG)) {
-                boolean newState = !playerDataHandler.loadPlayerShowDebug(Bukkit.getPlayer(commandSender.getName()));
-                playerDataHandler.savePlayerShowDebug(Bukkit.getPlayer(commandSender.getName()), newState);
-                commandSender.sendMessage(ChatMessages.CHAT_PREFIX + ChatColor.GREEN + "Debug: " + (newState ? "ON" : "OFF"));
+                toggleDebug(commandSender);
             }
 
             if (arguments[0].equalsIgnoreCase(CommandLabels.ARGUMENT_START)) {
@@ -64,9 +63,7 @@ public class WinterCommand implements CommandExecutor {
                     return true;
                 }
 
-                playerDataHandler.savePlayerShowDebug(Bukkit.getPlayer(commandSender.getName()), turnOn);
-
-                commandSender.sendMessage(ChatMessages.CHAT_PREFIX + ChatColor.GREEN + "Debug: " + (turnOn ? "ON" : "OFF"));
+                setDebug(commandSender, turnOn ? 1 : 0);
 
                 return true;
             }
@@ -137,6 +134,20 @@ public class WinterCommand implements CommandExecutor {
     private void reloadConfig(CommandSender commandSender) {
         plugin.reloadConfig();
         commandSender.sendMessage(ChatMessages.CHAT_PREFIX + ChatColor.GREEN + "Configuration reloaded.");
+    }
+
+    private void toggleDebug(CommandSender commandSender) {
+        setDebug(commandSender, -1);
+    }
+
+    private void setDebug(CommandSender commandSender, int doToggle) {
+        if (commandSender instanceof Player player) {
+            boolean newState = (doToggle < 0) ? !playerDataHandler.loadPlayerShowDebug(player) : (doToggle == 0);
+            playerDataHandler.savePlayerShowDebug(player, newState);
+            commandSender.sendMessage(ChatMessages.CHAT_PREFIX + ChatColor.GREEN + "Debug: " + (newState ? "ON" : "OFF"));
+        } else {
+            commandSender.sendMessage(ChatMessages.CHAT_PREFIX + ChatColor.RED + "Only players can run this command.");
+        }
     }
 
     private Object parseConfigValue(String rawValue) {
