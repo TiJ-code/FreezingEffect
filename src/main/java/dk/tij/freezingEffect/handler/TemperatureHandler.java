@@ -1,9 +1,10 @@
 package dk.tij.freezingEffect.handler;
 
-import dk.tij.freezingEffect.constants.InterpolationFunctions;
+import dk.tij.freezingEffect.utils.InterpolationFunctions;
 import dk.tij.freezingEffect.constants.TemperatureConstants;
 import dk.tij.freezingEffect.toolbox.Pair;
 import dk.tij.freezingEffect.utils.ItemUtils;
+import dk.tij.freezingEffect.utils.Maths;
 import dk.tij.freezingEffect.utils.TemperatureUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -92,7 +93,7 @@ public class TemperatureHandler {
 
         double previousActualFreezeTicks = actualPlayerFreezeTicks.get(playerUUID);
         double nextActualFreezeTick = previousActualFreezeTicks + fractionalChange;
-        nextActualFreezeTick = InterpolationFunctions.clampD(nextActualFreezeTick, 0, Integer.MAX_VALUE);
+        nextActualFreezeTick = Maths.clampPositiveIntD(nextActualFreezeTick);
         actualPlayerFreezeTicks.put(playerUUID, nextActualFreezeTick);
 
         int freezeTicks = updatePlayerFreezingPoints(player, (int) nextActualFreezeTick);

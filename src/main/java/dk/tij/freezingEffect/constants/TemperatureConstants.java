@@ -1,6 +1,7 @@
 package dk.tij.freezingEffect.constants;
 
 import dk.tij.freezingEffect.toolbox.Pair;
+import dk.tij.freezingEffect.utils.InterpolationFunctions;
 import org.bukkit.Material;
 
 import java.util.HashMap;
@@ -18,6 +19,8 @@ public final class TemperatureConstants {
             "smoothstep", InterpolationFunctions::smoothstep,
             "smootherstep", InterpolationFunctions::smootherstep
     );
+
+    public static final Pair<Double, Integer> DEFAULT_HEAT_SOURCE_CONFIGURATION = Pair.of(1d, 5);
 
     public static int
         CRITICAL_FREEZING_TICKS = 1800,

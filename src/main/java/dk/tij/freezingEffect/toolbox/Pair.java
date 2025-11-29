@@ -12,6 +12,7 @@ public class Pair<K, V> {
 
     public Pair(K k, V v) {
         this.k = k;
+        this.v = v;
     }
 
     public void set(K k, V v) {
@@ -33,5 +34,10 @@ public class Pair<K, V> {
 
     public V getV() {
         return v;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Pair[%s, %s]", k, v);
     }
 }

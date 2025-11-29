@@ -1,9 +1,10 @@
 package dk.tij.freezingEffect.handler;
 
-import dk.tij.freezingEffect.constants.InterpolationFunctions;
+import dk.tij.freezingEffect.utils.InterpolationFunctions;
 import dk.tij.freezingEffect.constants.TemperatureConstants;
 import dk.tij.freezingEffect.toolbox.Pair;
 import dk.tij.freezingEffect.utils.ItemUtils;
+import dk.tij.freezingEffect.utils.Maths;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -20,8 +21,12 @@ public class ResourceHandler {
     }
 
     public void loadConfig() {
-        TemperatureConstants.CRITICAL_FREEZING_TICKS = config.getInt("frost.criticalFreezingTicks", Integer.MAX_VALUE);
-        TemperatureConstants.HEAT_RADIUS = config.getInt("frost.heatRadius", 0);
+        TemperatureConstants.CRITICAL_FREEZING_TICKS = Maths.clampPositiveI(
+                config.getInt("frost.criticalFreezingTicks", Integer.MAX_VALUE)
+        );
+        TemperatureConstants.HEAT_RADIUS = Maths.clampPositiveI(
+                config.getInt("frost.heatRadius", 0)
+        );
 
         loadIsolationValues();
         loadHeatSourceValues();
@@ -36,10 +41,7 @@ public class ResourceHandler {
 
         if (isolationSection == null) return;
 
-        int maxPossibleIsolationValue = InterpolationFunctions.clampI(
-                isolationSection.getInt("maxPossibleIsolation", 0),
-                0, 100
-        );
+        int maxPossibleIsolationValue = Maths.clampI0To100(isolationSection.getInt("maxPossibleIsolation", 0));
         TemperatureConstants.MAX_POSSIBLE_ISOLATION = maxPossibleIsolationValue * TO_PERCENT_CONVERSION_FACTOR;
 
         ConfigurationSection armourSection = isolationSection.getConfigurationSection("armourPieces");
@@ -51,10 +53,7 @@ public class ResourceHandler {
 
             if (!ItemUtils.isArmourItem(material)) continue;
 
-            int value = InterpolationFunctions.clampI(
-                    armourSection.getInt(key),
-                    0, 100
-            );
+            int value = Maths.clampI0To100(armourSection.getInt(key));
             TemperatureConstants.ARMOUR_PIECE_ISOLATION.put(material,
                     value * TO_PERCENT_CONVERSION_FACTOR);
         }
@@ -70,14 +69,13 @@ public class ResourceHandler {
 
             if (material == null) continue;
 
-            double value = InterpolationFunctions.clampD(heatSourceSection.getDouble(key + ".value"), 0, Integer.MAX_VALUE);
-            int radius = InterpolationFunctions.clampI(heatSourceSection.getInt(key + ".radius"), 0, Integer.MAX_VALUE);
+            double value = Maths.clampPositiveIntD(heatSourceSection.getDouble(key + ".value"));
+            int radius = Maths.clampPositiveI(heatSourceSection.getInt(key + ".radius"));
             TemperatureConstants.HEAT_SOURCE_WARMING.put(material, Pair.of(value, radius));
         }
 
-        TemperatureConstants.PLAYER_BURNING_BOOST = InterpolationFunctions.clampI(
-                config.getInt("frost.playerBurningBoost", 0),
-                0, 100
+        TemperatureConstants.PLAYER_BURNING_BOOST = Maths.clampI0To100(
+                config.getInt("frost.playerBurningBoost", 0)
         ) * TO_PERCENT_CONVERSION_FACTOR + 1d;
     }
 }
