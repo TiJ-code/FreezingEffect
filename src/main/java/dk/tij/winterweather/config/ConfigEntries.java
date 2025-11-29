@@ -7,7 +7,8 @@ public final class ConfigEntries {
 
     public static final String CATEGORY_FROST = "frost";
 
-    public static final String DEBUG = "debug",
+    public static final String ENABLED = "enable",
+                               DEBUG = "debug",
                                CRITICAL_FREEZING_TICKS = CATEGORY_FROST + P + "criticalFreezingTicks",
                                PLAYER_RADIUS = CATEGORY_FROST + P + "playerRadius",
                                INTERPOLATION_FUNCTION = CATEGORY_FROST + P + "interpolationFunction",

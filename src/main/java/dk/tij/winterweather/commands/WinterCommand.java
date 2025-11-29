@@ -2,6 +2,9 @@ package dk.tij.winterweather.commands;
 
 import dk.tij.winterweather.WinterWeather;
 import dk.tij.winterweather.commands.utils.ChatMessages;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -22,9 +25,23 @@ public class WinterCommand implements CommandExecutor {
             return true;
         }
 
-        if (arguments.length == 1 && arguments[0].equalsIgnoreCase(CommandLabels.ARGUMENT_RELOAD)) {
-            plugin.reloadConfig();
-            commandSender.sendMessage(ChatMessages.CHAT_PREFIX + ChatColor.GREEN + "Configuration reloaded.");
+        if (arguments.length == 1) {
+            if (arguments[0].equalsIgnoreCase(CommandLabels.ARGUMENT_RELOAD)) {
+                reloadConfig(commandSender);
+            }
+
+            if (arguments[0].equalsIgnoreCase(CommandLabels.ARGUMENT_START)) {
+                plugin.setIsEnabled(true);
+                Audience.audience(Bukkit.getServer().getOnlinePlayers())
+                        .sendMessage(Component.text(ChatMessages.CHAT_PREFIX + ChatColor.GREEN + "Winter has started!"));
+            }
+
+            if (arguments[0].equalsIgnoreCase(CommandLabels.ARGUMENT_STOP)) {
+                plugin.setIsEnabled(false);
+                Audience.audience(Bukkit.getServer().getOnlinePlayers())
+                        .sendMessage(Component.text(ChatMessages.CHAT_PREFIX + ChatColor.GREEN + "Winter has stopped!"));
+            }
+
             return true;
         }
 
@@ -47,6 +64,17 @@ public class WinterCommand implements CommandExecutor {
         }
 
         if (arguments.length >= 2 && arguments[0].equalsIgnoreCase(CommandLabels.ARGUMENT_CONFIG)) {
+            if (arguments[1].equalsIgnoreCase(CommandLabels.CONFIG_ARGUMENT_RELOAD)) {
+                if (arguments.length != 2) {
+                    commandSender.sendMessage(ChatMessages.CHAT_PREFIX + ChatColor.AQUA + "Usage: /winter config reload");
+                    return true;
+                }
+
+                reloadConfig(commandSender);
+
+                return true;
+            }
+
             if (arguments[1].equalsIgnoreCase(CommandLabels.CONFIG_ARGUMENT_GET)) {
                 if (arguments.length != 3) {
                     commandSender.sendMessage(ChatMessages.CHAT_PREFIX + ChatColor.AQUA + "Usage: /winter config get <path>");
@@ -95,6 +123,11 @@ public class WinterCommand implements CommandExecutor {
 
         commandSender.sendMessage(ChatMessages.CHAT_PREFIX + ChatColor.AQUA + "Usage: /winter <reload/debug>");
         return true;
+    }
+
+    private void reloadConfig(CommandSender commandSender) {
+        plugin.reloadConfig();
+        commandSender.sendMessage(ChatMessages.CHAT_PREFIX + ChatColor.GREEN + "Configuration reloaded.");
     }
 
     private Object parseConfigValue(String rawValue) {

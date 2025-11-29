@@ -73,4 +73,22 @@ public final class WinterWeather extends JavaPlugin {
         if (resourceHandler == null) return false;
         return resourceHandler.isDebug();
     }
+
+    public void setIsEnabled(boolean state) {
+        if (resourceHandler == null) return;
+        resourceHandler.setEnabled(state);
+
+        if (state) {
+            temperatureHandler.startDecayTask();
+            freezeHandler.start();
+        } else {
+            temperatureHandler.stopDecayTask();
+            freezeHandler.stop();
+        }
+    }
+
+    public boolean getIsEnabled() {
+        if (resourceHandler == null) return false;
+        return resourceHandler.isEnabled();
+    }
 }

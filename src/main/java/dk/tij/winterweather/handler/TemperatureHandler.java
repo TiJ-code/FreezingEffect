@@ -35,6 +35,8 @@ public class TemperatureHandler {
         decayTask = new BukkitRunnable() {
             @Override
             public void run() {
+                if (!plugin.getIsEnabled()) stopDecayTask();
+
                 Bukkit.getOnlinePlayers().forEach(player -> tickPlayerTemperature(player));
             }
         };
@@ -42,6 +44,8 @@ public class TemperatureHandler {
         leatherArmourDamageTask = new BukkitRunnable() {
             @Override
             public void run() {
+                if (!plugin.getIsEnabled()) stopDecayTask();
+
                 Bukkit.getOnlinePlayers().forEach(player -> applyDamageIfLeatherArmour(player));
             }
         };
@@ -50,9 +54,12 @@ public class TemperatureHandler {
 
     public void stopDecayTask() {
         if (decayTask == null) return;
-        decayTask.cancel();
         if (leatherArmourDamageTask == null) return;
-        leatherArmourDamageTask.cancel();
+
+        if (!decayTask.isCancelled())
+            decayTask.cancel();
+        if (!leatherArmourDamageTask.isCancelled())
+            leatherArmourDamageTask.cancel();
     }
 
     public void reloadDecayTask() {

@@ -1,5 +1,6 @@
 package dk.tij.winterweather.handler;
 
+import dk.tij.winterweather.WinterWeather;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -10,15 +11,23 @@ import java.util.Map;
 import java.util.UUID;
 
 public class FreezeHandler {
-    private final JavaPlugin plugin;
+    private final WinterWeather plugin;
     private final Map<UUID, Integer> storedFreezeTicks = new HashMap<>();
-    private final BukkitRunnable freezeHandlerRunnable;
+    private BukkitRunnable freezeHandlerRunnable;
 
-    public FreezeHandler(JavaPlugin plugin) {
+    public FreezeHandler(WinterWeather plugin) {
         this.plugin = plugin;
-        this.freezeHandlerRunnable = new BukkitRunnable() {
+    }
+
+    public void start() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            storedFreezeTicks.put(player.getUniqueId(), player.getFreezeTicks());
+        }
+        freezeHandlerRunnable = new BukkitRunnable() {
             @Override
             public void run() {
+                if (!plugin.getIsEnabled()) stop();
+
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     int last = storedFreezeTicks.getOrDefault(player.getUniqueId(), player.getFreezeTicks());
                     int actual = player.getFreezeTicks();
@@ -32,13 +41,7 @@ public class FreezeHandler {
                 }
             }
         };
-    }
-
-    public void start() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            storedFreezeTicks.put(player.getUniqueId(), player.getFreezeTicks());
-        }
-        freezeHandlerRunnable.runTaskTimer(plugin, 1L, 1L);
+        freezeHandlerRunnable.runTaskTimer(plugin, 0, 1L);
     }
 
     public void stop() {

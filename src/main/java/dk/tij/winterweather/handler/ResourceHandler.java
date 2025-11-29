@@ -36,6 +36,15 @@ public class ResourceHandler {
         return reader.getBoolean(ConfigEntries.DEBUG, false);
     }
 
+    public void setEnabled(boolean enabled) {
+        plugin.getConfig().set(ConfigEntries.ENABLED, enabled);
+        plugin.saveConfig();
+    }
+
+    public boolean isEnabled() {
+        return reader.getBoolean(ConfigEntries.ENABLED, false);
+    }
+
     private void loadConfig() {
         loadFrostPlayerStats();
         loadIsolationValues();
