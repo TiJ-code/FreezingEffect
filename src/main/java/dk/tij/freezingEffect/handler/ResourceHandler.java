@@ -72,5 +72,10 @@ public class ResourceHandler {
             double value = InterpolationFunctions.clampI(heatSourceSection.getInt(key), 0, Integer.MAX_VALUE);
             TemperatureConstants.HEAT_SOURCE_WARMING.put(material, value);
         }
+
+        TemperatureConstants.PLAYER_BURNING_BOOST = InterpolationFunctions.clampI(
+                config.getInt("frost.playerBurningBoost", 0),
+                0, 100
+        ) * TO_PERCENT_CONVERSION_FACTOR + 1d;
     }
 }

@@ -79,6 +79,7 @@ public class TemperatureHandler {
 
         if (TemperatureUtils.isPlayerBurning(player)) {
             double fireValue = -TemperatureConstants.HEAT_SOURCE_WARMING.getOrDefault(Material.FIRE, 1d);
+            fireValue *= TemperatureConstants.PLAYER_BURNING_BOOST;
             if (fractionalChange < 0)
                 fractionalChange += fireValue;
             else

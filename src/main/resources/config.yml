@@ -12,6 +12,8 @@ frost:
       LEATHER_CHESTPLATE: 40
       LEATHER_HELMET: 15
 
+  playerBurningBoost: 10
+
   heatSources:
     TORCH: 1
     CAMPFIRE: 2
