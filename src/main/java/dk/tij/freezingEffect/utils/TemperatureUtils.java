@@ -25,8 +25,8 @@ public final class TemperatureUtils {
         return reduction * TemperatureConstants.MAX_POSSIBLE_ISOLATION;
     }
 
-    public static int getNumberOfHeatSourcesNearby(Player player) {
-        int result = 0;
+    public static double getNumberOfHeatSourcesNearby(Player player) {
+        double result = 0;
 
         int heatRadius = TemperatureConstants.HEAT_RADIUS;
         Location eyeLocation = player.getEyeLocation();
@@ -52,7 +52,7 @@ public final class TemperatureUtils {
                     if (!TemperatureConstants.HEAT_SOURCE_WARMING.containsKey(type)
                         || !canSeeHeatSource(eyeLocation, block)) continue;
 
-                    result += TemperatureConstants.HEAT_SOURCE_WARMING.getOrDefault(type, 1);
+                    result += TemperatureConstants.HEAT_SOURCE_WARMING.getOrDefault(type, 1d);
                 }
             }
         }

@@ -8,12 +8,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 public class ResourceHandler {
     private static final double TO_PERCENT_CONVERSION_FACTOR = 1d / 100d;
 
@@ -75,7 +69,7 @@ public class ResourceHandler {
 
             if (material == null) continue;
 
-            int value = InterpolationFunctions.clampI(heatSourceSection.getInt(key), 0, Integer.MAX_VALUE);
+            double value = InterpolationFunctions.clampI(heatSourceSection.getInt(key), 0, Integer.MAX_VALUE);
             TemperatureConstants.HEAT_SOURCE_WARMING.put(material, value);
         }
     }

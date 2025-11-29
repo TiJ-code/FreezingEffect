@@ -68,7 +68,7 @@ public class TemperatureHandler {
     }
 
     private void tickPlayerTemperature(Player player) {
-        int target = computeTarget(player);
+        double target = computeTarget(player);
 
         double armourReduction = TemperatureUtils.getLeatherReduction(player);
 
@@ -96,7 +96,7 @@ public class TemperatureHandler {
         player.damage(1d, freezingDamageSource);
     }
 
-    private int computeTarget(Player player) {
+    private double computeTarget(Player player) {
         return -TemperatureUtils.getNumberOfHeatSourcesNearby(player);
     }
 
