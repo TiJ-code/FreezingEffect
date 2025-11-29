@@ -4,14 +4,13 @@ public final class ConfigEntries {
     private static final String P = ".";
 
     public static final String CONFIG_VERSION_ENTRY = "config-version";
-    public static final int CONFIG_VERSION = 1;
 
     public static final String CATEGORY_FROST = "frost";
 
-    public static final String CRITICAL_FREEZING_TICKS = CATEGORY_FROST + P + "criticalFreezingTicks",
+    public static final String DEBUG = "debug",
+                               CRITICAL_FREEZING_TICKS = CATEGORY_FROST + P + "criticalFreezingTicks",
                                PLAYER_RADIUS = CATEGORY_FROST + P + "playerRadius",
                                INTERPOLATION_FUNCTION = CATEGORY_FROST + P + "interpolationFunction",
-                               DEBUG = CATEGORY_FROST + P + "debug",
                                PLAYER_BURNING_BOOST = CATEGORY_FROST + P + "playerBurningBoost",
                                PLAYER_POWDER_SNOW_BOOST =  CATEGORY_FROST + P + "playerPowderSnowBoost",
 
