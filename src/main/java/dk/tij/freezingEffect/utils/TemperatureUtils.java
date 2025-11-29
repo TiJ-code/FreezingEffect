@@ -10,8 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.RayTraceResult;
 
-import static dk.tij.freezingEffect.constants.TemperatureConstants.DEFAULT_HEAT_SOURCE_CONFIGURATION;
-
 public final class TemperatureUtils {
     public static double getLeatherReduction(Player player) {
         double reduction = 0d;
@@ -58,7 +56,7 @@ public final class TemperatureUtils {
                     if (!isPlayerInHeatSourceRange(type, location, blockCenter)) continue;
 
                     result += TemperatureConstants.HEAT_SOURCE_WARMING
-                            .getOrDefault(type, DEFAULT_HEAT_SOURCE_CONFIGURATION).getK();
+                            .getOrDefault(type, HeatSource.DEFAULT_CONFIGURATION).heat();
                 }
             }
         }
@@ -86,7 +84,7 @@ public final class TemperatureUtils {
 
     private static boolean isPlayerInHeatSourceRange(Material heatSourceType, Location playerLocation, Location heatSourceLocation) {
         int heatSourceRange = TemperatureConstants.HEAT_SOURCE_WARMING
-                .getOrDefault(heatSourceType, DEFAULT_HEAT_SOURCE_CONFIGURATION).getV();
+                .getOrDefault(heatSourceType, HeatSource.DEFAULT_CONFIGURATION).range();
 
         return playerLocation.distance(heatSourceLocation) <= (double) heatSourceRange;
     }

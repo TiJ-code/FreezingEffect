@@ -1,6 +1,6 @@
 package dk.tij.freezingEffect.constants;
 
-import dk.tij.freezingEffect.toolbox.Pair;
+import dk.tij.freezingEffect.utils.HeatSource;
 import dk.tij.freezingEffect.utils.InterpolationFunctions;
 import org.bukkit.Material;
 
@@ -20,8 +20,6 @@ public final class TemperatureConstants {
             "smootherstep", InterpolationFunctions::smootherstep
     );
 
-    public static final Pair<Double, Integer> DEFAULT_HEAT_SOURCE_CONFIGURATION = Pair.of(1d, 5);
-
     public static int
         CRITICAL_FREEZING_TICKS = 1800,
         HEAT_RADIUS = 5;
@@ -31,7 +29,7 @@ public final class TemperatureConstants {
             PLAYER_BURNING_BOOST = 1.10;
 
     public static final Map<Material, Double> ARMOUR_PIECE_ISOLATION = new HashMap<>();
-    public static final Map<Material, Pair<Double, Integer>> HEAT_SOURCE_WARMING = new HashMap<>();
+    public static final Map<Material, HeatSource> HEAT_SOURCE_WARMING = new HashMap<>();
 
     public static Function<Double, Double> INTERPOLATION_FUNCTION = InterpolationFunctions::smootherstep;
 }

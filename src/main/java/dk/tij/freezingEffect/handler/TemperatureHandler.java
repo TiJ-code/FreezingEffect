@@ -1,11 +1,7 @@
 package dk.tij.freezingEffect.handler;
 
-import dk.tij.freezingEffect.utils.InterpolationFunctions;
+import dk.tij.freezingEffect.utils.*;
 import dk.tij.freezingEffect.constants.TemperatureConstants;
-import dk.tij.freezingEffect.toolbox.Pair;
-import dk.tij.freezingEffect.utils.ItemUtils;
-import dk.tij.freezingEffect.utils.Maths;
-import dk.tij.freezingEffect.utils.TemperatureUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.damage.DamageSource;
@@ -81,7 +77,7 @@ public class TemperatureHandler {
 
         if (TemperatureUtils.isPlayerBurning(player)) {
             double fireValue = -TemperatureConstants.HEAT_SOURCE_WARMING
-                    .getOrDefault(Material.FIRE, Pair.of(1d, TemperatureConstants.HEAT_RADIUS)).getK();
+                    .getOrDefault(Material.FIRE, HeatSource.DEFAULT_CONFIGURATION).heat();
             fireValue *= TemperatureConstants.PLAYER_BURNING_BOOST;
             if (fractionalChange < 0)
                 fractionalChange += fireValue;

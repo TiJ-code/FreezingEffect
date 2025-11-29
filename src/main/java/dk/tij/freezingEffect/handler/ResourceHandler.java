@@ -1,8 +1,7 @@
 package dk.tij.freezingEffect.handler;
 
-import dk.tij.freezingEffect.utils.InterpolationFunctions;
+import dk.tij.freezingEffect.utils.HeatSource;
 import dk.tij.freezingEffect.constants.TemperatureConstants;
-import dk.tij.freezingEffect.toolbox.Pair;
 import dk.tij.freezingEffect.utils.ItemUtils;
 import dk.tij.freezingEffect.utils.Maths;
 import org.bukkit.Material;
@@ -71,7 +70,7 @@ public class ResourceHandler {
 
             double value = Maths.clampPositiveIntD(heatSourceSection.getDouble(key + ".value"));
             int radius = Maths.clampPositiveI(heatSourceSection.getInt(key + ".radius"));
-            TemperatureConstants.HEAT_SOURCE_WARMING.put(material, Pair.of(value, radius));
+            TemperatureConstants.HEAT_SOURCE_WARMING.put(material, new HeatSource(value, radius));
         }
 
         TemperatureConstants.PLAYER_BURNING_BOOST = Maths.clampI0To100(
