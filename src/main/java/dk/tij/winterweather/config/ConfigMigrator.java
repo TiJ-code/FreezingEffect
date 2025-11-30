@@ -23,16 +23,16 @@ public class ConfigMigrator {
     private void setupMigrations() {
         migrations.put(1, cfg -> {
             String oldPath = ConfigEntries.CATEGORY_FROST + ".heatRadius";
-            renameEntry(cfg, oldPath, ConfigEntries.PLAYER_RADIUS);
+            renameEntry(cfg, oldPath, ConfigEntries.FROST_PLAYER_RADIUS);
         });
 
         migrations.put(2, cfg -> {
-            String path = ConfigEntries.SUB_CATEGORY_ISOLATION + "." + ConfigEntries.ISOLATION_ARMOUR_PIECES;
+            String path = ConfigEntries.FROST_SUB_CATEGORY_ISOLATION + "." + ConfigEntries.FROST_ISOLATION_ARMOUR_PIECES;
             if (cfg.contains(path)) {
                 Objects.requireNonNull(cfg.getConfigurationSection(path)).getKeys(false).forEach(key -> {
                     Object value = config.get(path + "." + key);
                     if (value instanceof Integer) {
-                        cfg.set(path + "." + key, Map.of(ConfigEntries.ISOLATION_ARMOUR_PIECE_VALUE, value));
+                        cfg.set(path + "." + key, Map.of(ConfigEntries.FROST_ISOLATION_ARMOUR_PIECE_VALUE, value));
                         plugin.getLogger().info("Migrated " + path + "." + key + " » map with value");
                     }
                 });

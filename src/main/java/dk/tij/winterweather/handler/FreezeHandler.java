@@ -12,11 +12,13 @@ import java.util.UUID;
 
 public class FreezeHandler {
     private final WinterWeather plugin;
+    private final ResourceHandler resourceHandler;
     private final Map<UUID, Integer> storedFreezeTicks = new HashMap<>();
     private BukkitRunnable freezeHandlerRunnable;
 
-    public FreezeHandler(WinterWeather plugin) {
+    public FreezeHandler(WinterWeather plugin, ResourceHandler resourceHandler) {
         this.plugin = plugin;
+        this.resourceHandler = resourceHandler;
     }
 
     public void start() {
@@ -26,7 +28,7 @@ public class FreezeHandler {
         freezeHandlerRunnable = new BukkitRunnable() {
             @Override
             public void run() {
-                if (!plugin.getIsEnabled()) stop();
+                if (!resourceHandler.isEnabled()) stop();
 
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     int last = storedFreezeTicks.getOrDefault(player.getUniqueId(), player.getFreezeTicks());

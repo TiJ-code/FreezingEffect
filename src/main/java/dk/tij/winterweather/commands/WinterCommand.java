@@ -3,6 +3,7 @@ package dk.tij.winterweather.commands;
 import dk.tij.winterweather.WinterWeather;
 import dk.tij.winterweather.commands.utils.ChatMessages;
 import dk.tij.winterweather.handler.PlayerDataHandler;
+import dk.tij.winterweather.handler.ResourceHandler;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.Style;
@@ -17,15 +18,15 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 public class WinterCommand implements CommandExecutor {
     private final WinterWeather plugin;
+    private final ResourceHandler resourceHandler;
     private final PlayerDataHandler playerDataHandler;
 
-    public WinterCommand(WinterWeather plugin, PlayerDataHandler playerDataHandler) {
+    public WinterCommand(WinterWeather plugin, PlayerDataHandler playerDataHandler, ResourceHandler resourceHandler) {
         this.plugin = plugin;
         this.playerDataHandler = playerDataHandler;
+        this.resourceHandler = resourceHandler;
     }
 
     @Override
@@ -42,6 +43,10 @@ public class WinterCommand implements CommandExecutor {
 
             if (arguments[0].equalsIgnoreCase(CommandLabels.ARGUMENT_DEBUG)) {
                 toggleDebug(commandSender);
+            }
+
+            if (arguments[0].equalsIgnoreCase(CommandLabels.ARGUMENT_DAY_CYCLE)) {
+                toggleCustomDayCycle(commandSender);
             }
 
             if (arguments[0].equalsIgnoreCase(CommandLabels.ARGUMENT_START)) {
@@ -72,11 +77,11 @@ public class WinterCommand implements CommandExecutor {
                             player.playSound(player.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 3f, 0.6f)
                     );
                 }, (counter + 1) * 20L);
-                plugin.setIsEnabled(true);
+                plugin.enablePlugin(true);
             }
 
             if (arguments[0].equalsIgnoreCase(CommandLabels.ARGUMENT_STOP)) {
-                plugin.setIsEnabled(false);
+                plugin.enablePlugin(false);
                 Audience audience = Audience.audience(Bukkit.getOnlinePlayers());
                 audience.sendMessage(Component.text(ChatMessages.CHAT_PREFIX + ChatColor.GREEN  + "☀ Winter has stopped!"));
             }
@@ -95,6 +100,20 @@ public class WinterCommand implements CommandExecutor {
                 }
 
                 setDebug(commandSender, turnOn ? 1 : 0);
+
+                return true;
+            }
+
+            if (arguments[0].equalsIgnoreCase(CommandLabels.ARGUMENT_DAY_CYCLE)) {
+                boolean turnOn = arguments[1].equalsIgnoreCase(CommandLabels.DAY_CYCLE_ARGUMENT_ON);
+                boolean turnOff = arguments[1].equalsIgnoreCase(CommandLabels.DAY_CYCLE_ARGUMENT_OFF);
+
+                if (!turnOn && !turnOff) {
+                    commandSender.sendMessage(ChatMessages.CHAT_PREFIX + ChatColor.AQUA + "Usage: /winter customDayCycle <on/off>");
+                    return true;
+                }
+
+                setCustomDayCycle(commandSender, turnOn ? 1 : 0);
 
                 return true;
             }
@@ -179,6 +198,16 @@ public class WinterCommand implements CommandExecutor {
         } else {
             commandSender.sendMessage(ChatMessages.CHAT_PREFIX + ChatColor.RED + "Only players can run this command.");
         }
+    }
+
+    private void toggleCustomDayCycle(CommandSender commandSender) {
+        setCustomDayCycle(commandSender, -1);
+    }
+
+    private void setCustomDayCycle(CommandSender commandSender, int doToggle) {
+        boolean newState = (doToggle < 0) ? !resourceHandler.isCustomDayCycleEnabled() : (doToggle == 1);
+        resourceHandler.setCustomDayCycleEnabled(newState);
+        commandSender.sendMessage(ChatMessages.CHAT_PREFIX + ChatColor.GREEN + "CustomDayCycle: " + (newState ? "ON" : "OFF"));
     }
 
     private Object parseConfigValue(String rawValue) {

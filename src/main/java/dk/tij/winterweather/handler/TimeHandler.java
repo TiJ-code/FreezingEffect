@@ -7,9 +7,11 @@ import org.bukkit.World;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 public class TimeHandler implements Listener {
+    private final JavaPlugin plugin;
+    private final ResourceHandler resourceHandler;
+
     private final World world;
     private final long totalCycleTicks;
     private final long dayTicks;
@@ -21,7 +23,10 @@ public class TimeHandler implements Listener {
     private long customTime = 0;
     private boolean initialised = false;
 
-    public TimeHandler(JavaPlugin plugin) {
+    public TimeHandler(JavaPlugin plugin, ResourceHandler resourceHandler) {
+        this.plugin = plugin;
+        this.resourceHandler = resourceHandler;
+
         this.world = plugin.getServer().getWorlds().getFirst();
 
         long totalMinutes = 1;
@@ -31,10 +36,16 @@ public class TimeHandler implements Listener {
         totalCycleTicks = totalMinutes * 60 * TimeConstants.VANILLA_TICKS_PER_SECOND;
         dayTicks = (long) (totalCycleTicks * dayPercent);
         nightTicks = (long) (totalMinutes * nightPercent);
+    }
 
+    public void start() {
         daylightTask = new BukkitRunnable() {
             @Override
             public void run() {
+                if (!resourceHandler.isCustomDayCycleEnabled()) stop();
+
+                Bukkit.getConsoleSender().sendMessage("updating time");
+
                 Boolean doDaylightCycle = world.getGameRuleValue(GameRule.DO_DAYLIGHT_CYCLE);
                 boolean cycleOn = doDaylightCycle != null && doDaylightCycle;
 
@@ -71,5 +82,15 @@ public class TimeHandler implements Listener {
                 world.setFullTime(customTime);
             }
         };
+        daylightTask.runTaskTimer(plugin, 1L, 1L);
+    }
+
+    public void stop() {
+        if (daylightTask != null) daylightTask.cancel();
+    }
+
+    public void restart() {
+        stop();
+        start();
     }
 }

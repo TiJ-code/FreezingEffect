@@ -8,7 +8,6 @@ import dk.tij.winterweather.events.PlayerQuitListener;
 import dk.tij.winterweather.events.PlayerRespawnListener;
 import dk.tij.winterweather.events.PlayerJoinListener;
 import dk.tij.winterweather.handler.*;
-import dk.tij.winterweather.utils.Maths;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class WinterWeather extends JavaPlugin {
@@ -29,17 +28,17 @@ public final class WinterWeather extends JavaPlugin {
         resourceHandler = new ResourceHandler(this);
         playerDataHandler = new PlayerDataHandler(this);
 
-        freezeHandler = new FreezeHandler(this);
+        freezeHandler = new FreezeHandler(this, resourceHandler);
 
-        temperatureHandler = new TemperatureHandler(this, freezeHandler, playerDataHandler);
+        temperatureHandler = new TemperatureHandler(this, resourceHandler, freezeHandler, playerDataHandler);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(playerDataHandler, temperatureHandler), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(playerDataHandler, temperatureHandler), this);
         getServer().getPluginManager().registerEvents(new PlayerRespawnListener(temperatureHandler, freezeHandler), this);
 
-        getCommand(CommandLabels.COMMAND_LABEL).setExecutor(new WinterCommand(this, playerDataHandler));
+        getCommand(CommandLabels.COMMAND_LABEL).setExecutor(new WinterCommand(this, playerDataHandler, resourceHandler));
         getCommand(CommandLabels.COMMAND_LABEL).setTabCompleter(new WinterTabCompleter(this));
 
-        timeHandler = new TimeHandler(this);
+        timeHandler = new TimeHandler(this, resourceHandler);
 
         freezeHandler.start();
         temperatureHandler.startDecayTask();
@@ -65,21 +64,27 @@ public final class WinterWeather extends JavaPlugin {
         playerDataHandler.saveConfig();
     }
 
-    public void setIsEnabled(boolean state) {
+    public void enablePlugin(boolean state) {
         if (resourceHandler == null) return;
         resourceHandler.setEnabled(state);
 
         if (state) {
             temperatureHandler.startDecayTask();
             freezeHandler.start();
+            timeHandler.start();
         } else {
             temperatureHandler.stopDecayTask();
             freezeHandler.stop();
+            timeHandler.stop();
         }
     }
 
-    public boolean getIsEnabled() {
-        if (resourceHandler == null) return false;
-        return resourceHandler.isEnabled();
+    public void enableCustomDayCycle(boolean state) {
+        if (timeHandler == null) return;
+
+        if (state)
+            timeHandler.start();
+        else
+            timeHandler.stop();
     }
 }

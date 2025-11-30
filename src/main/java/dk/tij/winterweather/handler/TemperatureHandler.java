@@ -2,6 +2,7 @@ package dk.tij.winterweather.handler;
 
 import dk.tij.winterweather.WinterWeather;
 import dk.tij.winterweather.commands.utils.AdminDebug;
+import dk.tij.winterweather.constants.TimeConstants;
 import dk.tij.winterweather.utils.*;
 import dk.tij.winterweather.constants.TemperatureConstants;
 import org.bukkit.Bukkit;
@@ -17,6 +18,7 @@ import java.util.UUID;
 
 public class TemperatureHandler {
     private final WinterWeather plugin;
+    private final ResourceHandler resourceHandler;
     private final FreezeHandler freezeHandler;
     private final PlayerDataHandler playerDataHandler;
 
@@ -26,8 +28,9 @@ public class TemperatureHandler {
     private BukkitRunnable decayTask;
     private BukkitRunnable leatherArmourDamageTask;
 
-    public TemperatureHandler(WinterWeather plugin, FreezeHandler freezeHandler, PlayerDataHandler playerDataHandler) {
+    public TemperatureHandler(WinterWeather plugin, ResourceHandler resourceHandler, FreezeHandler freezeHandler, PlayerDataHandler playerDataHandler) {
         this.plugin = plugin;
+        this.resourceHandler = resourceHandler;
         this.freezeHandler = freezeHandler;
         this.playerDataHandler = playerDataHandler;
         this.freezingDamageSource = DamageSource.builder(DamageType.FREEZE).build();
@@ -37,7 +40,7 @@ public class TemperatureHandler {
         decayTask = new BukkitRunnable() {
             @Override
             public void run() {
-                if (!plugin.getIsEnabled()) stopDecayTask();
+                if (!resourceHandler.isEnabled()) stopDecayTask();
 
                 Bukkit.getOnlinePlayers().forEach(player -> tickPlayerTemperature(player));
             }
@@ -46,12 +49,12 @@ public class TemperatureHandler {
         leatherArmourDamageTask = new BukkitRunnable() {
             @Override
             public void run() {
-                if (!plugin.getIsEnabled()) stopDecayTask();
+                if (!resourceHandler.isEnabled()) stopDecayTask();
 
                 Bukkit.getOnlinePlayers().forEach(player -> applyDamageIfLeatherArmour(player));
             }
         };
-        leatherArmourDamageTask.runTaskTimer(plugin, 1L, TemperatureConstants.VANILLA_DAMAGE_FREEZE_TICKS);
+        leatherArmourDamageTask.runTaskTimer(plugin, 1L, TimeConstants.VANILLA_TICKS_FREEZE_INTERVAL);
     }
 
     public void stopDecayTask() {

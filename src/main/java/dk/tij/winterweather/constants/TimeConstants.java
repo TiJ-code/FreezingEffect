@@ -10,4 +10,10 @@ public final class TimeConstants {
         VANILLA_TOTAL_CYCLE_MINUTES = 20,
         VANILLA_DAY_PERCENTAGE = 50,
         MATH_SECONDS_PER_MINUTE = 60;
+
+    public static int
+        DAY_CYCLE_LENGTH_MINUTES = 20;
+
+    public static double
+        DAY_PERCENTAGE = 0.50;
 }

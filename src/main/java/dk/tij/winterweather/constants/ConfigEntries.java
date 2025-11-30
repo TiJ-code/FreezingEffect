@@ -5,23 +5,29 @@ public final class ConfigEntries {
 
     public static final String CONFIG_VERSION_ENTRY = "config-version";
 
-    public static final String CATEGORY_FROST = "frost";
+    public static final String CATEGORY_FROST = "frost",
+                               CATEGORY_DAYLIGHT = "days";
 
     public static final String ENABLED = "enable",
-                               CRITICAL_FREEZING_TICKS = CATEGORY_FROST + P + "criticalFreezingTicks",
-                               PLAYER_RADIUS = CATEGORY_FROST + P + "playerRadius",
-                               INTERPOLATION_FUNCTION = CATEGORY_FROST + P + "interpolationFunction",
-                               PLAYER_BURNING_BOOST = CATEGORY_FROST + P + "playerBurningBoost",
-                               PLAYER_POWDER_SNOW_BOOST =  CATEGORY_FROST + P + "playerPowderSnowBoost",
 
-                               SUB_CATEGORY_ISOLATION = CATEGORY_FROST + P + "isolation",
-                               SUB_CATEGORY_HEAT_SOURCES = CATEGORY_FROST + P + "heatSources",
+                               DAYLIGHT_CUSTOM_CYCLE_ENABLE = "customCycleEnable",
+                               DAYLIGHT_TOTAL_CYCLE_MINUTES = CATEGORY_DAYLIGHT + P + "totalCycleMinutes",
+                               DAYLIGHT_DAY_PERCENTAGE = CATEGORY_DAYLIGHT + P + "dayPercentage",
 
-                               HEAT_SOURCE_VALUE = P + "value",
-                               HEAT_SOURCE_RADIUS = P + "radius",
+                               FROST_CRITICAL_FREEZING_TICKS = CATEGORY_FROST + P + "criticalFreezingTicks",
+                               FROST_PLAYER_RADIUS = CATEGORY_FROST + P + "playerRadius",
+                               FROST_INTERPOLATION_FUNCTION = CATEGORY_FROST + P + "interpolationFunction",
+                               FROST_PLAYER_BURNING_BOOST = CATEGORY_FROST + P + "playerBurningBoost",
+                               FROST_PLAYER_POWDER_SNOW_BOOST =  CATEGORY_FROST + P + "playerPowderSnowBoost",
 
-                               ISOLATION_MAX_POSSIBLE_ISOLATION = "maxPossibleIsolation",
-                               ISOLATION_ARMOUR_PIECES = "armourPieces",
+                               FROST_SUB_CATEGORY_ISOLATION = CATEGORY_FROST + P + "isolation",
+                               FROST_SUB_CATEGORY_HEAT_SOURCES = CATEGORY_FROST + P + "heatSources",
 
-                               ISOLATION_ARMOUR_PIECE_VALUE = "value";
+                               FROST_HEAT_SOURCE_VALUE = P + "value",
+                               FROST_HEAT_SOURCE_RADIUS = P + "radius",
+
+                               FROST_ISOLATION_MAX_POSSIBLE_ISOLATION = "maxPossibleIsolation",
+                               FROST_ISOLATION_ARMOUR_PIECES = "armourPieces",
+
+                               FROST_ISOLATION_ARMOUR_PIECE_VALUE = "value";
 }

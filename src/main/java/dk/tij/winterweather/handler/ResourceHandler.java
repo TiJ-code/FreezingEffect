@@ -3,6 +3,7 @@ package dk.tij.winterweather.handler;
 import dk.tij.winterweather.WinterWeather;
 import dk.tij.winterweather.constants.ConfigEntries;
 import dk.tij.winterweather.config.ConfigReader;
+import dk.tij.winterweather.constants.TimeConstants;
 import dk.tij.winterweather.utils.HeatSource;
 import dk.tij.winterweather.constants.TemperatureConstants;
 import dk.tij.winterweather.utils.ItemUtils;
@@ -36,11 +37,31 @@ public class ResourceHandler {
         return reader.getBoolean(ConfigEntries.ENABLED, false);
     }
 
+    public void setCustomDayCycleEnabled(boolean enabled) {
+        plugin.getConfig().set(ConfigEntries.DAYLIGHT_CUSTOM_CYCLE_ENABLE, enabled);
+        plugin.enableCustomDayCycle(enabled);
+        plugin.saveConfig();
+    }
+
+    public boolean isCustomDayCycleEnabled() {
+        return reader.getBoolean(ConfigEntries.DAYLIGHT_CUSTOM_CYCLE_ENABLE, false);
+    }
+
     private void loadConfig() {
+        loadCustomDayCycleValues();
         loadFrostPlayerStats();
         loadIsolationValues();
         loadHeatSourceValues();
         loadInterpolationFunction();
+    }
+
+    private void loadCustomDayCycleValues() {
+        TimeConstants.DAY_CYCLE_LENGTH_MINUTES = Maths.clampPositiveI(
+                reader.getInt(ConfigEntries.DAYLIGHT_TOTAL_CYCLE_MINUTES, TimeConstants.VANILLA_TOTAL_CYCLE_MINUTES)
+        );
+        TimeConstants.DAY_PERCENTAGE = Maths.clampI0To100(
+                reader.getInt(ConfigEntries.DAYLIGHT_DAY_PERCENTAGE, TimeConstants.VANILLA_DAY_PERCENTAGE)
+        ) * TO_PERCENT_CONVERSION_FACTOR;
     }
 
     private void loadFrostPlayerStats() {

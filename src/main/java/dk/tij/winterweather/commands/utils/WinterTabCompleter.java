@@ -28,13 +28,20 @@ public final class WinterTabCompleter implements TabCompleter {
                     CommandLabels.ARGUMENT_DEBUG,
                     CommandLabels.ARGUMENT_CONFIG,
                     CommandLabels.ARGUMENT_START,
-                    CommandLabels.ARGUMENT_STOP
+                    CommandLabels.ARGUMENT_STOP,
+                    CommandLabels.ARGUMENT_DAY_CYCLE
             );
         }
 
-        // /winter debug <on/off>
-        if (arguments.length == 2 && arguments[0].equalsIgnoreCase(CommandLabels.ARGUMENT_DEBUG)) {
-            return List.of(CommandLabels.DEBUG_ARGUMENT_ON, CommandLabels.DEBUG_ARGUMENT_OFF);
+        if (arguments.length == 2) {
+            // /winter debug <on/off>
+            if (arguments[0].equalsIgnoreCase(CommandLabels.ARGUMENT_DEBUG)) {
+                return List.of(CommandLabels.DEBUG_ARGUMENT_ON, CommandLabels.DEBUG_ARGUMENT_OFF);
+            }
+            // /winter customDayCycle <on/off>
+            if (arguments[0].equalsIgnoreCase(CommandLabels.ARGUMENT_DAY_CYCLE)) {
+                return List.of(CommandLabels.DAY_CYCLE_ARGUMENT_ON, CommandLabels.DAY_CYCLE_ARGUMENT_OFF);
+            }
         }
 
         // /winter config <get/set/reload>
