@@ -1,7 +1,7 @@
 # ==== WinterWeather Configuration ====
 # You can safely keep old configs; missing fields get added automatically
 # If this version is lower than the plugin's version, migrations will run.
-config-version: 5
+config-version: 6
 
 enable: false
 
@@ -9,6 +9,7 @@ days:
   customCycleEnable: true
   totalCycleMinutes: 30
   dayPercentage: 40
+  interpolationFunction: 'smootherstep'
 
 frost:
   criticalFreezingTicks: 1800

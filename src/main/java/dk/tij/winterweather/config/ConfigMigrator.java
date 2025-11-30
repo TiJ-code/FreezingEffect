@@ -54,6 +54,8 @@ public class ConfigMigrator {
             addEntry(cfg, ConfigEntries.DAYLIGHT_TOTAL_CYCLE_MINUTES, TimeConstants.VANILLA_TOTAL_CYCLE_MINUTES);
             addEntry(cfg, ConfigEntries.DAYLIGHT_DAY_PERCENTAGE, TimeConstants.VANILLA_DAY_PERCENTAGE);
         });
+
+        migrations.put(6, cfg -> addEntry(cfg, ConfigEntries.DAYLIGHT_INTERPOLATION_FUNCTION, TimeConstants.INTERPOLATION_FUNCTION));
     }
 
     public void migrate() {

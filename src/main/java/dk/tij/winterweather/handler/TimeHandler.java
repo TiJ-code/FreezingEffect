@@ -1,7 +1,7 @@
 package dk.tij.winterweather.handler;
 
 import dk.tij.winterweather.constants.TimeConstants;
-import org.bukkit.Bukkit;
+import dk.tij.winterweather.utils.Maths;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.event.Listener;
@@ -42,7 +42,10 @@ public class TimeHandler implements Listener {
         daylightTask = new BukkitRunnable() {
             @Override
             public void run() {
-                if (!TimeConstants.CUSTOM_DAY_CYCLE_ENABLE) stop();
+                if (!TimeConstants.CUSTOM_DAY_CYCLE_ENABLE) {
+                    stop();
+                    return;
+                }
 
                 Boolean doDaylightCycle = world.getGameRuleValue(GameRule.DO_DAYLIGHT_CYCLE);
                 boolean cycleOn = doDaylightCycle != null && doDaylightCycle;
@@ -62,8 +65,22 @@ public class TimeHandler implements Listener {
                 if (cycleOn) {
                     double increment;
 
-                    if (customTime < TimeConstants.VANILLA_TICKS_PER_HALF_DAY) {
+                    final long time = customTime % TimeConstants.VANILLA_TICKS_PER_DAY;
+
+                    if (time >= TimeConstants.VANILLA_T_SUNRISE_START && time < TimeConstants.VANILLA_T_SUNRISE_END) {
+                        double normalised = (double) time / TimeConstants.VANILLA_T_SUNRISE_DURATION;
+                        double t = TimeConstants.INTERPOLATION_FUNCTION.apply(normalised);
+                        increment = Maths.lerp(TimeConstants.NIGHT_INCREMENT_PER_TICK,
+                                               TimeConstants.DAY_INCREMENT_PER_TICK,
+                                               t);
+                    } else if (time >= TimeConstants.VANILLA_T_SUNRISE_END && time < TimeConstants.VANILLA_T_SUNDOWN_START) {
                         increment = TimeConstants.DAY_INCREMENT_PER_TICK;
+                    } else if (time >= TimeConstants.VANILLA_T_SUNDOWN_START && time < TimeConstants.VANILLA_T_SUNDOWN_END) {
+                        double normalised = (double) (time - TimeConstants.VANILLA_T_SUNDOWN_START) / TimeConstants.VANILLA_T_SUNDOWN_DURATION;
+                        double t = TimeConstants.INTERPOLATION_FUNCTION.apply(normalised);
+                        increment = Maths.lerp(TimeConstants.DAY_INCREMENT_PER_TICK,
+                                               TimeConstants.NIGHT_INCREMENT_PER_TICK,
+                                               t);
                     } else {
                         increment = TimeConstants.NIGHT_INCREMENT_PER_TICK;
                     }

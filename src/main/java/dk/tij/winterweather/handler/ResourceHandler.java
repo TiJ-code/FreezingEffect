@@ -6,10 +6,13 @@ import dk.tij.winterweather.config.ConfigReader;
 import dk.tij.winterweather.constants.TimeConstants;
 import dk.tij.winterweather.utils.HeatSource;
 import dk.tij.winterweather.constants.TemperatureConstants;
+import dk.tij.winterweather.utils.InterpolationFunctions;
 import dk.tij.winterweather.utils.ItemUtils;
 import dk.tij.winterweather.utils.Maths;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+
+import java.util.function.Function;
 
 import static dk.tij.winterweather.utils.Maths.TO_PERCENT_CONVERSION_FACTOR;
 
@@ -50,7 +53,6 @@ public class ResourceHandler {
         loadFrostPlayerStats();
         loadIsolationValues();
         loadHeatSourceValues();
-        loadInterpolationFunction();
     }
 
     private void loadCustomDayCycleValues() {
@@ -61,6 +63,8 @@ public class ResourceHandler {
         TimeConstants.DAY_PERCENTAGE = Maths.clampI0To100(
                 reader.getInt(ConfigEntries.DAYLIGHT_DAY_PERCENTAGE, TimeConstants.VANILLA_DAY_PERCENTAGE)
         ) * TO_PERCENT_CONVERSION_FACTOR;
+
+        TimeConstants.INTERPOLATION_FUNCTION = loadInterpolationFunction(ConfigEntries.DAYLIGHT_INTERPOLATION_FUNCTION);
 
         double dayDuration = TimeConstants.DAY_CYCLE_LENGTH_MINUTES * TimeConstants.DAY_PERCENTAGE;
         double nightDuration = TimeConstants.DAY_CYCLE_LENGTH_MINUTES - dayDuration;
@@ -80,6 +84,7 @@ public class ResourceHandler {
                 reader.getDouble(ConfigEntries.FROST_PLAYER_RADIUS, 0)
         );
         TemperatureConstants.PLAYER_RADIUS_SQUARED = TemperatureConstants.PLAYER_RADIUS * TemperatureConstants.PLAYER_RADIUS;
+        TemperatureConstants.INTERPOLATION_FUNCTION = loadInterpolationFunction(ConfigEntries.FROST_INTERPOLATION_FUNCTION);
     }
 
     private void loadIsolationValues() {
@@ -129,9 +134,9 @@ public class ResourceHandler {
         ) * TO_PERCENT_CONVERSION_FACTOR + 1d;
     }
 
-    private void loadInterpolationFunction() {
-        String interpolationFunctionName = reader.getString(ConfigEntries.FROST_INTERPOLATION_FUNCTION,
-                TemperatureConstants.INTERPOLATION_FUNCTIONS_MAPPING.keySet().toArray(String[]::new)[0]);
-        TemperatureConstants.INTERPOLATION_FUNCTION = TemperatureConstants.INTERPOLATION_FUNCTIONS_MAPPING.get(interpolationFunctionName);
+    private Function<Double, Double> loadInterpolationFunction(String configKey) {
+        String interpolationFunctionName = reader.getString(configKey,
+                InterpolationFunctions.INTERPOLATION_FUNCTIONS_MAPPING.keySet().toArray(String[]::new)[0]);
+        return InterpolationFunctions.INTERPOLATION_FUNCTIONS_MAPPING.get(interpolationFunctionName);
     }
 }

@@ -22,4 +22,8 @@ public final class Maths {
     public static double clampPositiveIntD(double value) {
         return clampD(value, 0, Integer.MAX_VALUE);
     }
+
+    public static double lerp(double a, double b, double t) {
+        return a + (b - a) * t;
+    }
 }

@@ -15,12 +15,6 @@ public final class TemperatureConstants {
 
     public static final double BASE_POWDER_SNOW_FACTOR = 1.225; // approximate sqrt of 1.5
 
-    public static final Map<String, Function<Double, Double>> INTERPOLATION_FUNCTIONS_MAPPING = Map.of(
-            "linear", InterpolationFunctions::linear,
-            "smoothstep", InterpolationFunctions::smoothstep,
-            "smootherstep", InterpolationFunctions::smootherstep
-    );
-
     public static int
         CRITICAL_FREEZING_TICKS = 1800;
 
