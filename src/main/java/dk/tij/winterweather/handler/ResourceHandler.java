@@ -66,6 +66,25 @@ public class ResourceHandler {
 
         TimeConstants.INTERPOLATION_FUNCTION = loadInterpolationFunction(ConfigEntries.DAYLIGHT_INTERPOLATION_FUNCTION);
 
+        TimeConstants.T_SUNRISE_START = Maths.clampI(
+                reader.getInt(ConfigEntries.DAYLIGHT_T_SUNRISE_START, TimeConstants.VANILLA_T_SUNRISE_START),
+                0, TimeConstants.VANILLA_TICKS_PER_DAY
+        );
+        TimeConstants.T_SUNRISE_END = Maths.clampI(
+                reader.getInt(ConfigEntries.DAYLIGHT_T_SUNRISE_END, TimeConstants.VANILLA_T_SUNRISE_END),
+                0, TimeConstants.VANILLA_TICKS_PER_DAY
+        );
+        TimeConstants.T_SUNDOWN_START = Maths.clampI(
+                reader.getInt(ConfigEntries.DAYLIGHT_T_SUNDOWN_START, TimeConstants.VANILLA_T_SUNDOWN_START),
+                0, TimeConstants.VANILLA_TICKS_PER_DAY
+        );
+        TimeConstants.T_SUNDOWN_END = Maths.clampI(
+                reader.getInt(ConfigEntries.DAYLIGHT_T_SUNDOWN_END, TimeConstants.VANILLA_T_SUNDOWN_END),
+                0, TimeConstants.VANILLA_TICKS_PER_DAY
+        );
+        TimeConstants.T_SUNRISE_DURATION = Maths.clampPositiveI(TimeConstants.T_SUNRISE_END - TimeConstants.T_SUNRISE_START);
+        TimeConstants.T_SUNDOWN_DURATION = Maths.clampPositiveI(TimeConstants.T_SUNDOWN_END - TimeConstants.T_SUNDOWN_START);
+
         double dayDuration = TimeConstants.DAY_CYCLE_LENGTH_MINUTES * TimeConstants.DAY_PERCENTAGE;
         double nightDuration = TimeConstants.DAY_CYCLE_LENGTH_MINUTES - dayDuration;
 

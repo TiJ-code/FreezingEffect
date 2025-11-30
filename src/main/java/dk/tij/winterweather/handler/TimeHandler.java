@@ -67,16 +67,16 @@ public class TimeHandler implements Listener {
 
                     final long time = customTime % TimeConstants.VANILLA_TICKS_PER_DAY;
 
-                    if (time >= TimeConstants.VANILLA_T_SUNRISE_START && time < TimeConstants.VANILLA_T_SUNRISE_END) {
-                        double normalised = (double) time / TimeConstants.VANILLA_T_SUNRISE_DURATION;
+                    if (time >= TimeConstants.T_SUNRISE_START && time < TimeConstants.T_SUNRISE_END) {
+                        double normalised = (double) time / TimeConstants.T_SUNRISE_DURATION;
                         double t = TimeConstants.INTERPOLATION_FUNCTION.apply(normalised);
                         increment = Maths.lerp(TimeConstants.NIGHT_INCREMENT_PER_TICK,
                                                TimeConstants.DAY_INCREMENT_PER_TICK,
                                                t);
-                    } else if (time >= TimeConstants.VANILLA_T_SUNRISE_END && time < TimeConstants.VANILLA_T_SUNDOWN_START) {
+                    } else if (time >= TimeConstants.T_SUNRISE_END && time < TimeConstants.T_SUNDOWN_START) {
                         increment = TimeConstants.DAY_INCREMENT_PER_TICK;
-                    } else if (time >= TimeConstants.VANILLA_T_SUNDOWN_START && time < TimeConstants.VANILLA_T_SUNDOWN_END) {
-                        double normalised = (double) (time - TimeConstants.VANILLA_T_SUNDOWN_START) / TimeConstants.VANILLA_T_SUNDOWN_DURATION;
+                    } else if (time >= TimeConstants.T_SUNDOWN_START && time < TimeConstants.T_SUNDOWN_END) {
+                        double normalised = (double) (time - TimeConstants.T_SUNDOWN_START) / TimeConstants.T_SUNDOWN_DURATION;
                         double t = TimeConstants.INTERPOLATION_FUNCTION.apply(normalised);
                         increment = Maths.lerp(TimeConstants.DAY_INCREMENT_PER_TICK,
                                                TimeConstants.NIGHT_INCREMENT_PER_TICK,

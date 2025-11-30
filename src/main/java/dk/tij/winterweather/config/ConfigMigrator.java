@@ -3,6 +3,7 @@ package dk.tij.winterweather.config;
 import dk.tij.winterweather.WinterWeather;
 import dk.tij.winterweather.constants.ConfigEntries;
 import dk.tij.winterweather.constants.TimeConstants;
+import dk.tij.winterweather.utils.InterpolationFunctions;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -55,7 +56,14 @@ public class ConfigMigrator {
             addEntry(cfg, ConfigEntries.DAYLIGHT_DAY_PERCENTAGE, TimeConstants.VANILLA_DAY_PERCENTAGE);
         });
 
-        migrations.put(6, cfg -> addEntry(cfg, ConfigEntries.DAYLIGHT_INTERPOLATION_FUNCTION, TimeConstants.INTERPOLATION_FUNCTION));
+        migrations.put(6, cfg -> addEntry(cfg, ConfigEntries.DAYLIGHT_INTERPOLATION_FUNCTION, InterpolationFunctions.INTERPOLATION_FUNCTIONS_MAPPING.keySet().toArray(String[]::new)[0]));
+
+        migrations.put(7, cfg -> {
+            addEntry(cfg, ConfigEntries.DAYLIGHT_T_SUNRISE_START, TimeConstants.VANILLA_T_SUNRISE_START);
+            addEntry(cfg, ConfigEntries.DAYLIGHT_T_SUNRISE_END, TimeConstants.VANILLA_T_SUNRISE_END);
+            addEntry(cfg, ConfigEntries.DAYLIGHT_T_SUNDOWN_START, TimeConstants.VANILLA_T_SUNDOWN_START);
+            addEntry(cfg, ConfigEntries.DAYLIGHT_T_SUNDOWN_END, TimeConstants.VANILLA_T_SUNDOWN_END);
+        });
     }
 
     public void migrate() {
