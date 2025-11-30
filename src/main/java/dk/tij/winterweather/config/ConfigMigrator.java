@@ -1,6 +1,7 @@
 package dk.tij.winterweather.config;
 
 import dk.tij.winterweather.WinterWeather;
+import dk.tij.winterweather.constants.ConfigEntries;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.HashMap;

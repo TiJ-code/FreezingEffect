@@ -1,4 +1,4 @@
-package dk.tij.winterweather.config;
+package dk.tij.winterweather.constants;
 
 public final class PlayerConfigEntries {
     private static final String P = ".";

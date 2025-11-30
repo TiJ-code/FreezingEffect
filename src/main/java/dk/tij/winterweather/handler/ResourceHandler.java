@@ -1,7 +1,7 @@
 package dk.tij.winterweather.handler;
 
 import dk.tij.winterweather.WinterWeather;
-import dk.tij.winterweather.config.ConfigEntries;
+import dk.tij.winterweather.constants.ConfigEntries;
 import dk.tij.winterweather.config.ConfigReader;
 import dk.tij.winterweather.utils.HeatSource;
 import dk.tij.winterweather.constants.TemperatureConstants;

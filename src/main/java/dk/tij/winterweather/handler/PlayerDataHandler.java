@@ -1,6 +1,6 @@
 package dk.tij.winterweather.handler;
 
-import dk.tij.winterweather.config.PlayerConfigEntries;
+import dk.tij.winterweather.constants.PlayerConfigEntries;
 import dk.tij.winterweather.utils.FileUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
