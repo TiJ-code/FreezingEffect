@@ -45,23 +45,23 @@ public class ResourceHandler {
 
     private void loadFrostPlayerStats() {
         TemperatureConstants.CRITICAL_FREEZING_TICKS = Maths.clampPositiveI(
-                reader.getInt(ConfigEntries.CRITICAL_FREEZING_TICKS, Integer.MAX_VALUE)
+                reader.getInt(ConfigEntries.FROST_CRITICAL_FREEZING_TICKS, Integer.MAX_VALUE)
         );
         TemperatureConstants.PLAYER_RADIUS = Maths.clampPositiveIntD(
-                reader.getDouble(ConfigEntries.PLAYER_RADIUS, 0)
+                reader.getDouble(ConfigEntries.FROST_PLAYER_RADIUS, 0)
         );
         TemperatureConstants.PLAYER_RADIUS_SQUARED = TemperatureConstants.PLAYER_RADIUS * TemperatureConstants.PLAYER_RADIUS;
     }
 
     private void loadIsolationValues() {
-        ConfigurationSection isolationSection = plugin.getConfig().getConfigurationSection(ConfigEntries.SUB_CATEGORY_ISOLATION);
+        ConfigurationSection isolationSection = plugin.getConfig().getConfigurationSection(ConfigEntries.FROST_SUB_CATEGORY_ISOLATION);
 
         if (isolationSection == null) return;
 
-        int maxPossibleIsolationValue = Maths.clampI0To100(isolationSection.getInt(ConfigEntries.ISOLATION_MAX_POSSIBLE_ISOLATION, 0));
+        int maxPossibleIsolationValue = Maths.clampI0To100(isolationSection.getInt(ConfigEntries.FROST_ISOLATION_MAX_POSSIBLE_ISOLATION, 0));
         TemperatureConstants.MAX_POSSIBLE_ISOLATION = maxPossibleIsolationValue * TO_PERCENT_CONVERSION_FACTOR;
 
-        ConfigurationSection armourSection = isolationSection.getConfigurationSection(ConfigEntries.ISOLATION_ARMOUR_PIECES);
+        ConfigurationSection armourSection = isolationSection.getConfigurationSection(ConfigEntries.FROST_ISOLATION_ARMOUR_PIECES);
 
         if (armourSection == null) return;
 
@@ -77,7 +77,7 @@ public class ResourceHandler {
     }
 
     private void loadHeatSourceValues() {
-        ConfigurationSection heatSourceSection = plugin.getConfig().getConfigurationSection(ConfigEntries.SUB_CATEGORY_HEAT_SOURCES);
+        ConfigurationSection heatSourceSection = plugin.getConfig().getConfigurationSection(ConfigEntries.FROST_SUB_CATEGORY_HEAT_SOURCES);
 
         if (heatSourceSection == null) return;
 
@@ -86,22 +86,22 @@ public class ResourceHandler {
 
             if (material == null) continue;
 
-            double value = Maths.clampPositiveIntD(heatSourceSection.getDouble(key + ConfigEntries.HEAT_SOURCE_VALUE));
-            double radius = Maths.clampPositiveIntD(heatSourceSection.getInt(key + ConfigEntries.HEAT_SOURCE_RADIUS));
+            double value = Maths.clampPositiveIntD(heatSourceSection.getDouble(key + ConfigEntries.FROST_HEAT_SOURCE_VALUE));
+            double radius = Maths.clampPositiveIntD(heatSourceSection.getInt(key + ConfigEntries.FROST_HEAT_SOURCE_RADIUS));
             TemperatureConstants.HEAT_SOURCE_WARMING.put(material, new HeatSource(value, radius*radius));
         }
 
         TemperatureConstants.PLAYER_BURNING_BOOST = Maths.clampI0To100(
-                reader.getInt(ConfigEntries.PLAYER_BURNING_BOOST, 0)
+                reader.getInt(ConfigEntries.FROST_PLAYER_BURNING_BOOST, 0)
         ) * TO_PERCENT_CONVERSION_FACTOR + 1d;
 
         TemperatureConstants.PLAYER_POWDER_SNOW_BOOST = Maths.clampPositiveI(
-                reader.getInt(ConfigEntries.PLAYER_POWDER_SNOW_BOOST, 0)
+                reader.getInt(ConfigEntries.FROST_PLAYER_POWDER_SNOW_BOOST, 0)
         ) * TO_PERCENT_CONVERSION_FACTOR + 1d;
     }
 
     private void loadInterpolationFunction() {
-        String interpolationFunctionName = reader.getString(ConfigEntries.INTERPOLATION_FUNCTION,
+        String interpolationFunctionName = reader.getString(ConfigEntries.FROST_INTERPOLATION_FUNCTION,
                 TemperatureConstants.INTERPOLATION_FUNCTIONS_MAPPING.keySet().toArray(String[]::new)[0]);
         TemperatureConstants.INTERPOLATION_FUNCTION = TemperatureConstants.INTERPOLATION_FUNCTIONS_MAPPING.get(interpolationFunctionName);
     }

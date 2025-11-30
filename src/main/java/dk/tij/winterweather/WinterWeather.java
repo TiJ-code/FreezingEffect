@@ -7,16 +7,15 @@ import dk.tij.winterweather.config.ConfigMigrator;
 import dk.tij.winterweather.events.PlayerQuitListener;
 import dk.tij.winterweather.events.PlayerRespawnListener;
 import dk.tij.winterweather.events.PlayerJoinListener;
-import dk.tij.winterweather.handler.FreezeHandler;
-import dk.tij.winterweather.handler.PlayerDataHandler;
-import dk.tij.winterweather.handler.ResourceHandler;
-import dk.tij.winterweather.handler.TemperatureHandler;
+import dk.tij.winterweather.handler.*;
+import dk.tij.winterweather.utils.Maths;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class WinterWeather extends JavaPlugin {
     private ResourceHandler resourceHandler;
     private PlayerDataHandler playerDataHandler;
     private TemperatureHandler temperatureHandler;
+    private TimeHandler timeHandler;
     private FreezeHandler freezeHandler;
 
     @Override
@@ -39,6 +38,8 @@ public final class WinterWeather extends JavaPlugin {
 
         getCommand(CommandLabels.COMMAND_LABEL).setExecutor(new WinterCommand(this, playerDataHandler));
         getCommand(CommandLabels.COMMAND_LABEL).setTabCompleter(new WinterTabCompleter(this));
+
+        timeHandler = new TimeHandler(this);
 
         freezeHandler.start();
         temperatureHandler.startDecayTask();
