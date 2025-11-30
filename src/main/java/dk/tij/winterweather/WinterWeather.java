@@ -20,11 +20,10 @@ public final class WinterWeather extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
-        saveDefaultConfig();
-        ConfigMigrator configMigrator = new ConfigMigrator(this);
-
         getComponentLogger().info("Plugin successfully loaded!");
-
+        saveDefaultConfig();
+        getConfig().options().copyDefaults(true);
+        ConfigMigrator configMigrator = new ConfigMigrator(this);
         configMigrator.migrate();
 
         resourceHandler = new ResourceHandler(this);

@@ -44,10 +44,6 @@ public class ConfigMigrator {
             }
         });
 
-        migrations.put(3, cfg -> {
-            addEntry(cfg, ConfigEntries.ENABLED, false);
-        });
-
         migrations.put(4, cfg -> removeEntry(cfg, "debug"));
 
         migrations.put(5, cfg -> {
@@ -57,13 +53,6 @@ public class ConfigMigrator {
         });
 
         migrations.put(6, cfg -> addEntry(cfg, ConfigEntries.DAYLIGHT_INTERPOLATION_FUNCTION, InterpolationFunctions.INTERPOLATION_FUNCTIONS_MAPPING.keySet().toArray(String[]::new)[0]));
-
-        migrations.put(7, cfg -> {
-            addEntry(cfg, ConfigEntries.DAYLIGHT_T_SUNRISE_START, TimeConstants.VANILLA_T_SUNRISE_START);
-            addEntry(cfg, ConfigEntries.DAYLIGHT_T_SUNRISE_END, TimeConstants.VANILLA_T_SUNRISE_END);
-            addEntry(cfg, ConfigEntries.DAYLIGHT_T_SUNDOWN_START, TimeConstants.VANILLA_T_SUNDOWN_START);
-            addEntry(cfg, ConfigEntries.DAYLIGHT_T_SUNDOWN_END, TimeConstants.VANILLA_T_SUNDOWN_END);
-        });
     }
 
     public void migrate() {
@@ -80,7 +69,7 @@ public class ConfigMigrator {
             }
         }
 
-        if (changed) {
+        if (changed || currentVersion != targetVersion) {
             config.set(ConfigEntries.CONFIG_VERSION_ENTRY, targetVersion);
             plugin.saveConfig();
             plugin.getLogger().info("Updated " + ConfigEntries.CONFIG_VERSION_ENTRY + " to " + targetVersion);
