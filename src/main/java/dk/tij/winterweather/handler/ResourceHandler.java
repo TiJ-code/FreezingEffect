@@ -27,13 +27,13 @@ public class ResourceHandler {
         reader.reloadConfig();
     }
 
-    public void setDebug(boolean debug) {
-        plugin.getConfig().set(ConfigEntries.DEBUG, debug);
+    public void setEnabled(boolean enabled) {
+        plugin.getConfig().set(ConfigEntries.ENABLED, enabled);
         plugin.saveConfig();
     }
 
-    public boolean isDebug() {
-        return reader.getBoolean(ConfigEntries.DEBUG, false);
+    public boolean isEnabled() {
+        return reader.getBoolean(ConfigEntries.ENABLED, false);
     }
 
     private void loadConfig() {

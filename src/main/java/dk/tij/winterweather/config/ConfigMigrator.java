@@ -37,6 +37,8 @@ public class ConfigMigrator {
                 });
             }
         });
+
+        migrations.put(4, cfg -> removeEntry(config, "debug"));
     }
 
     public void migrate() {
@@ -66,6 +68,13 @@ public class ConfigMigrator {
             cfg.set(newPath, value);
             cfg.set(oldPath, null);
             plugin.getLogger().info("Migrated config key: " + oldPath + " to " + newPath);
+        }
+    }
+
+    private void removeEntry(FileConfiguration cfg, String path) {
+        if (cfg.contains(path)) {
+            cfg.set(path, null);
+            plugin.getLogger().info("Migrated config key: " + path + " removed");
         }
     }
 }

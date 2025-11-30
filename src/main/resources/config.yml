@@ -1,9 +1,9 @@
 # ==== WinterWeather Configuration ====
 # You can safely keep old configs; missing fields get added automatically
 # If this version is lower than the plugin's version, migrations will run.
-config-version: 2
+config-version: 4
 
-debug: false
+enable: false
 
 frost:
   criticalFreezingTicks: 1800

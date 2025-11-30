@@ -18,6 +18,7 @@ import java.util.UUID;
 public class TemperatureHandler {
     private final WinterWeather plugin;
     private final FreezeHandler freezeHandler;
+    private final PlayerDataHandler playerDataHandler;
 
     private final Map<UUID, Double> actualPlayerFreezeTicks = new HashMap<>();
     private final DamageSource freezingDamageSource;
@@ -25,9 +26,10 @@ public class TemperatureHandler {
     private BukkitRunnable decayTask;
     private BukkitRunnable leatherArmourDamageTask;
 
-    public TemperatureHandler(WinterWeather plugin, FreezeHandler freezeHandler) {
+    public TemperatureHandler(WinterWeather plugin, FreezeHandler freezeHandler, PlayerDataHandler playerDataHandler) {
         this.plugin = plugin;
         this.freezeHandler = freezeHandler;
+        this.playerDataHandler = playerDataHandler;
         this.freezingDamageSource = DamageSource.builder(DamageType.FREEZE).build();
     }
 
@@ -35,6 +37,8 @@ public class TemperatureHandler {
         decayTask = new BukkitRunnable() {
             @Override
             public void run() {
+                if (!plugin.getIsEnabled()) stopDecayTask();
+
                 Bukkit.getOnlinePlayers().forEach(player -> tickPlayerTemperature(player));
             }
         };
@@ -42,6 +46,8 @@ public class TemperatureHandler {
         leatherArmourDamageTask = new BukkitRunnable() {
             @Override
             public void run() {
+                if (!plugin.getIsEnabled()) stopDecayTask();
+
                 Bukkit.getOnlinePlayers().forEach(player -> applyDamageIfLeatherArmour(player));
             }
         };
@@ -50,9 +56,12 @@ public class TemperatureHandler {
 
     public void stopDecayTask() {
         if (decayTask == null) return;
-        decayTask.cancel();
         if (leatherArmourDamageTask == null) return;
-        leatherArmourDamageTask.cancel();
+
+        if (!decayTask.isCancelled())
+            decayTask.cancel();
+        if (!leatherArmourDamageTask.isCancelled())
+            leatherArmourDamageTask.cancel();
     }
 
     public void reloadDecayTask() {
@@ -99,7 +108,7 @@ public class TemperatureHandler {
 
         int freezeTicks = updatePlayerFreezingPoints(player, (int) nextActualFreezeTick);
 
-        if (plugin.isDebug())
+        if (playerDataHandler.loadPlayerShowDebug(player))
             AdminDebug.printFreezeTicks(player, freezeTicks, fractionalChange, nextActualFreezeTick);
     }
 

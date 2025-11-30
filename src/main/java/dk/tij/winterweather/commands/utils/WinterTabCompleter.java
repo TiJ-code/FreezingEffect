@@ -26,7 +26,9 @@ public final class WinterTabCompleter implements TabCompleter {
             return List.of(
                     CommandLabels.ARGUMENT_RELOAD,
                     CommandLabels.ARGUMENT_DEBUG,
-                    CommandLabels.ARGUMENT_CONFIG
+                    CommandLabels.ARGUMENT_CONFIG,
+                    CommandLabels.ARGUMENT_START,
+                    CommandLabels.ARGUMENT_STOP
             );
         }
 
@@ -35,9 +37,9 @@ public final class WinterTabCompleter implements TabCompleter {
             return List.of(CommandLabels.DEBUG_ARGUMENT_ON, CommandLabels.DEBUG_ARGUMENT_OFF);
         }
 
-        // /winter config <get/set>
+        // /winter config <get/set/reload>
         if (arguments.length == 2 && arguments[0].equalsIgnoreCase(CommandLabels.ARGUMENT_CONFIG)) {
-            return List.of(CommandLabels.CONFIG_ARGUMENT_GET, CommandLabels.CONFIG_ARGUMENT_SET);
+            return List.of(CommandLabels.CONFIG_ARGUMENT_GET, CommandLabels.CONFIG_ARGUMENT_SET, CommandLabels.CONFIG_ARGUMENT_RELOAD);
         }
 
         // /winter config get <path...>

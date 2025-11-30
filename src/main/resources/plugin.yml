@@ -9,6 +9,6 @@ permissions:
 commands:
   winter:
     description: Main command for WinterWeather
-    usage: /winter <reload|debug>
+    usage: /winter <start|stop|config|debug>
     aliases: [w, fe]
     permission: winterweather.command

@@ -13,6 +13,6 @@ public record PlayerJoinListener(PlayerDataHandler playerDataHandler,
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        temperatureHandler.registerPlayer(player, playerDataHandler.loadPlayerData(player));
+        temperatureHandler.registerPlayer(player, playerDataHandler.loadPlayerFreezeTicks(player));
     }
 }

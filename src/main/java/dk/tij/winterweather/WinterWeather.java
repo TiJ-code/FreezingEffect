@@ -32,12 +32,12 @@ public final class WinterWeather extends JavaPlugin {
 
         freezeHandler = new FreezeHandler(this);
 
-        temperatureHandler = new TemperatureHandler(this, freezeHandler);
+        temperatureHandler = new TemperatureHandler(this, freezeHandler, playerDataHandler);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(playerDataHandler, temperatureHandler), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(playerDataHandler, temperatureHandler), this);
         getServer().getPluginManager().registerEvents(new PlayerRespawnListener(temperatureHandler, freezeHandler), this);
 
-        getCommand(CommandLabels.COMMAND_LABEL).setExecutor(new WinterCommand(this));
+        getCommand(CommandLabels.COMMAND_LABEL).setExecutor(new WinterCommand(this, playerDataHandler));
         getCommand(CommandLabels.COMMAND_LABEL).setTabCompleter(new WinterTabCompleter(this));
 
         freezeHandler.start();
@@ -64,13 +64,21 @@ public final class WinterWeather extends JavaPlugin {
         playerDataHandler.saveConfig();
     }
 
-    public void setDebug(boolean debug) {
+    public void setIsEnabled(boolean state) {
         if (resourceHandler == null) return;
-        resourceHandler.setDebug(debug);
+        resourceHandler.setEnabled(state);
+
+        if (state) {
+            temperatureHandler.startDecayTask();
+            freezeHandler.start();
+        } else {
+            temperatureHandler.stopDecayTask();
+            freezeHandler.stop();
+        }
     }
 
-    public boolean isDebug() {
+    public boolean getIsEnabled() {
         if (resourceHandler == null) return false;
-        return resourceHandler.isDebug();
+        return resourceHandler.isEnabled();
     }
 }
