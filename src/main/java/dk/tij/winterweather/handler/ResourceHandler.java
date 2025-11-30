@@ -40,6 +40,7 @@ public class ResourceHandler {
 
     public void setCustomDayCycleEnabled(boolean enabled) {
         plugin.getConfig().set(ConfigEntries.DAYLIGHT_CUSTOM_CYCLE_ENABLE, enabled);
+        TimeConstants.CUSTOM_DAY_CYCLE_ENABLE = enabled;
         plugin.enableCustomDayCycle(enabled);
         plugin.saveConfig();
     }
@@ -53,13 +54,22 @@ public class ResourceHandler {
     }
 
     private void loadCustomDayCycleValues() {
-        TimeConstants.CUSTOM_DAY_CYCLE_ENABLE = reader.getBoolean(ConfigEntries.DAYLIGHT_CUSTOM_CYCLE_ENABLE, false);
+        TimeConstants.CUSTOM_DAY_CYCLE_ENABLE = reader.getBoolean(ConfigEntries.DAYLIGHT_CUSTOM_CYCLE_ENABLE, true);
         TimeConstants.DAY_CYCLE_LENGTH_MINUTES = Maths.clampPositiveI(
                 reader.getInt(ConfigEntries.DAYLIGHT_TOTAL_CYCLE_MINUTES, TimeConstants.VANILLA_TOTAL_CYCLE_MINUTES)
         );
         TimeConstants.DAY_PERCENTAGE = Maths.clampI0To100(
                 reader.getInt(ConfigEntries.DAYLIGHT_DAY_PERCENTAGE, TimeConstants.VANILLA_DAY_PERCENTAGE)
         ) * TO_PERCENT_CONVERSION_FACTOR;
+
+        double dayDuration = TimeConstants.DAY_CYCLE_LENGTH_MINUTES * TimeConstants.DAY_PERCENTAGE;
+        double nightDuration = TimeConstants.DAY_CYCLE_LENGTH_MINUTES - dayDuration;
+
+        double dayLengthGameTicks = dayDuration * TimeConstants.MATH_MINUTES_TO_TICKS_FACTOR;
+        double nightLengthGameTicks = nightDuration * TimeConstants.MATH_MINUTES_TO_TICKS_FACTOR;
+
+        TimeConstants.DAY_INCREMENT_PER_TICK = TimeConstants.VANILLA_TICKS_PER_HALF_DAY / dayLengthGameTicks;
+        TimeConstants.NIGHT_INCREMENT_PER_TICK = TimeConstants.VANILLA_TICKS_PER_HALF_DAY / nightLengthGameTicks;
     }
 
     private void loadFrostPlayerStats() {

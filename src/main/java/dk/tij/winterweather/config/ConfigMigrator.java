@@ -50,7 +50,7 @@ public class ConfigMigrator {
         migrations.put(4, cfg -> removeEntry(cfg, "debug"));
 
         migrations.put(5, cfg -> {
-            addEntry(cfg, ConfigEntries.DAYLIGHT_CUSTOM_CYCLE_ENABLE, false);
+            addEntry(cfg, ConfigEntries.DAYLIGHT_CUSTOM_CYCLE_ENABLE, TimeConstants.CUSTOM_DAY_CYCLE_ENABLE);
             addEntry(cfg, ConfigEntries.DAYLIGHT_TOTAL_CYCLE_MINUTES, TimeConstants.VANILLA_TOTAL_CYCLE_MINUTES);
             addEntry(cfg, ConfigEntries.DAYLIGHT_DAY_PERCENTAGE, TimeConstants.VANILLA_DAY_PERCENTAGE);
         });

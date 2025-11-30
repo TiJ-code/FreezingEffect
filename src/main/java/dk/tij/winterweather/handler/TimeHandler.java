@@ -44,8 +44,6 @@ public class TimeHandler implements Listener {
             public void run() {
                 if (!TimeConstants.CUSTOM_DAY_CYCLE_ENABLE) stop();
 
-                Bukkit.getConsoleSender().sendMessage("updating time");
-
                 Boolean doDaylightCycle = world.getGameRuleValue(GameRule.DO_DAYLIGHT_CYCLE);
                 boolean cycleOn = doDaylightCycle != null && doDaylightCycle;
 
@@ -65,9 +63,9 @@ public class TimeHandler implements Listener {
                     double increment;
 
                     if (customTime < TimeConstants.VANILLA_TICKS_PER_HALF_DAY) {
-                        increment = 40; // day increment per tick
+                        increment = TimeConstants.DAY_INCREMENT_PER_TICK;
                     } else {
-                        increment = 20; // night increment per tick
+                        increment = TimeConstants.NIGHT_INCREMENT_PER_TICK;
                     }
 
                     carry += increment;

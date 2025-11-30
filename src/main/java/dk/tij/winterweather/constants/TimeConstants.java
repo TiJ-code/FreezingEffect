@@ -9,7 +9,8 @@ public final class TimeConstants {
         VANILLA_TICKS_FREEZE_INTERVAL = VANILLA_DAMAGE_FREEZE_DURATION_SECONDS * VANILLA_TICKS_PER_SECOND,
         VANILLA_TOTAL_CYCLE_MINUTES = 20,
         VANILLA_DAY_PERCENTAGE = 50,
-        MATH_SECONDS_PER_MINUTE = 60;
+        MATH_SECONDS_PER_MINUTE = 60,
+        MATH_MINUTES_TO_TICKS_FACTOR = MATH_SECONDS_PER_MINUTE * VANILLA_TICKS_PER_SECOND;
 
     public static boolean
         CUSTOM_DAY_CYCLE_ENABLE = false;
@@ -18,5 +19,7 @@ public final class TimeConstants {
         DAY_CYCLE_LENGTH_MINUTES = 20;
 
     public static double
-        DAY_PERCENTAGE = 0.50;
+        DAY_PERCENTAGE = 0.50,
+        DAY_INCREMENT_PER_TICK = 1d,
+        NIGHT_INCREMENT_PER_TICK = 1d;
 }
