@@ -2,8 +2,12 @@ package dk.tij.winterweather.config;
 
 import dk.tij.winterweather.WinterWeather;
 import dk.tij.winterweather.constants.ConfigEntries;
+import dk.tij.winterweather.constants.TimeConstants;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -30,7 +34,7 @@ public class ConfigMigrator {
             String path = ConfigEntries.FROST_SUB_CATEGORY_ISOLATION + "." + ConfigEntries.FROST_ISOLATION_ARMOUR_PIECES;
             if (cfg.contains(path)) {
                 Objects.requireNonNull(cfg.getConfigurationSection(path)).getKeys(false).forEach(key -> {
-                    Object value = config.get(path + "." + key);
+                    Object value = cfg.get(path + "." + key);
                     if (value instanceof Integer) {
                         cfg.set(path + "." + key, Map.of(ConfigEntries.FROST_ISOLATION_ARMOUR_PIECE_VALUE, value));
                         plugin.getLogger().info("Migrated " + path + "." + key + " » map with value");
@@ -39,12 +43,22 @@ public class ConfigMigrator {
             }
         });
 
-        migrations.put(4, cfg -> removeEntry(config, "debug"));
+        migrations.put(3, cfg -> {
+            addEntry(cfg, ConfigEntries.ENABLED, false);
+        });
+
+        migrations.put(4, cfg -> removeEntry(cfg, "debug"));
+
+        migrations.put(5, cfg -> {
+            addEntry(cfg, ConfigEntries.DAYLIGHT_CUSTOM_CYCLE_ENABLE, false);
+            addEntry(cfg, ConfigEntries.DAYLIGHT_TOTAL_CYCLE_MINUTES, TimeConstants.VANILLA_TOTAL_CYCLE_MINUTES);
+            addEntry(cfg, ConfigEntries.DAYLIGHT_DAY_PERCENTAGE, TimeConstants.VANILLA_DAY_PERCENTAGE);
+        });
     }
 
     public void migrate() {
         int currentVersion = config.getInt(ConfigEntries.CONFIG_VERSION_ENTRY, 0);
-        int targetVersion = migrations.keySet().stream().mapToInt(v -> v).max().orElse(currentVersion);
+        int targetVersion = ConfigEntries.CURRENT_VERSION;
 
         boolean changed = false;
         for (int version = currentVersion + 1; version <= targetVersion; version++) {
@@ -61,6 +75,11 @@ public class ConfigMigrator {
             plugin.saveConfig();
             plugin.getLogger().info("Updated " + ConfigEntries.CONFIG_VERSION_ENTRY + " to " + targetVersion);
         }
+    }
+
+    private <T> void addEntry(FileConfiguration cfg, String path, T t) {
+        cfg.set(path, t);
+        plugin.getLogger().info("Added config entry " + path + " = " + t);
     }
 
     private void renameEntry(FileConfiguration cfg, String oldPath, String newPath) {

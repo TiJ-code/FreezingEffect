@@ -21,9 +21,11 @@ public final class WinterWeather extends JavaPlugin {
     public void onEnable() {
         // Plugin startup logic
         saveDefaultConfig();
+        ConfigMigrator configMigrator = new ConfigMigrator(this);
+
         getComponentLogger().info("Plugin successfully loaded!");
 
-        new ConfigMigrator(this).migrate();
+        configMigrator.migrate();
 
         resourceHandler = new ResourceHandler(this);
         playerDataHandler = new PlayerDataHandler(this);
@@ -42,6 +44,7 @@ public final class WinterWeather extends JavaPlugin {
 
         freezeHandler.start();
         temperatureHandler.startDecayTask();
+        timeHandler.start();
     }
 
     @Override
@@ -51,6 +54,8 @@ public final class WinterWeather extends JavaPlugin {
         resourceHandler.reloadConfig();
         if (temperatureHandler == null) return;
         temperatureHandler.reloadDecayTask();
+        if (timeHandler == null) return;
+        timeHandler.reload();
     }
 
     @Override
@@ -58,10 +63,13 @@ public final class WinterWeather extends JavaPlugin {
         // Plugin shutdown logic
         getComponentLogger().info("Plugin successfully unloaded!");
 
-        freezeHandler.stop();
-        temperatureHandler.stopDecayTask();
+        if (freezeHandler != null)
+            freezeHandler.stop();
+        if (temperatureHandler != null)
+            temperatureHandler.stopDecayTask();
 
-        playerDataHandler.saveConfig();
+        if (playerDataHandler != null)
+            playerDataHandler.saveConfig();
     }
 
     public void enablePlugin(boolean state) {

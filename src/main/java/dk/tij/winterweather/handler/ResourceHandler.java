@@ -26,6 +26,7 @@ public class ResourceHandler {
 
     public void reloadConfig() {
         reader.reloadConfig();
+        loadConfig();
     }
 
     public void setEnabled(boolean enabled) {
@@ -43,10 +44,6 @@ public class ResourceHandler {
         plugin.saveConfig();
     }
 
-    public boolean isCustomDayCycleEnabled() {
-        return reader.getBoolean(ConfigEntries.DAYLIGHT_CUSTOM_CYCLE_ENABLE, false);
-    }
-
     private void loadConfig() {
         loadCustomDayCycleValues();
         loadFrostPlayerStats();
@@ -56,6 +53,7 @@ public class ResourceHandler {
     }
 
     private void loadCustomDayCycleValues() {
+        TimeConstants.CUSTOM_DAY_CYCLE_ENABLE = reader.getBoolean(ConfigEntries.DAYLIGHT_CUSTOM_CYCLE_ENABLE, false);
         TimeConstants.DAY_CYCLE_LENGTH_MINUTES = Maths.clampPositiveI(
                 reader.getInt(ConfigEntries.DAYLIGHT_TOTAL_CYCLE_MINUTES, TimeConstants.VANILLA_TOTAL_CYCLE_MINUTES)
         );

@@ -42,7 +42,7 @@ public class TimeHandler implements Listener {
         daylightTask = new BukkitRunnable() {
             @Override
             public void run() {
-                if (!resourceHandler.isCustomDayCycleEnabled()) stop();
+                if (!TimeConstants.CUSTOM_DAY_CYCLE_ENABLE) stop();
 
                 Bukkit.getConsoleSender().sendMessage("updating time");
 
@@ -89,7 +89,7 @@ public class TimeHandler implements Listener {
         if (daylightTask != null) daylightTask.cancel();
     }
 
-    public void restart() {
+    public void reload() {
         stop();
         start();
     }

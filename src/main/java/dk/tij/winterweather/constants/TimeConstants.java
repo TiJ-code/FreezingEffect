@@ -11,6 +11,9 @@ public final class TimeConstants {
         VANILLA_DAY_PERCENTAGE = 50,
         MATH_SECONDS_PER_MINUTE = 60;
 
+    public static boolean
+        CUSTOM_DAY_CYCLE_ENABLE = false;
+
     public static int
         DAY_CYCLE_LENGTH_MINUTES = 20;
 

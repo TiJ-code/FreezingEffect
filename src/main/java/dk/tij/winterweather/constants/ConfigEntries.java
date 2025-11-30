@@ -3,6 +3,7 @@ package dk.tij.winterweather.constants;
 public final class ConfigEntries {
     private static final String P = ".";
 
+    public static final int CURRENT_VERSION = 5;
     public static final String CONFIG_VERSION_ENTRY = "config-version";
 
     public static final String CATEGORY_FROST = "frost",
@@ -10,7 +11,7 @@ public final class ConfigEntries {
 
     public static final String ENABLED = "enable",
 
-                               DAYLIGHT_CUSTOM_CYCLE_ENABLE = "customCycleEnable",
+                               DAYLIGHT_CUSTOM_CYCLE_ENABLE = CATEGORY_DAYLIGHT + P + "customCycleEnable",
                                DAYLIGHT_TOTAL_CYCLE_MINUTES = CATEGORY_DAYLIGHT + P + "totalCycleMinutes",
                                DAYLIGHT_DAY_PERCENTAGE = CATEGORY_DAYLIGHT + P + "dayPercentage",
 

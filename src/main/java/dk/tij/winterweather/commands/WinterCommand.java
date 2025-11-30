@@ -2,6 +2,8 @@ package dk.tij.winterweather.commands;
 
 import dk.tij.winterweather.WinterWeather;
 import dk.tij.winterweather.commands.utils.ChatMessages;
+import dk.tij.winterweather.constants.TemperatureConstants;
+import dk.tij.winterweather.constants.TimeConstants;
 import dk.tij.winterweather.handler.PlayerDataHandler;
 import dk.tij.winterweather.handler.ResourceHandler;
 import net.kyori.adventure.audience.Audience;
@@ -205,7 +207,7 @@ public class WinterCommand implements CommandExecutor {
     }
 
     private void setCustomDayCycle(CommandSender commandSender, int doToggle) {
-        boolean newState = (doToggle < 0) ? !resourceHandler.isCustomDayCycleEnabled() : (doToggle == 1);
+        boolean newState = (doToggle < 0) ? !TimeConstants.CUSTOM_DAY_CYCLE_ENABLE : (doToggle == 1);
         resourceHandler.setCustomDayCycleEnabled(newState);
         commandSender.sendMessage(ChatMessages.CHAT_PREFIX + ChatColor.GREEN + "CustomDayCycle: " + (newState ? "ON" : "OFF"));
     }

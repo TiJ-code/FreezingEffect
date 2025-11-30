@@ -3,12 +3,12 @@ version: '1.1.0_dev'
 main: dk.tij.winterweather.WinterWeather
 api-version: '1.21'
 permissions:
-  freezingeffect.command:
+  winterweather.command:
     description: Allows running /winter commands
     default: op
 commands:
   winter:
     description: Main command for WinterWeather
-    usage: /winter <start|stop|config|debug>
-    aliases: [w, fe]
+    usage: /winter <start|stop|config|debug|customDayCycle>
+    aliases: [w, ww]
     permission: winterweather.command
