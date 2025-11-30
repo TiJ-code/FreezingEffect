@@ -5,13 +5,19 @@ import dk.tij.winterweather.commands.utils.ChatMessages;
 import dk.tij.winterweather.handler.PlayerDataHandler;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class WinterCommand implements CommandExecutor {
     private final WinterWeather plugin;
@@ -39,15 +45,40 @@ public class WinterCommand implements CommandExecutor {
             }
 
             if (arguments[0].equalsIgnoreCase(CommandLabels.ARGUMENT_START)) {
+                Audience audience = Audience.audience(Bukkit.getOnlinePlayers());
+                Bukkit.getOnlinePlayers().forEach(player ->
+                        player.playSound(player.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 3f, 0.6f)
+                );
+
+                final int counter = 5;
+                for (int i = 0; i < counter; i++) {
+                    final int count = counter - i;
+
+                    Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                        audience.sendMessage(Component.text(String.valueOf(count), Style.style(TextColor.color(16733525))).decorate(TextDecoration.BOLD));
+                    }, i * 20L);
+                }
+
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    audience.sendMessage(Component.text());
+                    audience.sendMessage(Component.text());
+                    audience.sendMessage(Component.text());
+                    audience.sendMessage(Component.text(ChatMessages.CHAT_PREFIX + ChatColor.GREEN + "❄ Winter has started!"));
+                    audience.sendMessage(ChatMessages.AUTHOR_COMPONENT);
+                    audience.sendMessage(Component.text());
+                    audience.sendMessage(Component.text());
+                    audience.sendMessage(Component.text());
+                    Bukkit.getOnlinePlayers().forEach(player ->
+                            player.playSound(player.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 3f, 0.6f)
+                    );
+                }, (counter + 1) * 20L);
                 plugin.setIsEnabled(true);
-                Audience.audience(Bukkit.getServer().getOnlinePlayers())
-                        .sendMessage(Component.text(ChatMessages.CHAT_PREFIX + ChatColor.GREEN + "Winter has started!"));
             }
 
             if (arguments[0].equalsIgnoreCase(CommandLabels.ARGUMENT_STOP)) {
                 plugin.setIsEnabled(false);
-                Audience.audience(Bukkit.getServer().getOnlinePlayers())
-                        .sendMessage(Component.text(ChatMessages.CHAT_PREFIX + ChatColor.GREEN + "Winter has stopped!"));
+                Audience audience = Audience.audience(Bukkit.getOnlinePlayers());
+                audience.sendMessage(Component.text(ChatMessages.CHAT_PREFIX + ChatColor.GREEN  + "☀ Winter has stopped!"));
             }
 
             return true;
