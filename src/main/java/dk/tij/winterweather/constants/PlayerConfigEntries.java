@@ -1,6 +1,8 @@
 package dk.tij.winterweather.constants;
 
 public final class PlayerConfigEntries {
+    private PlayerConfigEntries() {}
+
     private static final String P = ".";
 
     public static final String CATEGORY_PLAYERS = "players",

@@ -12,6 +12,8 @@ import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 public final class TemperatureUtils {
+    private TemperatureUtils() {}
+
     public static double getLeatherReduction(Player player) {
         double reduction = 0d;
 

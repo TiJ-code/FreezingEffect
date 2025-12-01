@@ -4,6 +4,8 @@ import dk.tij.winterweather.commands.CommandPermissions;
 import org.bukkit.entity.Player;
 
 public final class AdminDebug {
+    private AdminDebug() {}
+
     public static void printFreezeTicks(Player player, int freezeTicks, double fractionalChange, double nextActualFreezeTick) {
         if (!player.hasPermission(CommandPermissions.BASIC_COMMAND)) return;
 

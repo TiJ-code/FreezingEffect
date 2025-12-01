@@ -6,6 +6,8 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 public final class ItemUtils {
+    private ItemUtils() {}
+
     public static boolean isArmourItem(Material material) {
         if (material == null) return false;
         EquipmentSlot slot = material.getEquipmentSlot();

@@ -1,6 +1,18 @@
 package dk.tij.winterweather.utils;
 
+import java.util.Map;
+import java.util.function.Function;
+
 public final class InterpolationFunctions {
+    private InterpolationFunctions() {}
+
+    public static final Map<String, Function<Double, Double>> INTERPOLATION_FUNCTIONS_MAPPING = Map.of(
+            "linear", InterpolationFunctions::linear,
+            "smoothstep", InterpolationFunctions::smoothstep,
+            "smootherstep", InterpolationFunctions::smootherstep
+    );
+
+
     public static double linear(double t) {
         return t;
     }

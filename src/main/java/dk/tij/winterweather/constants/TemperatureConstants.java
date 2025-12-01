@@ -9,18 +9,13 @@ import java.util.Map;
 import java.util.function.Function;
 
 public final class TemperatureConstants {
+    private TemperatureConstants() {}
+
     public static final int
-            VANILLA_DAMAGE_FREEZE_TICKS = 40,
             VANILLA_MIN_FREEZE_TICKS = 0,
             VANILLA_MAX_FREEZE_TICKS = 140;
 
     public static final double BASE_POWDER_SNOW_FACTOR = 1.225; // approximate sqrt of 1.5
-
-    public static final Map<String, Function<Double, Double>> INTERPOLATION_FUNCTIONS_MAPPING = Map.of(
-            "linear", InterpolationFunctions::linear,
-            "smoothstep", InterpolationFunctions::smoothstep,
-            "smootherstep", InterpolationFunctions::smootherstep
-    );
 
     public static int
         CRITICAL_FREEZING_TICKS = 1800;

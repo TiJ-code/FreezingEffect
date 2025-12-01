@@ -1,0 +1,47 @@
+package dk.tij.winterweather.constants;
+
+import dk.tij.winterweather.utils.InterpolationFunctions;
+
+import java.util.function.Function;
+
+public final class TimeConstants {
+    private TimeConstants() {}
+
+    public static final int
+        VANILLA_TICKS_PER_SECOND = 20,
+        VANILLA_TICKS_PER_HALF_DAY = 12000,
+        VANILLA_TICKS_PER_DAY = 24000,
+        VANILLA_DAMAGE_FREEZE_DURATION_SECONDS = 2,
+        VANILLA_TICKS_FREEZE_INTERVAL = VANILLA_DAMAGE_FREEZE_DURATION_SECONDS * VANILLA_TICKS_PER_SECOND,
+        VANILLA_TOTAL_CYCLE_MINUTES = 20,
+        VANILLA_DAY_PERCENTAGE = 50,
+
+        VANILLA_T_SUNRISE_START    = 0,
+        VANILLA_T_SUNRISE_END      = 2300,
+        VANILLA_T_SUNRISE_DURATION = VANILLA_T_SUNRISE_END - VANILLA_T_SUNRISE_START,
+        VANILLA_T_SUNDOWN_START    = 12000,
+        VANILLA_T_SUNDOWN_END      = 14000,
+        VANILLA_T_SUNDOWN_DURATION = VANILLA_T_SUNDOWN_END - VANILLA_T_SUNDOWN_START,
+
+        MATH_SECONDS_PER_MINUTE = 60,
+        MATH_MINUTES_TO_TICKS_FACTOR = MATH_SECONDS_PER_MINUTE * VANILLA_TICKS_PER_SECOND;
+
+    public static boolean
+        CUSTOM_DAY_CYCLE_ENABLE = false;
+
+    public static int
+        DAY_CYCLE_LENGTH_MINUTES = 20,
+        T_SUNRISE_START = VANILLA_T_SUNRISE_START,
+        T_SUNRISE_END   = VANILLA_T_SUNRISE_END,
+        T_SUNDOWN_START = VANILLA_T_SUNDOWN_START,
+        T_SUNDOWN_END   = VANILLA_T_SUNDOWN_END,
+        T_SUNRISE_DURATION = VANILLA_T_SUNRISE_DURATION,
+        T_SUNDOWN_DURATION = VANILLA_T_SUNDOWN_DURATION;
+
+    public static double
+        DAY_PERCENTAGE = 0.50,
+        DAY_INCREMENT_PER_TICK = 1d,
+        NIGHT_INCREMENT_PER_TICK = 1d;
+
+    public static Function<Double, Double> INTERPOLATION_FUNCTION = InterpolationFunctions::smootherstep;
+}
