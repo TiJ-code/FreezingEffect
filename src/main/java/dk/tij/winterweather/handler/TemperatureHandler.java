@@ -17,6 +17,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public class TemperatureHandler {
+    private static TemperatureHandler instance;
+
     private final WinterWeather plugin;
     private final ResourceHandler resourceHandler;
     private final FreezeHandler freezeHandler;
@@ -28,11 +30,14 @@ public class TemperatureHandler {
     private BukkitRunnable decayTask;
     private BukkitRunnable leatherArmourDamageTask;
 
-    public TemperatureHandler(WinterWeather plugin, ResourceHandler resourceHandler, FreezeHandler freezeHandler, PlayerDataHandler playerDataHandler) {
+    public TemperatureHandler(WinterWeather plugin) {
+        if (instance != null)
+            throw new RuntimeException("Only one allowed at runtime");
+        instance = this;
         this.plugin = plugin;
-        this.resourceHandler = resourceHandler;
-        this.freezeHandler = freezeHandler;
-        this.playerDataHandler = playerDataHandler;
+        this.resourceHandler = ResourceHandler.getInstance();
+        this.freezeHandler = FreezeHandler.getInstance();
+        this.playerDataHandler = PlayerDataHandler.getInstance();
         this.freezingDamageSource = DamageSource.builder(DamageType.FREEZE).build();
     }
 
@@ -40,7 +45,7 @@ public class TemperatureHandler {
         decayTask = new BukkitRunnable() {
             @Override
             public void run() {
-                if (!resourceHandler.isEnabled()) stopDecayTask();
+                if (!resourceHandler.isEnabled()) stop();
 
                 Bukkit.getOnlinePlayers().forEach(player -> tickPlayerTemperature(player));
             }
@@ -49,7 +54,7 @@ public class TemperatureHandler {
         leatherArmourDamageTask = new BukkitRunnable() {
             @Override
             public void run() {
-                if (!resourceHandler.isEnabled()) stopDecayTask();
+                if (!resourceHandler.isEnabled()) stop();
 
                 Bukkit.getOnlinePlayers().forEach(player -> applyDamageIfLeatherArmour(player));
             }
@@ -57,7 +62,7 @@ public class TemperatureHandler {
         leatherArmourDamageTask.runTaskTimer(plugin, 1L, TimeConstants.VANILLA_TICKS_FREEZE_INTERVAL);
     }
 
-    public void stopDecayTask() {
+    public void stop() {
         if (decayTask == null) return;
         if (leatherArmourDamageTask == null) return;
 
@@ -68,7 +73,7 @@ public class TemperatureHandler {
     }
 
     public void reloadDecayTask() {
-        stopDecayTask();
+        stop();
         startDecayTask();
     }
 
@@ -151,5 +156,11 @@ public class TemperatureHandler {
 
     public double getActualPlayerFreezeTicks(Player player) {
         return actualPlayerFreezeTicks.get(player.getUniqueId());
+    }
+
+    public static TemperatureHandler getInstance() {
+        if (instance == null)
+            throw new IllegalStateException(TemperatureHandler.class.getSimpleName() + " is not yet initialised!");
+        return instance;
     }
 }

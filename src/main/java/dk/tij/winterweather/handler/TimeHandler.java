@@ -9,33 +9,24 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class TimeHandler implements Listener {
+    private static TimeHandler instance;
+
     private final JavaPlugin plugin;
-    private final ResourceHandler resourceHandler;
 
     private final World world;
-    private final long totalCycleTicks;
-    private final long dayTicks;
-    private final long nightTicks;
-
     private BukkitRunnable daylightTask;
 
     private double carry = 0;
     private long customTime = 0;
     private boolean initialised = false;
 
-    public TimeHandler(JavaPlugin plugin, ResourceHandler resourceHandler) {
+    public TimeHandler(JavaPlugin plugin) {
+        if (instance != null)
+            throw new RuntimeException("Only one allowed at runtime");
+        instance = this;
         this.plugin = plugin;
-        this.resourceHandler = resourceHandler;
 
         this.world = plugin.getServer().getWorlds().getFirst();
-
-        long totalMinutes = 1;
-        double dayPercent = 10;
-        double nightPercent = 1d - dayPercent;
-
-        totalCycleTicks = totalMinutes * 60 * TimeConstants.VANILLA_TICKS_PER_SECOND;
-        dayTicks = (long) (totalCycleTicks * dayPercent);
-        nightTicks = (long) (totalMinutes * nightPercent);
     }
 
     public void start() {
@@ -107,5 +98,11 @@ public class TimeHandler implements Listener {
     public void reload() {
         stop();
         start();
+    }
+
+    public static TimeHandler getInstance() {
+        if (instance == null)
+            throw new IllegalStateException(TimeHandler.class.getSimpleName() + " is not yet initialised!");
+        return instance;
     }
 }

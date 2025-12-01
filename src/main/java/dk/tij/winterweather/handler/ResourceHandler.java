@@ -17,10 +17,15 @@ import java.util.function.Function;
 import static dk.tij.winterweather.utils.Maths.TO_PERCENT_CONVERSION_FACTOR;
 
 public class ResourceHandler {
+    private static ResourceHandler instance;
+
     private final WinterWeather plugin;
     private final ConfigReader reader;
 
     public ResourceHandler(WinterWeather plugin) {
+        if (instance != null)
+            throw new RuntimeException("Only one allowed at runtime");
+        instance = this;
         this.plugin = plugin;
         this.reader = new ConfigReader(plugin);
 
@@ -157,5 +162,11 @@ public class ResourceHandler {
         String interpolationFunctionName = reader.getString(configKey,
                 InterpolationFunctions.INTERPOLATION_FUNCTIONS_MAPPING.keySet().toArray(String[]::new)[0]);
         return InterpolationFunctions.INTERPOLATION_FUNCTIONS_MAPPING.get(interpolationFunctionName);
+    }
+
+    public static ResourceHandler getInstance() {
+        if (instance == null)
+            throw new IllegalStateException(ResourceHandler.class.getSimpleName() + " is not yet initialised!");
+        return instance;
     }
 }

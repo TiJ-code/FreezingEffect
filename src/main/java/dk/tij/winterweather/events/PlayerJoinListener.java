@@ -7,12 +7,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-public record PlayerJoinListener(PlayerDataHandler playerDataHandler,
-                                 TemperatureHandler temperatureHandler) implements Listener {
+public record PlayerJoinListener() implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        temperatureHandler.registerPlayer(player, playerDataHandler.loadPlayerFreezeTicks(player));
+        TemperatureHandler.getInstance().registerPlayer(player, PlayerDataHandler.getInstance().loadPlayerFreezeTicks(player));
     }
 }

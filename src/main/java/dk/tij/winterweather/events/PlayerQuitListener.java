@@ -7,12 +7,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public record PlayerQuitListener(PlayerDataHandler playerDataHandler,
-                                 TemperatureHandler temperatureHandler) implements Listener {
+public record PlayerQuitListener() implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        playerDataHandler.savePlayerFreezeTicks(player, (int) temperatureHandler.getActualPlayerFreezeTicks(player));
+        PlayerDataHandler.getInstance().savePlayerFreezeTicks(player, (int) TemperatureHandler.getInstance().getActualPlayerFreezeTicks(player));
     }
 }

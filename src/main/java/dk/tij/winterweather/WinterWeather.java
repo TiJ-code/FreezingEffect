@@ -8,6 +8,7 @@ import dk.tij.winterweather.events.PlayerQuitListener;
 import dk.tij.winterweather.events.PlayerRespawnListener;
 import dk.tij.winterweather.events.PlayerJoinListener;
 import dk.tij.winterweather.handler.*;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class WinterWeather extends JavaPlugin {
@@ -29,17 +30,19 @@ public final class WinterWeather extends JavaPlugin {
         resourceHandler = new ResourceHandler(this);
         playerDataHandler = new PlayerDataHandler(this);
 
-        freezeHandler = new FreezeHandler(this, resourceHandler);
+        freezeHandler = new FreezeHandler(this);
+        temperatureHandler = new TemperatureHandler(this);
+        timeHandler = new TimeHandler(this);
 
-        temperatureHandler = new TemperatureHandler(this, resourceHandler, freezeHandler, playerDataHandler);
-        getServer().getPluginManager().registerEvents(new PlayerJoinListener(playerDataHandler, temperatureHandler), this);
-        getServer().getPluginManager().registerEvents(new PlayerQuitListener(playerDataHandler, temperatureHandler), this);
-        getServer().getPluginManager().registerEvents(new PlayerRespawnListener(temperatureHandler, freezeHandler), this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerRespawnListener(), this);
 
-        getCommand(CommandLabels.COMMAND_LABEL).setExecutor(new WinterCommand(this, playerDataHandler, resourceHandler));
-        getCommand(CommandLabels.COMMAND_LABEL).setTabCompleter(new WinterTabCompleter(this));
-
-        timeHandler = new TimeHandler(this, resourceHandler);
+        PluginCommand winterCommand = getCommand(CommandLabels.COMMAND_LABEL);
+        if (winterCommand != null) {
+            winterCommand.setExecutor(new WinterCommand(this));
+            winterCommand.setTabCompleter(new WinterTabCompleter(this));
+        }
 
         freezeHandler.start();
         temperatureHandler.startDecayTask();
@@ -49,11 +52,8 @@ public final class WinterWeather extends JavaPlugin {
     @Override
     public void reloadConfig() {
         super.reloadConfig();
-        if (resourceHandler == null) return;
         resourceHandler.reloadConfig();
-        if (temperatureHandler == null) return;
         temperatureHandler.reloadDecayTask();
-        if (timeHandler == null) return;
         timeHandler.reload();
     }
 
@@ -62,13 +62,10 @@ public final class WinterWeather extends JavaPlugin {
         // Plugin shutdown logic
         getComponentLogger().info("Plugin successfully unloaded!");
 
-        if (freezeHandler != null)
-            freezeHandler.stop();
-        if (temperatureHandler != null)
-            temperatureHandler.stopDecayTask();
+        freezeHandler.stop();
+        temperatureHandler.stop();
 
-        if (playerDataHandler != null)
-            playerDataHandler.saveConfig();
+        playerDataHandler.saveConfig();
     }
 
     public void enablePlugin(boolean state) {
@@ -80,7 +77,7 @@ public final class WinterWeather extends JavaPlugin {
             freezeHandler.start();
             timeHandler.start();
         } else {
-            temperatureHandler.stopDecayTask();
+            temperatureHandler.stop();
             freezeHandler.stop();
             timeHandler.stop();
         }

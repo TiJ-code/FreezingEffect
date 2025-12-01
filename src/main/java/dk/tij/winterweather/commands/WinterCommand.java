@@ -25,10 +25,10 @@ public class WinterCommand implements CommandExecutor {
     private final ResourceHandler resourceHandler;
     private final PlayerDataHandler playerDataHandler;
 
-    public WinterCommand(WinterWeather plugin, PlayerDataHandler playerDataHandler, ResourceHandler resourceHandler) {
+    public WinterCommand(WinterWeather plugin) {
         this.plugin = plugin;
-        this.playerDataHandler = playerDataHandler;
-        this.resourceHandler = resourceHandler;
+        this.playerDataHandler = PlayerDataHandler.getInstance();
+        this.resourceHandler = ResourceHandler.getInstance();
     }
 
     @Override

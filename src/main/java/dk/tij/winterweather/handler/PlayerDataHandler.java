@@ -11,10 +11,15 @@ import java.io.File;
 import java.io.IOException;
 
 public class PlayerDataHandler {
+    private static PlayerDataHandler instance;
+
     private final File configFile;
     private FileConfiguration config;
 
     public PlayerDataHandler(JavaPlugin plugin) {
+        if (instance != null)
+            throw new RuntimeException("Only one allowed at runtime");
+        instance = this;
         this.configFile = new File(plugin.getDataFolder(), "playerdata.yml");
         FileUtils.createFileIfNotExistent(configFile);
         loadConfig();
@@ -58,5 +63,11 @@ public class PlayerDataHandler {
 
     private static String getPlayerShowDebugConfigEntry(String uuid) {
         return PlayerConfigEntries.CATEGORY_PLAYERS_P + uuid + PlayerConfigEntries.PLAYER_SHOW_DEBUG;
+    }
+
+    public static PlayerDataHandler getInstance() {
+        if (instance == null)
+            throw new IllegalStateException(PlayerDataHandler.class.getSimpleName() + " is not yet initialised!");
+        return instance;
     }
 }
