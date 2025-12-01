@@ -8,6 +8,8 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.ChatColor;
 
 public final class ChatMessages {
+    private ChatMessages() {}
+
     public static final String CHAT_PREFIX = "[" + ChatColor.AQUA + "" + ChatColor.BOLD + "WinterWeather" + ChatColor.WHITE + "] ";
     public static final String AUTHOR = "§bby §f§l@§4§lTiJ_code";
 

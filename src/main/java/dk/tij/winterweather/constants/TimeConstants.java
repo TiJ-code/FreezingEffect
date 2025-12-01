@@ -5,6 +5,8 @@ import dk.tij.winterweather.utils.InterpolationFunctions;
 import java.util.function.Function;
 
 public final class TimeConstants {
+    private TimeConstants() {}
+
     public static final int
         VANILLA_TICKS_PER_SECOND = 20,
         VANILLA_TICKS_PER_HALF_DAY = 12000,

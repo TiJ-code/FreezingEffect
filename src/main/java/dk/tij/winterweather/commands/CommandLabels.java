@@ -1,6 +1,8 @@
 package dk.tij.winterweather.commands;
 
 public final class CommandLabels {
+    private CommandLabels() {}
+
     public static final String COMMAND_LABEL = "winter";
 
     public static final String ARGUMENT_RELOAD = "reload";

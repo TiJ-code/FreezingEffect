@@ -1,6 +1,8 @@
 package dk.tij.winterweather.constants;
 
 public final class ConfigEntries {
+    private ConfigEntries() {}
+
     private static final String P = ".";
 
     public static final int CURRENT_VERSION = 7; // TODO

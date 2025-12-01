@@ -1,6 +1,8 @@
 package dk.tij.winterweather.utils;
 
 public final class Maths {
+    private Maths() {}
+
     public static final double TO_PERCENT_CONVERSION_FACTOR = 1d / 100d;
 
     public static int clampI(int value, int min, int max) {

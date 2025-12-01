@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.function.Function;
 
 public final class TemperatureConstants {
+    private TemperatureConstants() {}
+
     public static final int
             VANILLA_MIN_FREEZE_TICKS = 0,
             VANILLA_MAX_FREEZE_TICKS = 140;

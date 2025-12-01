@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 
 public final class FileUtils {
+    private FileUtils() {}
+
     public static void createFileIfNotExistent(File file) {
         try {
             if (!file.exists()) {

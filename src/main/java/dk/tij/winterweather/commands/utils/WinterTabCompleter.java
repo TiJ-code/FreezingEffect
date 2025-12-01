@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public final class WinterTabCompleter implements TabCompleter {
+public class WinterTabCompleter implements TabCompleter {
     private final WinterWeather plugin;
 
     public WinterTabCompleter(WinterWeather plugin) {
