@@ -64,10 +64,4 @@ public class PlayerDataHandler {
     private static String getPlayerShowDebugConfigEntry(String uuid) {
         return PlayerConfigEntries.CATEGORY_PLAYERS_P + uuid + PlayerConfigEntries.PLAYER_SHOW_DEBUG;
     }
-
-    public static PlayerDataHandler getInstance() {
-        if (instance == null)
-            throw new IllegalStateException(PlayerDataHandler.class.getSimpleName() + " is not yet initialised!");
-        return instance;
-    }
 }

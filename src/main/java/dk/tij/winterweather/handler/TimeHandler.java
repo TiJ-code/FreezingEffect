@@ -99,10 +99,4 @@ public class TimeHandler implements Listener {
         stop();
         start();
     }
-
-    public static TimeHandler getInstance() {
-        if (instance == null)
-            throw new IllegalStateException(TimeHandler.class.getSimpleName() + " is not yet initialised!");
-        return instance;
-    }
 }

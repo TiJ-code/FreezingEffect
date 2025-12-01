@@ -163,10 +163,4 @@ public class ResourceHandler {
                 InterpolationFunctions.INTERPOLATION_FUNCTIONS_MAPPING.keySet().toArray(String[]::new)[0]);
         return InterpolationFunctions.INTERPOLATION_FUNCTIONS_MAPPING.get(interpolationFunctionName);
     }
-
-    public static ResourceHandler getInstance() {
-        if (instance == null)
-            throw new IllegalStateException(ResourceHandler.class.getSimpleName() + " is not yet initialised!");
-        return instance;
-    }
 }

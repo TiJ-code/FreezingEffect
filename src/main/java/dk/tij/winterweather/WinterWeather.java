@@ -34,9 +34,9 @@ public final class WinterWeather extends JavaPlugin {
         temperatureHandler = new TemperatureHandler(this);
         timeHandler = new TimeHandler(this);
 
-        getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerRespawnListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerQuitListener(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerRespawnListener(this), this);
 
         PluginCommand winterCommand = getCommand(CommandLabels.COMMAND_LABEL);
         if (winterCommand != null) {
@@ -90,5 +90,25 @@ public final class WinterWeather extends JavaPlugin {
             timeHandler.start();
         else
             timeHandler.stop();
+    }
+
+    public FreezeHandler getFreezeHandler() {
+        return freezeHandler;
+    }
+
+    public PlayerDataHandler getPlayerDataHandler() {
+        return playerDataHandler;
+    }
+
+    public ResourceHandler getResourceHandler() {
+        return resourceHandler;
+    }
+
+    public TemperatureHandler getTemperatureHandler() {
+        return temperatureHandler;
+    }
+
+    public TimeHandler getTimeHandler() {
+        return timeHandler;
     }
 }

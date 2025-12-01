@@ -22,7 +22,7 @@ public class FreezeHandler {
             throw new RuntimeException("Only one allowed at runtime");
         instance = this;
         this.plugin = plugin;
-        this.resourceHandler = ResourceHandler.getInstance();
+        this.resourceHandler = plugin.getResourceHandler();
     }
 
     public void start() {
@@ -57,11 +57,5 @@ public class FreezeHandler {
 
     public void updatePlayer(Player player, int freezeTicks) {
         storedFreezeTicks.put(player.getUniqueId(), freezeTicks);
-    }
-
-    public static FreezeHandler getInstance() {
-        if (instance == null)
-            throw new IllegalStateException(FreezeHandler.class.getSimpleName() + " is not yet initialised!");
-        return instance;
     }
 }

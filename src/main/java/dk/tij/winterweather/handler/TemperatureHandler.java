@@ -35,9 +35,9 @@ public class TemperatureHandler {
             throw new RuntimeException("Only one allowed at runtime");
         instance = this;
         this.plugin = plugin;
-        this.resourceHandler = ResourceHandler.getInstance();
-        this.freezeHandler = FreezeHandler.getInstance();
-        this.playerDataHandler = PlayerDataHandler.getInstance();
+        this.resourceHandler = plugin.getResourceHandler();
+        this.freezeHandler = plugin.getFreezeHandler();
+        this.playerDataHandler = plugin.getPlayerDataHandler();
         this.freezingDamageSource = DamageSource.builder(DamageType.FREEZE).build();
     }
 
@@ -156,11 +156,5 @@ public class TemperatureHandler {
 
     public double getActualPlayerFreezeTicks(Player player) {
         return actualPlayerFreezeTicks.get(player.getUniqueId());
-    }
-
-    public static TemperatureHandler getInstance() {
-        if (instance == null)
-            throw new IllegalStateException(TemperatureHandler.class.getSimpleName() + " is not yet initialised!");
-        return instance;
     }
 }
