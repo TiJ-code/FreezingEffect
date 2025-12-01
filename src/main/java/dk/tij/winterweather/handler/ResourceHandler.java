@@ -62,11 +62,13 @@ public class ResourceHandler {
 
     private void loadCustomDayCycleValues() {
         TimeConstants.CUSTOM_DAY_CYCLE_ENABLE = reader.getBoolean(ConfigEntries.DAYLIGHT_CUSTOM_CYCLE_ENABLE, true);
-        TimeConstants.DAY_CYCLE_LENGTH_MINUTES = Maths.clampPositiveI(
-                reader.getInt(ConfigEntries.DAYLIGHT_TOTAL_CYCLE_MINUTES, TimeConstants.VANILLA_TOTAL_CYCLE_MINUTES)
+        TimeConstants.DAY_CYCLE_LENGTH_MINUTES = Maths.clampI(
+                reader.getInt(ConfigEntries.DAYLIGHT_TOTAL_CYCLE_MINUTES, TimeConstants.VANILLA_TOTAL_CYCLE_MINUTES),
+                TimeConstants.MIN_DAY_LENGTH_MINUTE, Short.MAX_VALUE
         );
-        TimeConstants.DAY_PERCENTAGE = Maths.clampI0To100(
-                reader.getInt(ConfigEntries.DAYLIGHT_DAY_PERCENTAGE, TimeConstants.VANILLA_DAY_PERCENTAGE)
+        TimeConstants.DAY_PERCENTAGE = Maths.clampI(
+                reader.getInt(ConfigEntries.DAYLIGHT_DAY_PERCENTAGE, TimeConstants.VANILLA_DAY_PERCENTAGE),
+                TimeConstants.MIN_DAY_PERCENTAGE, 100
         ) * TO_PERCENT_CONVERSION_FACTOR;
 
         TimeConstants.INTERPOLATION_FUNCTION = loadInterpolationFunction(ConfigEntries.DAYLIGHT_INTERPOLATION_FUNCTION);
