@@ -9,11 +9,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class FreezeHandler {
+public class FreezeHandler implements IHandler, ITaskHandler{
     private static FreezeHandler instance;
 
     private final WinterWeather plugin;
-    private final ResourceHandler resourceHandler;
+    private ResourceHandler resourceHandler;
+
     private final Map<UUID, Integer> storedFreezeTicks = new HashMap<>();
     private BukkitRunnable freezeHandlerRunnable;
 
@@ -22,9 +23,14 @@ public class FreezeHandler {
             throw new RuntimeException("Only one allowed at runtime");
         instance = this;
         this.plugin = plugin;
+    }
+
+    @Override
+    public void init() {
         this.resourceHandler = plugin.getResourceHandler();
     }
 
+    @Override
     public void start() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             storedFreezeTicks.put(player.getUniqueId(), player.getFreezeTicks());
@@ -50,6 +56,7 @@ public class FreezeHandler {
         freezeHandlerRunnable.runTaskTimer(plugin, 0, 1L);
     }
 
+    @Override
     public void stop() {
         freezeHandlerRunnable.cancel();
         storedFreezeTicks.clear();

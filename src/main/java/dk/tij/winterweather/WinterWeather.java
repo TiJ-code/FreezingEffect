@@ -11,12 +11,35 @@ import dk.tij.winterweather.handler.*;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class WinterWeather extends JavaPlugin {
-    private ResourceHandler resourceHandler;
-    private PlayerDataHandler playerDataHandler;
-    private TemperatureHandler temperatureHandler;
-    private TimeHandler timeHandler;
-    private FreezeHandler freezeHandler;
+    private final ResourceHandler resourceHandler;
+    private final PlayerDataHandler playerDataHandler;
+    private final TemperatureHandler temperatureHandler;
+    private final TimeHandler timeHandler;
+    private final FreezeHandler freezeHandler;
+
+    private final List<IHandler> handlers;
+    private final List<ITaskHandler> taskHandlers;
+
+    public WinterWeather() {
+        this.resourceHandler = new ResourceHandler(this);
+        this.playerDataHandler = new PlayerDataHandler(this);
+        this.freezeHandler = new FreezeHandler(this);
+        this.temperatureHandler = new TemperatureHandler(this);
+        this.timeHandler = new TimeHandler(this);
+
+        this.handlers = List.of(
+                resourceHandler,
+                playerDataHandler,
+                temperatureHandler,
+                timeHandler,
+                freezeHandler
+        );
+        this.taskHandlers = handlers.stream().filter(h -> h instanceof ITaskHandler).map(h -> (ITaskHandler)h).toList();
+    }
 
     @Override
     public void onEnable() {
@@ -27,12 +50,7 @@ public final class WinterWeather extends JavaPlugin {
         ConfigMigrator configMigrator = new ConfigMigrator(this);
         configMigrator.migrate();
 
-        resourceHandler = new ResourceHandler(this);
-        playerDataHandler = new PlayerDataHandler(this);
-
-        freezeHandler = new FreezeHandler(this);
-        temperatureHandler = new TemperatureHandler(this);
-        timeHandler = new TimeHandler(this);
+        handlers.forEach(IHandler::init);
 
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(this), this);
@@ -45,7 +63,7 @@ public final class WinterWeather extends JavaPlugin {
         }
 
         freezeHandler.start();
-        temperatureHandler.startDecayTask();
+        temperatureHandler.start();
         timeHandler.start();
     }
 
@@ -53,8 +71,9 @@ public final class WinterWeather extends JavaPlugin {
     public void reloadConfig() {
         super.reloadConfig();
         resourceHandler.reloadConfig();
-        temperatureHandler.reloadDecayTask();
-        timeHandler.reload();
+        playerDataHandler.reloadConfig();
+
+        taskHandlers.forEach(ITaskHandler::restart);
     }
 
     @Override
@@ -69,23 +88,15 @@ public final class WinterWeather extends JavaPlugin {
     }
 
     public void enablePlugin(boolean state) {
-        if (resourceHandler == null) return;
         resourceHandler.setEnabled(state);
 
-        if (state) {
-            temperatureHandler.startDecayTask();
-            freezeHandler.start();
-            timeHandler.start();
-        } else {
-            temperatureHandler.stop();
-            freezeHandler.stop();
-            timeHandler.stop();
-        }
+        if (state)
+            taskHandlers.forEach(ITaskHandler::start);
+        else
+            taskHandlers.forEach(ITaskHandler::stop);
     }
 
     public void enableCustomDayCycle(boolean state) {
-        if (timeHandler == null) return;
-
         if (state)
             timeHandler.start();
         else

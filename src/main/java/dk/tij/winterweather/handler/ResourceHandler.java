@@ -16,7 +16,7 @@ import java.util.function.Function;
 
 import static dk.tij.winterweather.utils.Maths.TO_PERCENT_CONVERSION_FACTOR;
 
-public class ResourceHandler {
+public class ResourceHandler implements IHandler {
     private static ResourceHandler instance;
 
     private final WinterWeather plugin;
@@ -28,7 +28,9 @@ public class ResourceHandler {
         instance = this;
         this.plugin = plugin;
         this.reader = new ConfigReader(plugin);
+    }
 
+    public void init() {
         loadConfig();
     }
 
