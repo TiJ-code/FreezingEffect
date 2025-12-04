@@ -21,7 +21,7 @@ public class TemperatureHandler implements IHandler, ITaskHandler {
 
     private final WinterWeather plugin;
     private ResourceHandler resourceHandler;
-    private FreezeHandler freezeHandler;
+    private VanillaFreezeTicksHandler vanillaFreezeTicksHandler;
     private PlayerDataHandler playerDataHandler;
 
     private final Map<UUID, Double> actualPlayerFreezeTicks = new HashMap<>();
@@ -41,7 +41,7 @@ public class TemperatureHandler implements IHandler, ITaskHandler {
     @Override
     public void init() {
         this.resourceHandler = plugin.getResourceHandler();
-        this.freezeHandler = plugin.getFreezeHandler();
+        this.vanillaFreezeTicksHandler = plugin.getFreezeHandler();
         this.playerDataHandler = plugin.getPlayerDataHandler();
     }
 
@@ -140,7 +140,7 @@ public class TemperatureHandler implements IHandler, ITaskHandler {
         int freezeTicks = Math.max( (int) (scaledInterpolatedFreezingPoints + 0.5d), TemperatureConstants.VANILLA_MIN_FREEZE_TICKS );
 
         player.setFreezeTicks(freezeTicks);
-        freezeHandler.updatePlayer(player, freezeTicks);
+        vanillaFreezeTicksHandler.updatePlayer(player, freezeTicks);
 
         return freezeTicks;
     }

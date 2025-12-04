@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class FreezeHandler implements IHandler, ITaskHandler{
-    private static FreezeHandler instance;
+public class VanillaFreezeTicksHandler implements IHandler, ITaskHandler{
+    private static VanillaFreezeTicksHandler instance;
 
     private final WinterWeather plugin;
     private ResourceHandler resourceHandler;
@@ -18,7 +18,7 @@ public class FreezeHandler implements IHandler, ITaskHandler{
     private final Map<UUID, Integer> storedFreezeTicks = new HashMap<>();
     private BukkitRunnable freezeHandlerRunnable;
 
-    public FreezeHandler(WinterWeather plugin) {
+    public VanillaFreezeTicksHandler(WinterWeather plugin) {
         if (instance != null)
             throw new RuntimeException("Only one allowed at runtime");
         instance = this;
