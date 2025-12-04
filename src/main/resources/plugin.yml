@@ -1,5 +1,5 @@
 name: WinterWeather
-version: '1.1.2_dev'
+version: '1.2.0_dev'
 main: dk.tij.winterweather.WinterWeather
 api-version: '1.21'
 permissions:
