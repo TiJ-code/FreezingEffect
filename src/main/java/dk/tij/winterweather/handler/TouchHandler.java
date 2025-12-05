@@ -14,6 +14,8 @@ import java.util.Set;
 import java.util.UUID;
 
 public class TouchHandler implements IHandler, ITaskHandler {
+    public static TouchHandler instance;
+
     private final WinterWeather plugin;
     private ResourceHandler resourceHandler;
 
@@ -21,6 +23,9 @@ public class TouchHandler implements IHandler, ITaskHandler {
     private BukkitRunnable task;
 
     public TouchHandler(WinterWeather plugin) {
+        if (instance != null)
+            throw new RuntimeException("Cannot create more than one instance of TouchHandler");
+        instance = this;
         this.plugin = plugin;
         this.frozenPlayers = new HashSet<>();
     }
@@ -32,45 +37,56 @@ public class TouchHandler implements IHandler, ITaskHandler {
 
     @Override
     public void start() {
-        task = new  BukkitRunnable() {
+        task = new BukkitRunnable() {
             @Override
             public void run() {
-                if (!resourceHandler.isEnabled()) {
+                if (!resourceHandler.isEnabled() || !AdhesionConstants.ADHESION_ENABLE) {
                     stop();
                     return;
                 }
 
-                Bukkit.getOnlinePlayers().forEach(p -> tickPlayerTouches(p));
+                Bukkit.getOnlinePlayers().forEach(instance::tickPlayer);
             }
         };
-        task.runTaskTimer(plugin, 0L, 1L);
+        task.runTaskTimer(plugin, 0, 1);
     }
 
     @Override
     public void stop() {
-        if (!task.isCancelled())
-            task.cancel();
-        frozenPlayers.clear();
+        if (task.isCancelled()) task.cancel();
     }
 
-    private void tickPlayerTouches(Player player) {
-        if (TemperatureUtils.isPlayerFrozen(player)
-                && !TemperatureUtils.isPlayerBurning(player)
-                && isStandingOnFreezeMaterial(player)) {
-            frozenPlayers.add(player.getUniqueId());
-        } else {
-            frozenPlayers.remove(player.getUniqueId());
-        }
+    private void tickPlayer(Player player) {
+        UUID userUUID = player.getUniqueId();
+
+        if (isNotAbleToFreeze(player))
+            frozenPlayers.remove(userUUID);
+        else
+            if (TemperatureUtils.isPlayerFrozen(player) && isStandingOnAdhesiveMaterial(player))
+                frozenPlayers.add(userUUID);
     }
 
-    private boolean isStandingOnFreezeMaterial(Player player) {
+    public boolean isStandingOnAdhesiveMaterial(Player player) {
         Location location = player.getLocation();
         Material under = location.subtract(0, 0.1, 0).getBlock().getType();
 
         return AdhesionConstants.ADHESIVE_MATERIALS.contains(under);
     }
 
-    public boolean isPlayerFrozen(UUID uuid) {
+    public boolean isAlreadyAdhesive(UUID uuid) {
         return frozenPlayers.contains(uuid);
+    }
+
+    public void setPlayerAdhesive(UUID uuid, boolean frozen) {
+        if (frozen)
+            frozenPlayers.add(uuid);
+        else
+            frozenPlayers.remove(uuid);
+    }
+
+    public static boolean isNotAbleToFreeze(Player player) {
+        return !TemperatureUtils.isPlayerFrozen(player)
+                || TemperatureUtils.isPlayerBurning(player)
+                || !(TemperatureUtils.getNumberOfHeatSourcesNearby(player) <= 0);
     }
 }

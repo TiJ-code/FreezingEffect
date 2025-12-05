@@ -1,12 +1,12 @@
 package dk.tij.winterweather.handler;
 
 import dk.tij.winterweather.WinterWeather;
-import dk.tij.winterweather.constants.ConfigEntries;
 import dk.tij.winterweather.config.ConfigReader;
 import dk.tij.winterweather.constants.AdhesionConstants;
+import dk.tij.winterweather.constants.ConfigEntries;
+import dk.tij.winterweather.constants.TemperatureConstants;
 import dk.tij.winterweather.constants.TimeConstants;
 import dk.tij.winterweather.utils.HeatSource;
-import dk.tij.winterweather.constants.TemperatureConstants;
 import dk.tij.winterweather.utils.InterpolationFunctions;
 import dk.tij.winterweather.utils.ItemUtils;
 import dk.tij.winterweather.utils.Maths;
@@ -15,7 +15,6 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static dk.tij.winterweather.utils.Maths.TO_PERCENT_CONVERSION_FACTOR;
 
@@ -173,17 +172,14 @@ public class ResourceHandler implements IHandler {
 
         AdhesionConstants.ADHESION_ENABLE = adhesionSection.getBoolean(ConfigEntries.FROST_ADHESION_ENABLE, true);
 
-        ConfigurationSection adhesiveMaterialSection = adhesionSection.getConfigurationSection(ConfigEntries.FROST_ADHESION_MATERIALS);
-
-        if (adhesiveMaterialSection == null) return;
-
         AdhesionConstants.ADHESIVE_MATERIALS.addAll(
-                adhesiveMaterialSection.getKeys(false)
+                adhesionSection.getStringList(ConfigEntries.FROST_ADHESION_MATERIALS)
                     .stream()
                     .map(Material::matchMaterial)
                     .filter(Objects::nonNull)
                     .toList()
         );
+        System.out.println(AdhesionConstants.ADHESIVE_MATERIALS);
     }
 
     private Function<Double, Double> loadInterpolationFunction(String configKey) {

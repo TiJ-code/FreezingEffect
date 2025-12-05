@@ -3,6 +3,9 @@ package dk.tij.winterweather.utils;
 public final class Maths {
     private Maths() {}
 
+    public static final int PRECISION_TWO_DECIMALS = 100,
+                            PRECISION_THREE_DECIMALS = 1000;
+
     public static final double TO_PERCENT_CONVERSION_FACTOR = 1d / 100d;
 
     public static int clampI(int value, int min, int max) {

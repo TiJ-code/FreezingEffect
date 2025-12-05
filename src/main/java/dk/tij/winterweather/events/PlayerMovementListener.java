@@ -2,26 +2,36 @@ package dk.tij.winterweather.events;
 
 import dk.tij.winterweather.WinterWeather;
 import dk.tij.winterweather.constants.AdhesionConstants;
-import org.bukkit.entity.Player;
+import dk.tij.winterweather.handler.TouchHandler;
+import dk.tij.winterweather.utils.Maths;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
+import java.util.UUID;
+
 public record PlayerMovementListener(WinterWeather plugin) implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent event) {
+
         if (!AdhesionConstants.ADHESION_ENABLE) return;
 
-        Player player = event.getPlayer();
-        if (!plugin.getTouchHandler().isPlayerFrozen(player.getUniqueId())) return;
+        UUID uuid = event.getPlayer().getUniqueId();
+        TouchHandler handler = plugin.getTouchHandler();
 
-        float fromYaw = event.getFrom().getYaw();
-        float toYaw = event.getTo().getYaw();
+        if (handler.isAlreadyAdhesive(uuid)) {
+            int preciseFromYaw = (int) (event.getFrom().getYaw() * Maths.PRECISION_TWO_DECIMALS);
+            int preciseToYaw = (int) (event.getTo().getYaw() * Maths.PRECISION_TWO_DECIMALS);
 
-        if ((int) (fromYaw * 10) != (int) (toYaw * 10))
-            event.getTo().setYaw(fromYaw);
+            if (preciseFromYaw != preciseToYaw) {
+                event.getTo().setYaw(event.getFrom().getYaw());
+            }
 
-        if (!event.getFrom().toVector().equals(event.getTo().toVector()))
-            event.setTo(event.getFrom());
+            if (!event.getFrom().toVector().equals(event.getTo().toVector())) {
+                event.setTo(event.getFrom());
+            }
+        }
     }
+
+
 }

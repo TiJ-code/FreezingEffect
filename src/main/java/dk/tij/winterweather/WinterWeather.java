@@ -4,10 +4,7 @@ import dk.tij.winterweather.commands.CommandLabels;
 import dk.tij.winterweather.commands.WinterCommand;
 import dk.tij.winterweather.commands.utils.WinterTabCompleter;
 import dk.tij.winterweather.config.ConfigMigrator;
-import dk.tij.winterweather.events.PlayerMovementListener;
-import dk.tij.winterweather.events.PlayerQuitListener;
-import dk.tij.winterweather.events.PlayerRespawnListener;
-import dk.tij.winterweather.events.PlayerJoinListener;
+import dk.tij.winterweather.events.*;
 import dk.tij.winterweather.handler.*;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.PluginManager;
@@ -58,6 +55,7 @@ public final class WinterWeather extends JavaPlugin {
         pluginManager.registerEvents(new PlayerQuitListener(this), this);
         pluginManager.registerEvents(new PlayerRespawnListener(this), this);
         pluginManager.registerEvents(new PlayerMovementListener(this), this);
+        pluginManager.registerEvents(new PlayerInteractionListener(this), this);
 
         PluginCommand winterCommand = getCommand(CommandLabels.COMMAND_LABEL);
         if (winterCommand != null) {
