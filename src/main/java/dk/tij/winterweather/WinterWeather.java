@@ -4,19 +4,24 @@ import dk.tij.winterweather.commands.CommandLabels;
 import dk.tij.winterweather.commands.WinterCommand;
 import dk.tij.winterweather.commands.utils.WinterTabCompleter;
 import dk.tij.winterweather.config.ConfigMigrator;
-import dk.tij.winterweather.events.PlayerQuitListener;
-import dk.tij.winterweather.events.PlayerRespawnListener;
-import dk.tij.winterweather.events.PlayerJoinListener;
+import dk.tij.winterweather.events.*;
 import dk.tij.winterweather.handler.*;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.List;
 
 public final class WinterWeather extends JavaPlugin {
     private ResourceHandler resourceHandler;
     private PlayerDataHandler playerDataHandler;
     private TemperatureHandler temperatureHandler;
     private TimeHandler timeHandler;
-    private FreezeHandler freezeHandler;
+    private VanillaFreezeTicksHandler vanillaFreezeTicksHandler;
+    private TouchHandler touchHandler;
+
+    private List<IHandler> handlers;
+    private List<ITaskHandler> taskHandlers;
 
     @Override
     public void onEnable() {
@@ -29,14 +34,28 @@ public final class WinterWeather extends JavaPlugin {
 
         resourceHandler = new ResourceHandler(this);
         playerDataHandler = new PlayerDataHandler(this);
-
-        freezeHandler = new FreezeHandler(this);
+        vanillaFreezeTicksHandler = new VanillaFreezeTicksHandler(this);
         temperatureHandler = new TemperatureHandler(this);
         timeHandler = new TimeHandler(this);
+        touchHandler = new TouchHandler(this);
 
-        getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
-        getServer().getPluginManager().registerEvents(new PlayerQuitListener(this), this);
-        getServer().getPluginManager().registerEvents(new PlayerRespawnListener(this), this);
+        handlers = List.of(
+                resourceHandler,
+                playerDataHandler,
+                temperatureHandler,
+                timeHandler,
+                vanillaFreezeTicksHandler,
+                touchHandler
+        );
+        taskHandlers = handlers.stream().filter(h -> h instanceof ITaskHandler).map(h -> (ITaskHandler)h).toList();
+        handlers.forEach(IHandler::init);
+
+        PluginManager pluginManager = getServer().getPluginManager();
+        pluginManager.registerEvents(new PlayerJoinListener(this), this);
+        pluginManager.registerEvents(new PlayerQuitListener(this), this);
+        pluginManager.registerEvents(new PlayerRespawnListener(this), this);
+        pluginManager.registerEvents(new PlayerMovementListener(this), this);
+        pluginManager.registerEvents(new PlayerInteractionListener(this), this);
 
         PluginCommand winterCommand = getCommand(CommandLabels.COMMAND_LABEL);
         if (winterCommand != null) {
@@ -44,17 +63,19 @@ public final class WinterWeather extends JavaPlugin {
             winterCommand.setTabCompleter(new WinterTabCompleter(this));
         }
 
-        freezeHandler.start();
-        temperatureHandler.startDecayTask();
-        timeHandler.start();
+        taskHandlers.forEach(ITaskHandler::start);
     }
 
     @Override
     public void reloadConfig() {
         super.reloadConfig();
+
+        if (resourceHandler == null || playerDataHandler == null) return;
+
         resourceHandler.reloadConfig();
-        temperatureHandler.reloadDecayTask();
-        timeHandler.reload();
+        playerDataHandler.reloadConfig();
+
+        taskHandlers.forEach(ITaskHandler::restart);
     }
 
     @Override
@@ -62,38 +83,30 @@ public final class WinterWeather extends JavaPlugin {
         // Plugin shutdown logic
         getComponentLogger().info("Plugin successfully unloaded!");
 
-        freezeHandler.stop();
+        vanillaFreezeTicksHandler.stop();
         temperatureHandler.stop();
 
         playerDataHandler.saveConfig();
     }
 
     public void enablePlugin(boolean state) {
-        if (resourceHandler == null) return;
         resourceHandler.setEnabled(state);
 
-        if (state) {
-            temperatureHandler.startDecayTask();
-            freezeHandler.start();
-            timeHandler.start();
-        } else {
-            temperatureHandler.stop();
-            freezeHandler.stop();
-            timeHandler.stop();
-        }
+        if (state)
+            taskHandlers.forEach(ITaskHandler::start);
+        else
+            taskHandlers.forEach(ITaskHandler::stop);
     }
 
     public void enableCustomDayCycle(boolean state) {
-        if (timeHandler == null) return;
-
         if (state)
             timeHandler.start();
         else
             timeHandler.stop();
     }
 
-    public FreezeHandler getFreezeHandler() {
-        return freezeHandler;
+    public VanillaFreezeTicksHandler getFreezeHandler() {
+        return vanillaFreezeTicksHandler;
     }
 
     public PlayerDataHandler getPlayerDataHandler() {
@@ -110,5 +123,9 @@ public final class WinterWeather extends JavaPlugin {
 
     public TimeHandler getTimeHandler() {
         return timeHandler;
+    }
+
+    public TouchHandler getTouchHandler() {
+        return touchHandler;
     }
 }

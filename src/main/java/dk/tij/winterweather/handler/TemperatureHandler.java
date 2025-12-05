@@ -16,13 +16,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class TemperatureHandler {
+public class TemperatureHandler implements IHandler, ITaskHandler {
     private static TemperatureHandler instance;
 
     private final WinterWeather plugin;
-    private final ResourceHandler resourceHandler;
-    private final FreezeHandler freezeHandler;
-    private final PlayerDataHandler playerDataHandler;
+    private ResourceHandler resourceHandler;
+    private VanillaFreezeTicksHandler vanillaFreezeTicksHandler;
+    private PlayerDataHandler playerDataHandler;
 
     private final Map<UUID, Double> actualPlayerFreezeTicks = new HashMap<>();
     private final DamageSource freezingDamageSource;
@@ -35,13 +35,18 @@ public class TemperatureHandler {
             throw new RuntimeException("Only one allowed at runtime");
         instance = this;
         this.plugin = plugin;
-        this.resourceHandler = plugin.getResourceHandler();
-        this.freezeHandler = plugin.getFreezeHandler();
-        this.playerDataHandler = plugin.getPlayerDataHandler();
         this.freezingDamageSource = DamageSource.builder(DamageType.FREEZE).build();
     }
 
-    public void startDecayTask() {
+    @Override
+    public void init() {
+        this.resourceHandler = plugin.getResourceHandler();
+        this.vanillaFreezeTicksHandler = plugin.getFreezeHandler();
+        this.playerDataHandler = plugin.getPlayerDataHandler();
+    }
+
+    @Override
+    public void start() {
         decayTask = new BukkitRunnable() {
             @Override
             public void run() {
@@ -62,6 +67,7 @@ public class TemperatureHandler {
         leatherArmourDamageTask.runTaskTimer(plugin, 1L, TimeConstants.VANILLA_TICKS_FREEZE_INTERVAL);
     }
 
+    @Override
     public void stop() {
         if (decayTask == null) return;
         if (leatherArmourDamageTask == null) return;
@@ -70,11 +76,6 @@ public class TemperatureHandler {
             decayTask.cancel();
         if (!leatherArmourDamageTask.isCancelled())
             leatherArmourDamageTask.cancel();
-    }
-
-    public void reloadDecayTask() {
-        stop();
-        startDecayTask();
     }
 
     private void tickPlayerTemperature(Player player) {
@@ -139,7 +140,7 @@ public class TemperatureHandler {
         int freezeTicks = Math.max( (int) (scaledInterpolatedFreezingPoints + 0.5d), TemperatureConstants.VANILLA_MIN_FREEZE_TICKS );
 
         player.setFreezeTicks(freezeTicks);
-        freezeHandler.updatePlayer(player, freezeTicks);
+        vanillaFreezeTicksHandler.updatePlayer(player, freezeTicks);
 
         return freezeTicks;
     }

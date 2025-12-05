@@ -10,7 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 
-public class PlayerDataHandler {
+public class PlayerDataHandler implements IHandler {
     private static PlayerDataHandler instance;
 
     private final File configFile;
@@ -21,6 +21,9 @@ public class PlayerDataHandler {
             throw new RuntimeException("Only one allowed at runtime");
         instance = this;
         this.configFile = new File(plugin.getDataFolder(), "playerdata.yml");
+    }
+
+    public void init() {
         FileUtils.createFileIfNotExistent(configFile);
         loadConfig();
     }

@@ -1,22 +1,24 @@
 package dk.tij.winterweather.handler;
 
 import dk.tij.winterweather.WinterWeather;
-import dk.tij.winterweather.constants.ConfigEntries;
 import dk.tij.winterweather.config.ConfigReader;
+import dk.tij.winterweather.constants.AdhesionConstants;
+import dk.tij.winterweather.constants.ConfigEntries;
+import dk.tij.winterweather.constants.TemperatureConstants;
 import dk.tij.winterweather.constants.TimeConstants;
 import dk.tij.winterweather.utils.HeatSource;
-import dk.tij.winterweather.constants.TemperatureConstants;
 import dk.tij.winterweather.utils.InterpolationFunctions;
 import dk.tij.winterweather.utils.ItemUtils;
 import dk.tij.winterweather.utils.Maths;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 import static dk.tij.winterweather.utils.Maths.TO_PERCENT_CONVERSION_FACTOR;
 
-public class ResourceHandler {
+public class ResourceHandler implements IHandler {
     private static ResourceHandler instance;
 
     private final WinterWeather plugin;
@@ -28,7 +30,9 @@ public class ResourceHandler {
         instance = this;
         this.plugin = plugin;
         this.reader = new ConfigReader(plugin);
+    }
 
+    public void init() {
         loadConfig();
     }
 
@@ -58,6 +62,7 @@ public class ResourceHandler {
         loadFrostPlayerStats();
         loadIsolationValues();
         loadHeatSourceValues();
+        loadAdhesionValues();
     }
 
     private void loadCustomDayCycleValues() {
@@ -158,6 +163,23 @@ public class ResourceHandler {
         TemperatureConstants.PLAYER_POWDER_SNOW_BOOST = Maths.clampPositiveI(
                 reader.getInt(ConfigEntries.FROST_PLAYER_POWDER_SNOW_BOOST, 0)
         ) * TO_PERCENT_CONVERSION_FACTOR + 1d;
+    }
+
+    private void loadAdhesionValues() {
+        ConfigurationSection adhesionSection = plugin.getConfig().getConfigurationSection(ConfigEntries.FROST_SUB_CATEGORY_ADHESION);
+
+        if (adhesionSection == null) return;
+
+        AdhesionConstants.ADHESION_ENABLE = adhesionSection.getBoolean(ConfigEntries.FROST_ADHESION_ENABLE, true);
+
+        AdhesionConstants.ADHESIVE_MATERIALS.addAll(
+                adhesionSection.getStringList(ConfigEntries.FROST_ADHESION_MATERIALS)
+                    .stream()
+                    .map(Material::matchMaterial)
+                    .filter(Objects::nonNull)
+                    .toList()
+        );
+        System.out.println(AdhesionConstants.ADHESIVE_MATERIALS);
     }
 
     private Function<Double, Double> loadInterpolationFunction(String configKey) {

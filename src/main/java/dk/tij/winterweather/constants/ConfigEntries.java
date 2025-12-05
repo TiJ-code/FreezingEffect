@@ -5,11 +5,11 @@ public final class ConfigEntries {
 
     private static final String P = ".";
 
-    public static final int CURRENT_VERSION = 7; // TODO
+    public static final int CURRENT_VERSION = 8; // TODO
     public static final String CONFIG_VERSION_ENTRY = "config-version";
 
     public static final String CATEGORY_FROST = "frost",
-                               CATEGORY_DAYLIGHT = "days";
+                               CATEGORY_DAYLIGHT = "dayCycle";
 
     public static final String ENABLED = "enable",
 
@@ -30,6 +30,7 @@ public final class ConfigEntries {
 
                                FROST_SUB_CATEGORY_ISOLATION = CATEGORY_FROST + P + "isolation",
                                FROST_SUB_CATEGORY_HEAT_SOURCES = CATEGORY_FROST + P + "heatSources",
+                               FROST_SUB_CATEGORY_ADHESION = CATEGORY_FROST + P + "adhesion",
 
                                FROST_HEAT_SOURCE_VALUE = P + "value",
                                FROST_HEAT_SOURCE_RADIUS = P + "radius",
@@ -37,5 +38,8 @@ public final class ConfigEntries {
                                FROST_ISOLATION_MAX_POSSIBLE_ISOLATION = "maxPossibleIsolation",
                                FROST_ISOLATION_ARMOUR_PIECES = "armourPieces",
 
-                               FROST_ISOLATION_ARMOUR_PIECE_VALUE = "value";
+                               FROST_ISOLATION_ARMOUR_PIECE_VALUE = "value",
+
+                               FROST_ADHESION_ENABLE = P + "enable",
+                               FROST_ADHESION_MATERIALS = P + "materials";
 }

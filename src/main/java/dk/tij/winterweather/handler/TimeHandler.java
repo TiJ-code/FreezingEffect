@@ -5,15 +5,13 @@ import dk.tij.winterweather.constants.TimeConstants;
 import dk.tij.winterweather.utils.Maths;
 import org.bukkit.GameRule;
 import org.bukkit.World;
-import org.bukkit.event.Listener;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class TimeHandler implements Listener {
+public class TimeHandler implements IHandler, ITaskHandler {
     private static TimeHandler instance;
 
     private final WinterWeather plugin;
-    private final ResourceHandler resourceHandler;
+    private ResourceHandler resourceHandler;
 
     private final World world;
     private BukkitRunnable daylightTask;
@@ -27,11 +25,15 @@ public class TimeHandler implements Listener {
             throw new RuntimeException("Only one allowed at runtime");
         instance = this;
         this.plugin = plugin;
-        this.resourceHandler = plugin.getResourceHandler();
-
         this.world = plugin.getServer().getWorlds().getFirst();
     }
 
+    @Override
+    public void init() {
+        this.resourceHandler = plugin.getResourceHandler();
+    }
+
+    @Override
     public void start() {
         daylightTask = new BukkitRunnable() {
             @Override
@@ -94,12 +96,8 @@ public class TimeHandler implements Listener {
         daylightTask.runTaskTimer(plugin, 1L, 1L);
     }
 
+    @Override
     public void stop() {
         if (daylightTask != null) daylightTask.cancel();
-    }
-
-    public void reload() {
-        stop();
-        start();
     }
 }

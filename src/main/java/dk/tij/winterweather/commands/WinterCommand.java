@@ -194,7 +194,7 @@ public class WinterCommand implements CommandExecutor {
 
     private void setDebug(CommandSender commandSender, int doToggle) {
         if (commandSender instanceof Player player) {
-            boolean newState = (doToggle < 0) ? !playerDataHandler.loadPlayerShowDebug(player) : (doToggle == 0);
+            boolean newState = (doToggle < 0) ? !playerDataHandler.loadPlayerShowDebug(player) : (doToggle == 1);
             playerDataHandler.savePlayerShowDebug(player, newState);
             commandSender.sendMessage(ChatMessages.CHAT_PREFIX + ChatColor.GREEN + "Debug: " + (newState ? "ON" : "OFF"));
         } else {
