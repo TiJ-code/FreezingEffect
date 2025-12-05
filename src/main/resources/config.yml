@@ -1,11 +1,11 @@
 # ==== WinterWeather Configuration ====
-# You can safely keep old configs; missing fields get added automatically
-# If this version is lower than the plugin's version, migrations will run.
-config-version: 7
+# Missing fields, that are introduced with newer versions will get added automatically.
+# If this version is lower than the plugin's version, migrations that could rename or remove entries will run.
+config-version: 8
 
 enable: false
 
-days:
+dayCycle:
   customCycleEnable: true
   totalCycleMinutes: 30
   dayPercentage: 40
@@ -51,3 +51,12 @@ frost:
     LANTERN:
       value: 1.0
       radius: 3.0
+
+  adhesion:
+    enable: true
+    materials:
+      - IRON_BLOCK
+      - IRON_DOOR
+      - IRON_CHAIN
+      - IRON_TRAPDOOR
+      - HEAVY_WEIGHTED_PRESSURE_PLATE

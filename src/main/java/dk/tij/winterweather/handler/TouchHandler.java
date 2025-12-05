@@ -1,12 +1,11 @@
 package dk.tij.winterweather.handler;
 
 import dk.tij.winterweather.WinterWeather;
-import dk.tij.winterweather.constants.FreezeConstants;
+import dk.tij.winterweather.constants.AdhesionConstants;
 import dk.tij.winterweather.utils.TemperatureUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -68,7 +67,7 @@ public class TouchHandler implements IHandler, ITaskHandler {
         Location location = player.getLocation();
         Material under = location.subtract(0, 0.1, 0).getBlock().getType();
 
-        return FreezeConstants.FREEZE_MATERIALS.contains(under);
+        return AdhesionConstants.ADHESIVE_MATERIALS.contains(under);
     }
 
     public boolean isPlayerFrozen(UUID uuid) {

@@ -9,6 +9,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -46,13 +47,7 @@ public class ConfigMigrator {
 
         migrations.put(4, cfg -> removeEntry(cfg, "debug"));
 
-        migrations.put(5, cfg -> {
-            addEntry(cfg, ConfigEntries.DAYLIGHT_CUSTOM_CYCLE_ENABLE, TimeConstants.CUSTOM_DAY_CYCLE_ENABLE);
-            addEntry(cfg, ConfigEntries.DAYLIGHT_TOTAL_CYCLE_MINUTES, TimeConstants.VANILLA_TOTAL_CYCLE_MINUTES);
-            addEntry(cfg, ConfigEntries.DAYLIGHT_DAY_PERCENTAGE, TimeConstants.VANILLA_DAY_PERCENTAGE);
-        });
-
-        migrations.put(6, cfg -> addEntry(cfg, ConfigEntries.DAYLIGHT_INTERPOLATION_FUNCTION, InterpolationFunctions.INTERPOLATION_FUNCTIONS_MAPPING.keySet().toArray(String[]::new)[0]));
+        migrations.put(8, cfg -> renameEntry(cfg, "days", ConfigEntries.CATEGORY_DAYLIGHT));
     }
 
     public void migrate() {
@@ -82,12 +77,10 @@ public class ConfigMigrator {
     }
 
     private void renameEntry(FileConfiguration cfg, String oldPath, String newPath) {
-        if (cfg.contains(oldPath) && !cfg.contains(newPath)) {
-            Object value = cfg.get(oldPath);
-            cfg.set(newPath, value);
-            cfg.set(oldPath, null);
-            plugin.getLogger().info("Migrated config key: " + oldPath + " to " + newPath);
-        }
+        Object value = cfg.get(oldPath);
+        cfg.set(newPath, value);
+        cfg.set(oldPath, null);
+        plugin.getLogger().info("Migrated config key: " + oldPath + " to " + newPath);
     }
 
     private void removeEntry(FileConfiguration cfg, String path) {

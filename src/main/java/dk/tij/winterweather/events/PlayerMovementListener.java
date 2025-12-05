@@ -1,7 +1,7 @@
 package dk.tij.winterweather.events;
 
 import dk.tij.winterweather.WinterWeather;
-import dk.tij.winterweather.constants.FreezeConstants;
+import dk.tij.winterweather.constants.AdhesionConstants;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,7 +10,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 public record PlayerMovementListener(WinterWeather plugin) implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent event) {
-        if (!FreezeConstants.FREEZE_BLOCKS_ENABLE) return;
+        if (!AdhesionConstants.ADHESION_ENABLE) return;
 
         Player player = event.getPlayer();
         if (!plugin.getTouchHandler().isPlayerFrozen(player.getUniqueId())) return;
