@@ -14,6 +14,10 @@ import org.bukkit.util.Vector;
 public final class TemperatureUtils {
     private TemperatureUtils() {}
 
+    public static boolean isPlayerFrozen(Player player) {
+        return player.getFreezeTicks() >= player.getMaxFreezeTicks();
+    }
+
     public static double getLeatherReduction(Player player) {
         double reduction = 0d;
 

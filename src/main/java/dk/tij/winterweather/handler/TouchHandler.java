@@ -2,6 +2,7 @@ package dk.tij.winterweather.handler;
 
 import dk.tij.winterweather.WinterWeather;
 import dk.tij.winterweather.constants.FreezeConstants;
+import dk.tij.winterweather.utils.TemperatureUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -54,7 +55,9 @@ public class TouchHandler implements IHandler, ITaskHandler {
     }
 
     private void tickPlayerTouches(Player player) {
-        if (isStandingOnFreezeMaterial(player)) {
+        if (TemperatureUtils.isPlayerFrozen(player)
+                && !TemperatureUtils.isPlayerBurning(player)
+                && isStandingOnFreezeMaterial(player)) {
             frozenPlayers.add(player.getUniqueId());
         } else {
             frozenPlayers.remove(player.getUniqueId());
