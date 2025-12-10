@@ -2,7 +2,8 @@ package dk.tij.winterweather.commands;
 
 import dk.tij.winterweather.WinterWeather;
 import dk.tij.winterweather.commands.utils.ChatMessages;
-import dk.tij.winterweather.constants.TemperatureConstants;
+import dk.tij.winterweather.commands.utils.CommandLabels;
+import dk.tij.winterweather.commands.utils.CommandPermissions;
 import dk.tij.winterweather.constants.TimeConstants;
 import dk.tij.winterweather.handler.PlayerDataHandler;
 import dk.tij.winterweather.handler.ResourceHandler;

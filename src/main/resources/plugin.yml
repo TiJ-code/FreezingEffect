@@ -12,3 +12,6 @@ commands:
     usage: /winter <start|stop|config|debug|customDayCycle>
     aliases: [w, ww]
     permission: winterweather.command
+  test:
+    description: Test
+    usage: /test

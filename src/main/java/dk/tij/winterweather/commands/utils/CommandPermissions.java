@@ -1,4 +1,4 @@
-package dk.tij.winterweather.commands;
+package dk.tij.winterweather.commands.utils;
 
 public final class CommandPermissions {
     private CommandPermissions() {}

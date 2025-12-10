@@ -1,7 +1,6 @@
 package dk.tij.winterweather.commands.utils;
 
 import dk.tij.winterweather.WinterWeather;
-import dk.tij.winterweather.commands.CommandLabels;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;

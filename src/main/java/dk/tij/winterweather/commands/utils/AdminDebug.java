@@ -1,6 +1,5 @@
 package dk.tij.winterweather.commands.utils;
 
-import dk.tij.winterweather.commands.CommandPermissions;
 import org.bukkit.entity.Player;
 
 public final class AdminDebug {
